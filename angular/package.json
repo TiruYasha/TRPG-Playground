@@ -23,6 +23,7 @@
     "@angular/platform-browser-dynamic": "^7.2.3",
     "@angular/router": "^7.2.3",
     "@aspnet/signalr": "^1.1.0",
+    "@auth0/angular-jwt": "^2.1.0",
     "core-js": "^2.6.3",
     "konva": "^2.6.0",
     "ng2-konva": "^6.0.0",

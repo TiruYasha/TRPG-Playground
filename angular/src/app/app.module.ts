@@ -11,6 +11,8 @@ import { GameModule } from './game/game.module';
 import { FormsModule } from '@angular/forms';
 import { AccountComponent } from './account/account.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { JwtHelperService } from '@auth0/angular-jwt';
+import { AuthGuard } from './shared/authguard';
 
 @NgModule({
   declarations: [
@@ -28,6 +30,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
+    AuthGuard
   ],
   bootstrap: [AppComponent]
 })
