@@ -1,0 +1,17 @@
+mat-card{
+    margin-left: 32px;
+    margin-right: 32px;
+}
+
+.mat-card-avatar img{
+    width: 40px;
+    height: 40px;
+}
+
+.text-center{
+    text-align: center;
+}
+
+.dice-result{
+    font-size: 40px;
+}

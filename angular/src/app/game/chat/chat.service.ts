@@ -1,0 +1,78 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { ChatMessage } from './models/chatmessage.model';
+import { environment } from 'src/environments/environment';
+import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
+import { ActiveGameService } from '../active-game.service';
+import { Subject } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ChatService {
+  receivedMessage = new Subject();
+
+  private connectionIsEstablished = false;
+  private _hubConnection: HubConnection;
+
+  constructor(private http: HttpClient, private activeGameService: ActiveGameService) { }
+
+  setup() {
+    this.createConnection();
+    this.registerOnServerEvents();
+    this.startConnection();
+  }
+
+  sendMessage(chatMessage: string) {
+    if (chatMessage !== '') {
+
+      const message: ChatMessage = {
+        message: chatMessage,
+        user: '',
+        commandResult: null
+      };
+
+      this._hubConnection.invoke('SendMessageToGroup', this.activeGameService.gameId, message);
+    }
+  }
+
+  addToGroup(): any {
+    this._hubConnection.invoke('AddToGroup', this.activeGameService.gameId);
+  }
+
+  private createConnection() {
+    this._hubConnection = new HubConnectionBuilder()
+      .withUrl(environment.apiUrl + '/chathub', { accessTokenFactory: this.getAccessToken })
+      .build();
+  }
+
+  getAccessToken() {
+    const accessToken = localStorage.getItem('token');
+    return accessToken;
+  }
+
+  private startConnection(): void {
+    this._hubConnection
+      .start()
+      .then(() => {
+        this.connectionIsEstablished = true;
+        console.log('Hub connection started');
+        this.addToGroup();
+      })
+      .catch(err => {
+        console.log('Error while establishing connection, retrying...');
+        setTimeout(this.startConnection, 5000);
+      });
+  }
+
+  private registerOnServerEvents(): void {
+    this._hubConnection.on('ReceiveMessage', (data: ChatMessage) => {
+      console.log('received message: ', data);
+      this.receivedMessage.next(data);
+    });
+  }
+
+  getAllMessagesForGame(gameId: string) {
+    return this.http.get<ChatMessage[]>(environment.apiUrl + '/api/chat?gameId=' + gameId);
+  }
+}

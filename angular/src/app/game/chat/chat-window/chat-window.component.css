@@ -1,0 +1,40 @@
+#chat-container{
+    height: 100%;
+    width: 100%;
+    max-width: 340px;
+}
+
+#message-sender{
+    position: absolute;
+    height: 56px;
+    bottom: 11px;
+    padding-left: 16px;
+    padding-right: 16px;
+}
+
+.message-container{
+    height: calc(100% - 67px);
+    overflow-y: auto;
+}
+
+.send-button{
+    margin-left: 16px;
+}
+
+.message-input{
+    width: 200px;
+}
+
+::ng-deep .mat-list .mat-list-item .mat-line{
+    word-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+::ng-deep  .mat-list-item{
+    height:initial!important;
+  }
+
+  .list-item{
+    margin-top: 16px;
+    margin-bottom: 16px; 
+  }
