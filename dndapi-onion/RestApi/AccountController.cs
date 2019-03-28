@@ -18,7 +18,7 @@ namespace RestApi
         }
 
         [HttpPost]
-        [Route("/register")]
+        [Route("register")]
         public async Task<IActionResult> RegisterAsync([FromBody] RegisterModel registerModel)
         {
             try
@@ -34,7 +34,7 @@ namespace RestApi
         }
 
         [HttpPost]
-        [Route("/login")]
+        [Route("login")]
         public async Task<IActionResult> LoginAsync([FromBody] LoginModel loginModel)
         {
             try

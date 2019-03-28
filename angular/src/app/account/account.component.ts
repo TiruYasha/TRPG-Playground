@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { RegisterModel } from '../models/login.model';
-import { LoginSuccessModel } from '../models/loginsuccess.model';
-import { AccountService } from '../shared/account.service';
+import { AccountService } from './account.service';
 import { Router } from '@angular/router';
+import { RegisterModel } from '../models/account/register.model';
+import { LoginModel } from '../models/account/login.model';
 
 @Component({
   selector: 'app-account',
@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 export class AccountComponent implements OnInit {
 
   registerModel: RegisterModel = new RegisterModel();
-  loginModel: RegisterModel = new RegisterModel();
+  loginModel: LoginModel = new LoginModel();
 
   constructor(private accountService: AccountService, private router: Router) { }
 
@@ -35,7 +35,7 @@ export class AccountComponent implements OnInit {
 
   finalizeLogin(data) {
     console.log('login successfull', data);
-    localStorage.setItem('token', data.token);
+    localStorage.setItem('token', data);
     this.router.navigate(['chooseGame']);
   }
 }
