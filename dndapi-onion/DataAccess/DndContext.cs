@@ -1,17 +1,18 @@
 ﻿using Domain.Domain;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace DataAccess
 {
-    public class DndContext : IdentityDbContext<User>
+    public class DndContext : IdentityDbContext<User, Role, Guid>
     {
+        public DbSet<Game> Games { get; set; }
+
         public DndContext(DbContextOptions<DndContext> options) : base(options)
         {
 
         }
-
-        public DbSet<Game> Games { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

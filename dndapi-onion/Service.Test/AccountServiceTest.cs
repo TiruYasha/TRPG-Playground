@@ -5,12 +5,14 @@ using Domain.ServiceInterfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Shouldly;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Service.Test.Mocks;
 
 namespace Service.Test
 {
@@ -21,6 +23,7 @@ namespace Service.Test
 
         private Mock<UserManager<User>> userManager;
         private Mock<IOptions<TokenConfig>> tokenConfig;
+        private Mock<ILogger<AccountService>> logger;
 
         private const string issuer = "Dnd";
         private const string key = "dfsafdsafdsafadsfkjadshfkjahdkjfhadskjdasfjkdshfkjdaslhfkasf";
@@ -28,9 +31,10 @@ namespace Service.Test
         [TestInitialize]
         public void Initialize()
         {
-            userManager = GetUserManagerMock();
+            userManager = UserManagerMockFactory.GetUserManagerMock();
             tokenConfig = new Mock<IOptions<TokenConfig>>();
-            sut = new AccountService(userManager.Object, tokenConfig.Object);
+            logger = new Mock<ILogger<AccountService>>();
+            sut = new AccountService(userManager.Object, tokenConfig.Object, logger.Object);
 
             tokenConfig.SetupGet(s => s.Value.Issuer).Returns(issuer);
             tokenConfig.SetupGet(s => s.Value.Key).Returns(key);
@@ -98,7 +102,6 @@ namespace Service.Test
             result.StartsWith("ey").ShouldBe(true);
         }
 
-
         [TestMethod]
         public async Task LoginThrowsArgumentNullExceptionOnNullEmail()
         {
@@ -160,16 +163,6 @@ namespace Service.Test
             });
 
             exception.Message.ShouldBe("The username or password is wrong");
-        }
-
-        private Mock<UserManager<User>> GetUserManagerMock()
-        {
-            var store = new Mock<IUserStore<User>>();
-            var mgr = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
-            mgr.Object.UserValidators.Add(new UserValidator<User>());
-            mgr.Object.PasswordValidators.Add(new PasswordValidator<User>());
-
-            return mgr;
         }
     }
 }

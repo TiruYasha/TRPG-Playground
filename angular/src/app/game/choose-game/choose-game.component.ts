@@ -3,6 +3,7 @@ import { Game } from 'src/app/models/game.model';
 import { GameService } from 'src/app/shared/game.service';
 import { Router } from '@angular/router';
 import { Observable, BehaviorSubject } from 'rxjs';
+import { CreateGameModel } from 'src/app/models/game/creategame.model';
 
 @Component({
   selector: 'app-choose-game',
@@ -24,14 +25,13 @@ export class ChooseGameComponent implements OnInit {
   }
 
   createGame() {
-    const game: Game = {
-      id: '877ae3ab-16f7-4262-8009-675e16630b3b',
+    const game: CreateGameModel = {
       name: this.createGameName
     };
 
     this.gameService.createGame(game).subscribe(data => {
       console.log('Created game: ', data);
-      this.router.navigate(['/game/' + data.id]);
+      //this.router.navigate(['/game/' + data.id]);
     });
   }
 

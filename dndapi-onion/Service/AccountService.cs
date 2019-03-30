@@ -22,7 +22,7 @@ namespace Service
         private readonly IOptions<TokenConfig> tokenConfig;
         private readonly ILogger logger;
 
-        public AccountService(UserManager<User> userManager, IOptions<TokenConfig> tokenConfig, ILogger<AccountService> logger = null)
+        public AccountService(UserManager<User> userManager, IOptions<TokenConfig> tokenConfig, ILogger<AccountService> logger)
         {
             this.userManager = userManager;
             this.tokenConfig = tokenConfig;
