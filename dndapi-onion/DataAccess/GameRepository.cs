@@ -2,9 +2,7 @@
 using Domain.RepositoryInterfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DataAccess
@@ -20,7 +18,6 @@ namespace DataAccess
 
         public async Task CreateGameAsync(Game game)
         {
-            context.Entry(game.Owner).State = EntityState.Unchanged;
             await context.Games.AddAsync(game);
 
             await context.SaveChangesAsync();
@@ -43,7 +40,6 @@ namespace DataAccess
 
         public async Task UpdateGameAsync(Game game)
         {
-            context.Entry(game.Owner).State = EntityState.Unchanged;
             context.Games.Update(game);
             await context.SaveChangesAsync();
         }

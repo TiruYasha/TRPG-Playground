@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace RestApi.Models.Account
+﻿namespace RestApi.Models.Account
 {
     public class LoginModel
     {

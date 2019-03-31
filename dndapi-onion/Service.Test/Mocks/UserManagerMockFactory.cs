@@ -1,9 +1,6 @@
 ﻿using Domain.Domain;
 using Microsoft.AspNetCore.Identity;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Service.Test.Mocks
 {

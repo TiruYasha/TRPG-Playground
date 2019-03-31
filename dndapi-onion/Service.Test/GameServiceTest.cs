@@ -1,15 +1,11 @@
 ﻿using Domain.Domain;
 using Domain.RepositoryInterfaces;
 using Domain.ServiceInterfaces;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Service.Test.Mocks;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Service.Test
@@ -21,16 +17,16 @@ namespace Service.Test
 
         private Mock<IGameRepository> gameRepository;
         private Mock<ILogger<GameService>> logger;
-        private Mock<UserManager<User>> userManager;
+        private Mock<IUserRepository> userRepository;
 
         [TestInitialize]
         public void Initialize()
         {
             gameRepository = new Mock<IGameRepository>();
             logger = new Mock<ILogger<GameService>>();
-            userManager = UserManagerMockFactory.GetUserManagerMock();
+            userRepository = new Mock<IUserRepository>();
 
-            sut = new GameService(gameRepository.Object, userManager.Object, logger.Object);
+            sut = new GameService(gameRepository.Object, userRepository.Object, logger.Object);
         }
 
         [TestMethod]
@@ -45,7 +41,7 @@ namespace Service.Test
                 Email = "test@test.nl",
             };
 
-            userManager.SetupGet(s => s.Users).Returns(new List<User>() { user }.AsQueryable());
+            userRepository.Setup(s => s.GetUserByIdAsync(ownerId)).ReturnsAsync(user);
             gameRepository.Setup(s => s.CreateGameAsync(It.Is<Game>(g => g.Owner == user && g.Name == gameName)))
                 .Returns(Task.CompletedTask).Verifiable();
 
@@ -68,7 +64,7 @@ namespace Service.Test
              
             var game = new Game("name", new User());
 
-            userManager.SetupGet(s => s.Users).Returns(new List<User>() { user }.AsQueryable());
+            userRepository.Setup(s => s.GetUserByIdAsync(userId)).ReturnsAsync(user);
             gameRepository.Setup(s => s.GetGameByIdAsync(game.Id)).ReturnsAsync(game);
             gameRepository.Setup(s => s.UpdateGameAsync(It.Is<Game>(g => g.Id == game.Id && g.Players.Any(p => p.UserId == userId)))).Returns(Task.CompletedTask).Verifiable();
 
@@ -93,7 +89,7 @@ namespace Service.Test
 
             var game = new Game("name", new User());
 
-            userManager.SetupGet(s => s.Users).Returns(new List<User>() { user }.AsQueryable());
+            userRepository.Setup(s => s.GetUserByIdAsync(userId)).ReturnsAsync(user);
             gameRepository.Setup(s => s.GetGameByIdAsync(game.Id)).ReturnsAsync(game).Verifiable();
 
             await sut.JoinGameAsync(game.Id, userId);
@@ -120,7 +116,7 @@ namespace Service.Test
 
             var game = new Game("name", new User());
 
-            userManager.SetupGet(s => s.Users).Returns(new List<User>() { user }.AsQueryable());
+            userRepository.Setup(s => s.GetUserByIdAsync(userId)).ReturnsAsync(user);
             gameRepository.Setup(s => s.GetGameByIdAsync(game.Id)).ReturnsAsync(game).Verifiable();
 
             // Action

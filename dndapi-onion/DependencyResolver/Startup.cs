@@ -130,6 +130,7 @@ namespace DependencyResolver
             services.AddTransient<IGameService, GameService>();
             services.AddTransient<IJwtReader, JwtReader>();
             services.AddTransient<IGameRepository, GameRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }

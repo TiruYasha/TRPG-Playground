@@ -7,8 +7,6 @@ using RestApi.Models.Game;
 using RestApi.Utilities;
 using Shouldly;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace RestApi.Test

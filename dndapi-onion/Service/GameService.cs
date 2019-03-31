@@ -1,7 +1,6 @@
 ﻿using Domain.Domain;
 using Domain.RepositoryInterfaces;
 using Domain.ServiceInterfaces;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -13,19 +12,19 @@ namespace Service
     public class GameService : IGameService
     {
         private readonly IGameRepository gameRepository;
-        private readonly UserManager<User> userManager;
+        private readonly IUserRepository userRepository;
         private readonly ILogger<GameService> logger;
 
-        public GameService(IGameRepository gameRepository, UserManager<User> userManager, ILogger<GameService> logger)
+        public GameService(IGameRepository gameRepository, IUserRepository userRepository, ILogger<GameService> logger)
         {
             this.gameRepository = gameRepository;
-            this.userManager = userManager;
+            this.userRepository = userRepository;
             this.logger = logger;
         }
 
         public async Task CreateGameAsync(string gameName, Guid ownerId)
         {
-            User user = GetUserById(ownerId);
+            var user = await userRepository.GetUserByIdAsync(ownerId);
 
             var game = new Game(gameName, user);
 
@@ -42,7 +41,7 @@ namespace Service
 
         public async Task JoinGameAsync(Guid gameId, Guid userId)
         {
-            var user = gameRepository.GetUserById(userId);//GetUserById(userId);
+            var user = await userRepository.GetUserByIdAsync(userId);
 
             var game = await gameRepository.GetGameByIdAsync(gameId);
 
@@ -54,11 +53,6 @@ namespace Service
             game.Join(user);
 
             await gameRepository.UpdateGameAsync(game);
-        }
-
-        private User GetUserById(Guid ownerId)
-        {
-            return userManager.Users.FirstOrDefault(u => u.Id == ownerId);
         }
     }
 }
