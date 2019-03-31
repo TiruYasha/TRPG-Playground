@@ -19,10 +19,10 @@ export class GameService {
   joinGame(id: string) {
     const game = new Game();
     game.id = id;
-    return this.http.put(environment.apiUrl + '/game', game);
+    return this.http.put(environment.apiUrl + '/game/join', {gameId: id});
   }
 
   getGames() {
-    return this.http.get<Game[]>(environment.apiUrl + '/game');
+    return this.http.get<Game[]>(environment.apiUrl + '/game/all');
   }
 }

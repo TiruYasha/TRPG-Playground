@@ -1,23 +1,30 @@
-﻿using Domain.ServiceInterfaces;
+﻿using AutoMapper;
+using Domain.Domain;
+using Domain.ServiceInterfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RestApi.Models.Game;
 using RestApi.Utilities;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace RestApi
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class GameController : ControllerBase
     {
         private readonly IGameService gameService;
         private readonly IJwtReader jwtReader;
+        private readonly IMapper mapper;
 
-        public GameController(IGameService gameService, IJwtReader jwtReader)
+        public GameController(IGameService gameService, IJwtReader jwtReader, IMapper mapper)
         {
             this.gameService = gameService;
             this.jwtReader = jwtReader;
+            this.mapper = mapper;
         }
 
         [HttpPost]
@@ -29,6 +36,34 @@ namespace RestApi
                 var ownerId = jwtReader.GetUserId();
 
                 await gameService.CreateGameAsync(model.Name, ownerId);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("all")]
+        public IActionResult GetAllGames()
+        {
+            var games = gameService.GetAllGames();
+            var mappedGames = mapper.Map<IList<Game>, IList<GameModel>>(games);
+
+            return Ok(mappedGames);
+        }
+
+        [HttpPut]
+        [Route("join")]
+        public async Task<IActionResult> JoinGameAsync([FromBody] JoinGameModel model)
+        {
+            try
+            {
+                var userId = jwtReader.GetUserId();
+
+                await gameService.JoinGameAsync(model.GameId, userId);
 
                 return Ok();
             }

@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Domain.Domain;
+using RestApi.Models.Game;
 
 namespace DependencyResolver.MappingProfiles
 {
@@ -6,7 +8,7 @@ namespace DependencyResolver.MappingProfiles
     {
         public MyProfile()
         {
-            
+            CreateMap<Game, GameModel>();
         }
     }
 }

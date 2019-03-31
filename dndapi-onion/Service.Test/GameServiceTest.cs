@@ -53,5 +53,82 @@ namespace Service.Test
 
             gameRepository.VerifyAll();
         }
+
+        [TestMethod]
+        public async Task JoinGameAddsThePlayerToTheGame()
+        {
+            // Arrange
+            var userId = new Guid("65a5b497-75b8-4729-9ca7-69152e319380");
+
+            var user = new User
+            {
+                Id = userId,
+                Email = "test@test.nl",
+            };
+             
+            var game = new Game("name", new User());
+
+            userManager.SetupGet(s => s.Users).Returns(new List<User>() { user }.AsQueryable());
+            gameRepository.Setup(s => s.GetGameByIdAsync(game.Id)).ReturnsAsync(game);
+            gameRepository.Setup(s => s.UpdateGameAsync(It.Is<Game>(g => g.Id == game.Id && g.Players.Any(p => p.UserId == userId)))).Returns(Task.CompletedTask).Verifiable();
+
+            // Action
+            await sut.JoinGameAsync(game.Id, userId);
+
+            // Assert
+            gameRepository.VerifyAll();
+        }
+
+        [TestMethod]
+        public async Task JoinGameDoesNothingWhenThePlayerHasAlreadyJoined()
+        {
+            // Arrange
+            var userId = new Guid("65a5b497-75b8-4729-9ca7-69152e319380");
+
+            var user = new User
+            {
+                Id = userId,
+                Email = "test@test.nl",
+            };
+
+            var game = new Game("name", new User());
+
+            userManager.SetupGet(s => s.Users).Returns(new List<User>() { user }.AsQueryable());
+            gameRepository.Setup(s => s.GetGameByIdAsync(game.Id)).ReturnsAsync(game).Verifiable();
+
+            await sut.JoinGameAsync(game.Id, userId);
+
+            // Action
+            await sut.JoinGameAsync(game.Id, userId);
+
+            // Assert
+            gameRepository.VerifyAll();
+            gameRepository.Verify(s => s.UpdateGameAsync(It.Is<Game>(g => g.Id == game.Id && g.Players.Any(p => p.UserId == userId))), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task JoinGameDoesNothingWhenTheOwnerHasAlreadyJoined()
+        {
+            // Arrange
+            var userId = new Guid();
+
+            var user = new User
+            {
+                Id = userId,
+                Email = "test@test.nl",
+            };
+
+            var game = new Game("name", new User());
+
+            userManager.SetupGet(s => s.Users).Returns(new List<User>() { user }.AsQueryable());
+            gameRepository.Setup(s => s.GetGameByIdAsync(game.Id)).ReturnsAsync(game).Verifiable();
+
+            // Action
+            await sut.JoinGameAsync(game.Id, userId);
+
+            // Assert
+            gameRepository.VerifyAll();
+            gameRepository.Verify(s => s.UpdateGameAsync(It.Is<Game>(g => g.Id == game.Id && g.Players.Any(p => p.UserId == userId))), Times.Never);
+        }
     }
 }

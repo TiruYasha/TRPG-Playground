@@ -74,5 +74,58 @@ namespace Domain.Test.Domain
             // Assert
             result.Message.ShouldBe("The argument for parameter owner was invalid");
         }
+
+        [TestMethod]
+        public void JoinGameAddsAGamePlayer()
+        {
+            // Arrange
+            var game = new Game("testing", new User());
+            var user = new User
+            {
+                Id = new Guid("65a5b497-75b8-4729-9ca7-69152e319380")
+            };
+
+            // Action
+            game.Join(user);
+
+            // Assert
+            game.Players.Count.ShouldBe(1);
+        }
+
+        [TestMethod]
+        public void JoinGameThrowsExceptionWhenPlayerAlreadyExists()
+        {
+            // Arrange
+            var game = new Game("testing", new User());
+            var user = new User
+            {
+                Id = new Guid("65a5b497-75b8-4729-9ca7-69152e319380")
+            };
+
+            game.Join(user);
+
+            // Action
+            var ex = Should.Throw<ArgumentException>(() => game.Join(user));
+
+            // Assert
+            ex.Message.ShouldBe("The player cannot be added again");
+        }
+
+        [TestMethod]
+        public void JoinGameThrowsExceptionWhenOwnerWantsToJoin()
+        {
+            // Arrange
+            var owner = new User
+            {
+                Id = new Guid()
+            };
+            var game = new Game("testing", owner);
+            
+            // Action
+            var ex = Should.Throw<ArgumentException>(() => game.Join(owner));
+
+            // Assert
+            ex.Message.ShouldBe("The player cannot be added again");
+        }
     }
 }

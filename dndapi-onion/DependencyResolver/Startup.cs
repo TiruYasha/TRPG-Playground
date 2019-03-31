@@ -60,7 +60,8 @@ namespace DependencyResolver
 
             var connection = @"Host=localhost;Port=32768;Database=Dnd;Username=postgres";
             services.AddEntityFrameworkNpgsql().AddDbContext<DndContext>
-                (options => options.UseNpgsql(connection));
+                (options => options.UseLazyLoadingProxies()
+                                    .UseNpgsql(connection));
 
             var key = Configuration.GetSection("TokenConfig").GetSection("Key").Value;
 

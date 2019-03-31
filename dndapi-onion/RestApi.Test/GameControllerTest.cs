@@ -1,4 +1,5 @@
-﻿using Domain.ServiceInterfaces;
+﻿using AutoMapper;
+using Domain.ServiceInterfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -19,14 +20,16 @@ namespace RestApi.Test
 
         private Mock<IGameService> gameService;
         private Mock<IJwtReader> jwtReader;
+        private Mock<IMapper> mapper;
 
         [TestInitialize]
         public void Initialize()
         {
             gameService = new Mock<IGameService>();
             jwtReader = new Mock<IJwtReader>();
+            mapper = new Mock<IMapper>();
 
-            sut = new GameController(gameService.Object, jwtReader.Object);
+            sut = new GameController(gameService.Object, jwtReader.Object, mapper.Object);
         }
 
         [TestMethod]
@@ -71,5 +74,48 @@ namespace RestApi.Test
             result.ShouldBeOfType<BadRequestObjectResult>();
             result.Value.ShouldBe(errorMessage);
         }
+
+        [TestMethod]
+        public async Task JoinGameAsyncReturnsOkResult()
+        {
+            // Arrange
+            var userId = new Guid();
+
+            var model = new JoinGameModel
+            {
+                GameId = new Guid(),
+            };
+
+            jwtReader.Setup(s => s.GetUserId()).Returns(userId);
+            gameService.Setup(s => s.JoinGameAsync(model.GameId, userId)).Returns(Task.CompletedTask).Verifiable();
+
+            // Action
+            var result = await sut.JoinGameAsync(model);
+
+            // Assert
+            result.ShouldBeOfType<OkResult>();
+            gameService.VerifyAll();
+        }
+
+        [TestMethod]
+        public async Task JoinGameAsyncReturnsBadRequestOnException()
+        {
+            // Arrange
+            var errorMessage = "argumentException";
+            var model = new JoinGameModel
+            {
+                GameId = new Guid(),
+            };
+
+            jwtReader.Setup(s => s.GetUserId()).Throws(new ArgumentException(errorMessage));
+
+            // Action
+            var result = await sut.JoinGameAsync(model) as BadRequestObjectResult;
+
+            // Assert
+            result.ShouldBeOfType<BadRequestObjectResult>();
+            result.Value.ShouldBe(errorMessage);
+        }
+
     }
 }
