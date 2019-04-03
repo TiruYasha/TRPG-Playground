@@ -18,6 +18,7 @@ namespace DataAccess
 
         public async Task CreateGameAsync(Game game)
         {
+            context.Entry(game.Owner).State = EntityState.Unchanged;
             await context.Games.AddAsync(game);
 
             await context.SaveChangesAsync();
