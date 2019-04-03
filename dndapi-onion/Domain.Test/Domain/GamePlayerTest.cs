@@ -8,8 +8,6 @@ namespace Domain.Test.Domain
     [TestClass]
     public class GamePlayerTest
     {
-        private GamePlayer sut;
-
         [TestMethod]
         public void NewGamePlayerInitializesUserAndGame()
         {
