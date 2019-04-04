@@ -3,8 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { ChatMessage } from './models/chatmessage.model';
 import { environment } from 'src/environments/environment';
 import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
-import { ActiveGameService } from '../active-game.service';
 import { Subject } from 'rxjs';
+import { ActiveGameService } from '../services/active-game.service';
 
 @Injectable({
   providedIn: 'root'

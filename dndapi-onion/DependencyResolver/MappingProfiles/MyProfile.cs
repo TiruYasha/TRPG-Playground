@@ -9,6 +9,7 @@ namespace DependencyResolver.MappingProfiles
         public MyProfile()
         {
             CreateMap<Game, GameModel>();
+            CreateMap<Game, GameCatalogItemModel>();
         }
     }
 }

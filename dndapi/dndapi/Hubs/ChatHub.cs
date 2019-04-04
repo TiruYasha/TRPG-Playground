@@ -22,6 +22,7 @@ namespace dndapi.Controllers
         {
             await _chatLogic.AddMessageToGameAsync(gameId, message);
             await Clients.Group(gameId.ToString()).SendAsync("ReceiveMessage", message);
+            
         }
 
         public async Task AddToGroup(Guid gameId)

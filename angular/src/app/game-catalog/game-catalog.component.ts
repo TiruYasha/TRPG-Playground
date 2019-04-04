@@ -1,15 +1,22 @@
 import { Component, OnInit } from '@angular/core';
+import { GameCatalogService } from './services/game-catalog.service';
+import { Observable } from 'rxjs';
+import { GameCatalogItem } from '../models/game-catalog/game-catalog-item.model';
+import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-game-catalog',
+  selector: 'trpg-game-catalog',
   templateUrl: './game-catalog.component.html',
   styleUrls: ['./game-catalog.component.css']
 })
 export class GameCatalogComponent implements OnInit {
+  games: Observable<GameCatalogItem[]>;
 
-  constructor() { }
+  constructor(private gameCatalogService: GameCatalogService) {
 
-  ngOnInit() {
   }
 
+  ngOnInit() {
+    this.games = this.gameCatalogService.getGames();
+  }
 }

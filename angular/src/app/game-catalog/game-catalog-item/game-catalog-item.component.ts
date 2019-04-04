@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { GameCatalogItem } from 'src/app/models/game-catalog/game-catalog-item.model';
 
 @Component({
   selector: 'trpg-game-catalog-item',
@@ -6,10 +7,10 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./game-catalog-item.component.css']
 })
 export class GameCatalogItemComponent implements OnInit {
+  @Input() game: GameCatalogItem;
 
   constructor() { }
 
   ngOnInit() {
   }
-
 }

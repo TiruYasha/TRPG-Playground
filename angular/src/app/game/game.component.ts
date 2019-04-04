@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ActiveGameService } from './active-game.service';
+import { ActiveGameService } from './services/active-game.service';
 
 @Component({
-  selector: 'app-game',
+  selector: 'trpg-game',
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.css']
 })

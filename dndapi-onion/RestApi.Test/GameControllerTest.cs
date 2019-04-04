@@ -36,20 +36,21 @@ namespace RestApi.Test
             // Arrange
             var gameName = "test";
             var userId = new Guid();
-
+            var gameId = new Guid();
             var model = new CreateGameModel
             {
                 Name = gameName
             };
 
             jwtReader.Setup(s => s.GetUserId()).Returns(userId);
-            gameService.Setup(s => s.CreateGameAsync(gameName, userId)).Returns(Task.CompletedTask).Verifiable();
+            gameService.Setup(s => s.CreateGameAsync(gameName, userId)).ReturnsAsync(gameId).Verifiable();
 
             // Action
-            var result = await sut.CreateGameAsync(model);
+            var result = await sut.CreateGameAsync(model) as OkObjectResult;
 
             // Assert
-            result.ShouldBeOfType<OkResult>();
+            result.ShouldBeOfType<OkObjectResult>();
+            result.Value.ShouldBe(gameId);
             gameService.VerifyAll();
         }
 

@@ -35,9 +35,9 @@ namespace RestApi
             {
                 var ownerId = jwtReader.GetUserId();
 
-                await gameService.CreateGameAsync(model.Name, ownerId);
+                var gameId = await gameService.CreateGameAsync(model.Name, ownerId);
 
-                return Ok();
+                return Ok(gameId);
             }
             catch (Exception ex)
             {
@@ -50,7 +50,7 @@ namespace RestApi
         public IActionResult GetAllGames()
         {
             var games = gameService.GetAllGames();
-            var mappedGames = mapper.Map<IList<Game>, IList<GameModel>>(games);
+            var mappedGames = mapper.Map<IList<Game>, IList<GameCatalogItemModel>>(games);
 
             return Ok(mappedGames);
         }

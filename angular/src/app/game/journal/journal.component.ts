@@ -5,7 +5,7 @@ import { JournalItem } from './models/journal-item.model';
 import { Journal } from './models/journal.model';
 
 @Component({
-  selector: 'app-journal',
+  selector: 'trpg-journal',
   templateUrl: './journal.component.html',
   styleUrls: ['./journal.component.css']
 })

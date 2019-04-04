@@ -4,6 +4,7 @@ using Domain.ServiceInterfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Shouldly;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -45,8 +46,9 @@ namespace Service.Test
             gameRepository.Setup(s => s.CreateGameAsync(It.Is<Game>(g => g.Owner == user && g.Name == gameName)))
                 .Returns(Task.CompletedTask).Verifiable();
 
-            await sut.CreateGameAsync(gameName, ownerId);
+            var result = await sut.CreateGameAsync(gameName, ownerId);
 
+            result.ShouldNotBe(Guid.Empty);
             gameRepository.VerifyAll();
         }
 

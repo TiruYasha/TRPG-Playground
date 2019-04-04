@@ -1,10 +1,10 @@
 import { Component, OnInit, EventEmitter, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
 import { ChatMessage } from '../models/chatmessage.model';
-import { ActiveGameService } from '../../active-game.service';
 import { ChatService } from '../chat.service';
+import { ActiveGameService } from '../../services/active-game.service';
 
 @Component({
-  selector: 'app-chat-window',
+  selector: 'trpg-chat-window',
   templateUrl: './chat-window.component.html',
   styleUrls: ['./chat-window.component.css']
 })
