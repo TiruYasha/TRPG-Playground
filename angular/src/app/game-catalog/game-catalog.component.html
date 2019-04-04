@@ -1,1 +1,5 @@
 <trpg-create-game></trpg-create-game>
+
+<div id="games">
+    <trpg-game-catalog-item *ngFor="let game of games | async" [game]="game"></trpg-game-catalog-item>
+</div>

@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment.prod';
 import { Game } from '../models/game.model';
-import { CreateGameModel } from '../models/game/creategame.model';
+import { CreateGameModel } from '../models/game-catalog/creategame.model';
 
 @Injectable({
   providedIn: 'root'

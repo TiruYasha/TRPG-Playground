@@ -96,7 +96,7 @@ namespace DependencyResolver
                          // If the request is for our hub...
                          var path = context.HttpContext.Request.Path;
                          if (!string.IsNullOrEmpty(accessToken) &&
-                             (path.StartsWithSegments("/chathub")))
+                             (path.StartsWithSegments("/api/chathub")))
                          {
                              // Read the token out of the query string
                              context.Token = accessToken;
@@ -164,7 +164,7 @@ namespace DependencyResolver
             app.UseAuthentication();
             app.UseSignalR(routes =>
             {
-                routes.MapHub<ChatHub>("/chatHub");
+                routes.MapHub<ChatHub>("/api/chatHub");
             });
             app.UseMvc();
         }

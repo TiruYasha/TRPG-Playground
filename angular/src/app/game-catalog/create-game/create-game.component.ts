@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { GameCatalogService } from '../services/game-catalog.service';
-import { CreateGameModel } from 'src/app/models/game/creategame.model';
+import { CreateGameModel } from 'src/app/models/game-catalog/creategame.model';
 
 @Component({
   selector: 'trpg-create-game',
@@ -9,19 +9,19 @@ import { CreateGameModel } from 'src/app/models/game/creategame.model';
 })
 export class CreateGameComponent implements OnInit {
 
-  gameName: string = '';
+  gameName = '';
 
   constructor(private gameCatalogService: GameCatalogService) { }
 
   ngOnInit() {
   }
 
-  createGame(): void{
+  createGame(): void {
     const game = new CreateGameModel(this.gameName);
     console.log('Create a game', this.gameName);
     this.gameCatalogService.createGame(game)
-      .subscribe(() => {
-        // Return gameId, so also change backend
+      .subscribe((gameId: string) => {
+
         console.log('created the game');
       });
   }

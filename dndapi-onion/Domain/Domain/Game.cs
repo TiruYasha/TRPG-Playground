@@ -23,6 +23,7 @@ namespace Domain.Domain
         public string Name { get; set; }
         public virtual User Owner { get; set; }
         public virtual ICollection<GamePlayer> Players { get; set; }
+        public virtual ICollection<ChatMessage> ChatMessages { get; set; }
 
         public void Join(User user)
         {

@@ -22,7 +22,7 @@ namespace Service
             this.logger = logger;
         }
 
-        public async Task CreateGameAsync(string gameName, Guid ownerId)
+        public async Task<Guid> CreateGameAsync(string gameName, Guid ownerId)
         {
             var user = await userRepository.GetUserByIdAsync(ownerId);
 
@@ -31,6 +31,8 @@ namespace Service
             await gameRepository.CreateGameAsync(game);
 
             logger.LogInformation("Game {0} has been created", game.Name);
+
+            return game.Id;
         }
 
         public IList<Game> GetAllGames()
