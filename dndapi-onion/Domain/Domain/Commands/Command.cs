@@ -8,16 +8,15 @@ namespace Domain.Domain.Commands
     {
         public Guid Id { get; set; }
         public CommandType Type { get; set; }
+        public string CommandText { get; set; }
 
-        public Command(CommandType type)
+        public Command(CommandType type, string commandText)
         {
             Id = Guid.NewGuid();
             Type = type;
+            CommandText = commandText;
         }
 
-        public virtual void Execute(string message)
-        {
-            throw new MethodAccessException("This method should be implemented or not accessed");
-        }
+        public abstract void Execute();
     }
 }

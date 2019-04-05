@@ -13,7 +13,7 @@ namespace Domain.Domain.Commands
             switch (commandText)
             {
                 case "/r":
-                    return new NormalDiceRollCommand();
+                    return new NormalDiceRollCommand(commandText);
                 default:
                     return new DefaultCommand();
             }

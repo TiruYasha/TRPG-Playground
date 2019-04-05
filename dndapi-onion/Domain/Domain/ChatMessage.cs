@@ -22,7 +22,7 @@ namespace Domain.Domain
             Game = game;
 
             Message = message;
-            CommandResult = new DefaultCommand();
+            //CommandResult = new DefaultCommand();
             
             //Execute command
         }
