@@ -42,6 +42,8 @@ namespace DataAccess
         public async Task UpdateGameAsync(Game game)
         {
             context.Games.Update(game);
+            
+            
             await context.SaveChangesAsync();
         }
     }

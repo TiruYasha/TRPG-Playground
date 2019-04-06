@@ -1,7 +1,7 @@
 import { Component, OnInit, EventEmitter, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
-import { ChatMessage } from '../models/chatmessage.model';
 import { ChatService } from '../chat.service';
 import { ActiveGameService } from '../../services/active-game.service';
+import { ReceiveMessageModel } from 'src/app/models/chat/receives/receive-message.model';
 
 @Component({
   selector: 'trpg-chat-window',
@@ -11,7 +11,7 @@ import { ActiveGameService } from '../../services/active-game.service';
 export class ChatWindowComponent implements OnInit, AfterViewChecked {
   @ViewChild('scrollMe') private myScrollContainer: ElementRef;
 
-  messages: ChatMessage[] = [];
+  messages: ReceiveMessageModel[] = [];
   chatMessage = '';
   scrolledToBottom = false;
 
@@ -25,7 +25,7 @@ export class ChatWindowComponent implements OnInit, AfterViewChecked {
       this.messages = data;
     });
 
-    this.chatService.receivedMessage.subscribe((data: ChatMessage) => {
+    this.chatService.receivedMessage.subscribe((data: ReceiveMessageModel) => {
       this.checkScrollAtBottom();
 
       this.messages.push(data);

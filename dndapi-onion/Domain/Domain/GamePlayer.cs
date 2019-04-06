@@ -15,9 +15,6 @@ namespace Domain.Domain
         {
             CheckValues(game, user);
 
-            Game = game;
-            User = user;
-
             UserId = user.Id;
             GameId = game.Id;
         }

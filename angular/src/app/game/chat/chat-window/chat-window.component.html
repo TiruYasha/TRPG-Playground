@@ -1,10 +1,13 @@
 <div id="chat-container">
   <div #scrollMe class="message-container">
     <mat-list id="chat-list">
-      <div class="list-item" *ngFor="let message of messages">
-        <app-plain-text *ngIf="message.commandResult === null" [chatMessage]="message"></app-plain-text>
-        <app-normal-roll-result *ngIf="message.commandResult !== null && message.commandResult.type === 2"
-          [chatMessage]="message"></app-normal-roll-result>
+      <div class="list-item" *ngFor="let message of messages; let i = index;">
+        <p matLine *ngIf="messages[i-1]?.customUsername !== message.customUsername">
+          <span class="username">{{message.customUsername}}</span>
+        </p>
+        <trpg-plain-text *ngIf="message.commandResult.type === 0" [chatMessage]="message"></trpg-plain-text>
+        <trpg-normal-roll-result *ngIf="message.commandResult !== null && message.commandResult.type === 1"
+          [chatMessage]="message"></trpg-normal-roll-result>
       </div>
     </mat-list>
   </div>

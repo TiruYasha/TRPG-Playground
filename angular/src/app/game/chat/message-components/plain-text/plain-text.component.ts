@@ -1,13 +1,13 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ChatMessage } from '../../models/chatmessage.model';
+import { ReceiveMessageModel } from 'src/app/models/chat/receives/receive-message.model';
 
 @Component({
-  selector: 'app-plain-text',
+  selector: 'trpg-plain-text',
   templateUrl: './plain-text.component.html',
   styleUrls: ['./plain-text.component.css']
 })
 export class PlainTextComponent {
-  @Input() chatMessage: ChatMessage;
+  @Input() chatMessage: ReceiveMessageModel;
 
   constructor() { }
 }

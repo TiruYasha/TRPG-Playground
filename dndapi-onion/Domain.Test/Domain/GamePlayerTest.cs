@@ -20,9 +20,7 @@ namespace Domain.Test.Domain
             var result = new GamePlayer(game, user);
 
             // Assert
-            result.User.ShouldBe(user);
             result.UserId.ShouldBe(user.Id);
-            result.Game.ShouldBe(game);
             result.GameId.ShouldBe(game.Id);
         }
 

@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ChatMessage } from './models/chatmessage.model';
 import { environment } from 'src/environments/environment';
 import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
 import { Subject } from 'rxjs';
 import { ActiveGameService } from '../services/active-game.service';
 import { SendMessageModel } from 'src/app/models/chat/requests/send-message.model';
-import { CommandResult } from './models/command/command-result.model';
+import { ReceiveMessageModel } from 'src/app/models/chat/receives/receive-message.model';
+import { CommandResult } from 'src/app/models/chat/receives/command-results/command-result.model';
 
 @Injectable({
   providedIn: 'root'
@@ -75,6 +75,6 @@ export class ChatService {
   }
 
   getAllMessagesForGame(gameId: string) {
-    return this.http.get<ChatMessage[]>(environment.apiUrl + '/chat/all?gameId=' + gameId);
+    return this.http.get<ReceiveMessageModel[]>(environment.apiUrl + '/chat/all?gameId=' + gameId);
   }
 }
