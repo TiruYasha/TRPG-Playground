@@ -5,6 +5,8 @@ import { environment } from 'src/environments/environment';
 import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
 import { Subject } from 'rxjs';
 import { ActiveGameService } from '../services/active-game.service';
+import { SendMessageModel } from 'src/app/models/chat/requests/send-message.model';
+import { CommandResult } from './models/command/command-result.model';
 
 @Injectable({
   providedIn: 'root'
@@ -26,13 +28,13 @@ export class ChatService {
   sendMessage(chatMessage: string) {
     if (chatMessage !== '') {
 
-      const message: ChatMessage = {
-        message: chatMessage,
-        user: '',
-        commandResult: null
+      const message: SendMessageModel = {
+        customUsername: '',
+        gameId: this.activeGameService.gameId,
+        message: chatMessage
       };
 
-      this._hubConnection.invoke('SendMessageToGroup', this.activeGameService.gameId, message);
+      this._hubConnection.invoke('SendMessageToGroup', message);
     }
   }
 
@@ -60,19 +62,19 @@ export class ChatService {
         this.addToGroup();
       })
       .catch(err => {
-        console.log('Error while establishing connection, retrying...');
+        console.log('Error while establishing connection, retrying...', err);
         setTimeout(this.startConnection, 5000);
       });
   }
 
   private registerOnServerEvents(): void {
-    this._hubConnection.on('ReceiveMessage', (data: ChatMessage) => {
+    this._hubConnection.on('ReceiveMessage', (data: CommandResult) => {
       console.log('received message: ', data);
       this.receivedMessage.next(data);
     });
   }
 
   getAllMessagesForGame(gameId: string) {
-    return this.http.get<ChatMessage[]>(environment.apiUrl + '/api/chat?gameId=' + gameId);
+    return this.http.get<ChatMessage[]>(environment.apiUrl + '/chat/all?gameId=' + gameId);
   }
 }

@@ -10,7 +10,7 @@ namespace Domain.Domain.Commands
         public CommandType Type { get; private set; }
         public string CommandText { get; protected set; }
 
-        private Command()
+        public Command()
         {
 
         }

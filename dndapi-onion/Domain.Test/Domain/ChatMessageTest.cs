@@ -10,18 +10,21 @@ namespace Domain.Test.Domain
     public class ChatMessageTest
     {
         const string Message = "Hello i am hello";
+        const string CustomUsername = "username";
 
         private ChatMessage chatMessage;
         private User user;
         private Game game;
-    
 
         [TestInitialize]
         public void Initialize()
         {
-            user = new User();
+            user = new User()
+            {
+                UserName = "username"
+            };
             game = new Game("", new Guid());
-            chatMessage = new ChatMessage(Message, user, game);
+            chatMessage = new ChatMessage(Message, CustomUsername, user, game);
         }
 
         [TestMethod]
@@ -34,6 +37,12 @@ namespace Domain.Test.Domain
         public void ConstructorSetsTheMessage()
         {
             chatMessage.Message.ShouldBe(Message);
+        }
+
+        [TestMethod]
+        public void ConstructorSetsTheCustomUsername()
+        {
+            chatMessage.CustomUsername.ShouldBe(CustomUsername);
         }
 
         [TestMethod]
@@ -62,10 +71,18 @@ namespace Domain.Test.Domain
         }
 
         [TestMethod]
+        public void ConstructorSetsADefaultCustomUsernameIfEmpty()
+        {
+            chatMessage = new ChatMessage(Message, "", user, game);
+
+            chatMessage.CustomUsername.ShouldBe(user.UserName);
+        }
+
+        [TestMethod]
         public void ConstructorExecutesCommand()
         {
             var message = "/r 1d1";
-            var chatMessage = new ChatMessage(message, user, game);
+            var chatMessage = new ChatMessage(message, CustomUsername, user, game);
 
             (chatMessage.Command as NormalDiceRollCommand).RollResult.ShouldBe(1);
         }

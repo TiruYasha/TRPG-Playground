@@ -1,4 +1,5 @@
 ﻿using Domain.Domain;
+using Domain.Domain.Commands;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -8,6 +9,10 @@ namespace DataAccess
     public class DndContext : IdentityDbContext<User, Role, Guid>
     {
         public DbSet<Game> Games { get; set; }
+        public DbSet<ChatMessage> ChatMessages { get; set; }
+        public DbSet<DefaultCommand> DefaultCommands { get; set; }
+        public DbSet<NormalDiceRollCommand> NormalDiceRollCommands { get; set; }
+        public DbSet<Command> Commands { get; set; } 
 
         public DndContext(DbContextOptions<DndContext> options) : base(options)
         {
@@ -17,9 +22,6 @@ namespace DataAccess
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            //modelBuilder.Entity<ChatMessage>()
-            //   .Property(b => b.CreatedDate)
-            //   .HasDefaultValueSql("now()");
 
             SetupGamePlayer(modelBuilder);
         }

@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Domain.Test.Domain
 {
@@ -129,7 +130,7 @@ namespace Domain.Test.Domain
         }
 
         [TestMethod]
-        public void AddMessageAddsMessageToTheGameForTheOwner()
+        public async Task AddMessageAddsMessageToTheGameForTheOwner()
         {
             var user = new User();
 
@@ -138,7 +139,7 @@ namespace Domain.Test.Domain
             var message = "this is a message";
 
             // Action
-            game.AddChatMessage(message, user.Id);
+            await game.AddChatMessageAsync(message, "", user.Id);
 
             // Assert
             game.ChatMessages.Count.ShouldBe(1);
@@ -146,7 +147,7 @@ namespace Domain.Test.Domain
         }
 
         [TestMethod]
-        public void AddMessageAddsMessageToTheGameForJoinedPlayer()
+        public async Task AddMessageAddsMessageToTheGameForJoinedPlayer()
         {
             // Arrange
             var user = new User();
@@ -166,7 +167,7 @@ namespace Domain.Test.Domain
             game.Join(player2);
 
             // Action
-            game.AddChatMessage(message, player2.Id);
+            await game.AddChatMessageAsync(message, "", player2.Id);
 
             // Assert
             game.ChatMessages.Count.ShouldBe(1);
@@ -187,7 +188,7 @@ namespace Domain.Test.Domain
             var message = "this is a message";
 
             // Action
-            var result = Should.Throw<PlayerDoesNotExistException>(() => game.AddChatMessage(message, player.Id));
+            var result = Should.Throw<PlayerDoesNotExistException>(() => game.AddChatMessageAsync(message, "", player.Id));
 
             // Assert
             result.Message.ShouldBe("The player does not exist in this game");

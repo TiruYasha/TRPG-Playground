@@ -2,19 +2,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Domain.Domain
 {
     public class Game
     {
-       
         public Guid Id { get; private set; }
         public string Name { get; private set; }
         public virtual User Owner { get; private set; }
         public virtual ICollection<GamePlayer> Players { get; private set; }
         public virtual ICollection<ChatMessage> ChatMessages { get; private set; }
 
-        private Game()
+        public Game()
         {
             Players = new List<GamePlayer>();
             ChatMessages = new List<ChatMessage>();
@@ -33,7 +33,6 @@ namespace Domain.Domain
             Owner = owner;
             Id = Guid.NewGuid();
         }
-
 
         public void Join(User user)
         {
@@ -56,6 +55,30 @@ namespace Domain.Domain
             return Owner.Id == ownerId;
         }
 
+        public virtual Task<ChatMessage> AddChatMessageAsync(string message, string customUsername, Guid userId)
+        {
+            return Task.Run(() =>
+            {
+                var player = Players.FirstOrDefault(p => p.UserId == userId);
+                ChatMessage chatMessage = null;
+                if (Owner.Id == userId)
+                {
+                    chatMessage = new ChatMessage(message, customUsername, Owner, this);
+                }
+                else if (player != null)
+                {
+                    chatMessage = new ChatMessage(message, customUsername, player.User, this);
+                }
+                else
+                {
+                    throw new PlayerDoesNotExistException("The player does not exist in this game");
+                }
+
+                ChatMessages.Add(chatMessage);
+                return chatMessage;
+            });
+        }
+
         private void CheckParameters(string name, User owner)
         {
             if (string.IsNullOrEmpty(name))
@@ -67,26 +90,6 @@ namespace Domain.Domain
             {
                 throw new ArgumentException("The argument for parameter owner was invalid");
             }
-        }
-
-        public void AddChatMessage(string message, Guid userId)
-        {
-            var player = Players.FirstOrDefault(p => p.UserId == userId);
-            ChatMessage chatMessage = null;
-            if (Owner.Id == userId)
-            {
-                chatMessage = new ChatMessage(message, Owner, this);
-            }
-            else if(player != null)
-            {
-                chatMessage = new ChatMessage(message, player.User, this);
-            }
-            else
-            {
-                throw new PlayerDoesNotExistException("The player does not exist in this game");
-            }
-
-            ChatMessages.Add(chatMessage);
         }
     }
 }
