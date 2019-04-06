@@ -20,7 +20,7 @@ namespace Domain.Test.Domain
         public void Initialize()
         {
             user = new User();
-            game = new Game();
+            game = new Game("", new Guid());
             chatMessage = new ChatMessage(Message, user, game);
         }
 

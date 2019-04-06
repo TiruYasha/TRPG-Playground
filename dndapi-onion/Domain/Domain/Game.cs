@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,9 +7,23 @@ namespace Domain.Domain
 {
     public class Game
     {
-        public Game()
+       
+        public Guid Id { get; private set; }
+        public string Name { get; private set; }
+        public virtual User Owner { get; private set; }
+        public virtual ICollection<GamePlayer> Players { get; private set; }
+        public virtual ICollection<ChatMessage> ChatMessages { get; private set; }
+
+        private Game()
         {
             Players = new List<GamePlayer>();
+            ChatMessages = new List<ChatMessage>();
+        }
+
+        public Game(string name, Guid id)
+        {
+            Name = name;
+            Id = id;
         }
 
         public Game(string name, User owner) : this()
@@ -19,11 +34,6 @@ namespace Domain.Domain
             Id = Guid.NewGuid();
         }
 
-        public Guid Id { get; set; }
-        public string Name { get; set; }
-        public virtual User Owner { get; set; }
-        public virtual ICollection<GamePlayer> Players { get; set; }
-        public virtual ICollection<ChatMessage> ChatMessages { get; set; }
 
         public void Join(User user)
         {
@@ -59,5 +69,24 @@ namespace Domain.Domain
             }
         }
 
+        public void AddChatMessage(string message, Guid userId)
+        {
+            var player = Players.FirstOrDefault(p => p.UserId == userId);
+            ChatMessage chatMessage = null;
+            if (Owner.Id == userId)
+            {
+                chatMessage = new ChatMessage(message, Owner, this);
+            }
+            else if(player != null)
+            {
+                chatMessage = new ChatMessage(message, player.User, this);
+            }
+            else
+            {
+                throw new PlayerDoesNotExistException("The player does not exist in this game");
+            }
+
+            ChatMessages.Add(chatMessage);
+        }
     }
 }

@@ -6,9 +6,14 @@ namespace Domain.Domain.Commands
 {
     public abstract class Command
     {
-        public Guid Id { get; set; }
-        public CommandType Type { get; set; }
-        public string CommandText { get; set; }
+        public Guid Id { get; private set; }
+        public CommandType Type { get; private set; }
+        public string CommandText { get; protected set; }
+
+        private Command()
+        {
+
+        }
 
         public Command(CommandType type, string commandText)
         {

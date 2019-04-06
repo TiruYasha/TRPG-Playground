@@ -7,7 +7,7 @@ namespace Domain.Domain.Commands
 {
     public class NormalDiceRollCommand : Command
     {
-        public int RollResult { get; set; }
+        public int RollResult { get; private set; }
         public NormalDiceRollCommand(string commandText) : base(CommandType.NormallDiceRoll, commandText)
         {
 

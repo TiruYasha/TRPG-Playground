@@ -38,7 +38,7 @@ namespace Service
         public IList<Game> GetAllGames()
         {
             return gameRepository.GetAllGames()
-                .Select(g => new Game { Id =  g.Id, Name = g.Name }).ToList();
+                .Select(g => new Game(g.Name, g.Id)).ToList();
         }
 
         public async Task JoinGameAsync(Guid gameId, Guid userId)

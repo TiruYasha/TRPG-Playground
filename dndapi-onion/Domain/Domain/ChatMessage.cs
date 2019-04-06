@@ -7,14 +7,14 @@ namespace Domain.Domain
 {
     public class ChatMessage
     {
-        public Guid Id { get; set; }
-        public string Message { get; set; }
-        public DateTime CreatedDate { get; set; }
-        public virtual Command Command { get; set; }
-        public virtual User User { get; set; }
-        public virtual Game Game { get; set; }
+        public Guid Id { get; private set; }
+        public string Message { get; private set; }
+        public DateTime CreatedDate { get; private set; }
+        public virtual Command Command { get; private set; }
+        public virtual User User { get; private set; }
+        public virtual Game Game { get; private set; }
 
-        public ChatMessage()
+        private ChatMessage()
         {
             // For EF
         }
