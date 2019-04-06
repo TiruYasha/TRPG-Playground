@@ -13,7 +13,6 @@ namespace Domain.Domain.Commands
 
         public override void Execute()
         {
-            throw new MethodAccessException("This method may not be accessed");
         }
     }
 }

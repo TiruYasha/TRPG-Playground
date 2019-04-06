@@ -1,4 +1,5 @@
 ﻿using Domain.Domain.Commands;
+using Domain.Exceptions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using System;
@@ -24,6 +25,31 @@ namespace Domain.Test.Domain.Commands
             var result = CommandFactory.Create("/r 1d20");
 
             result.ShouldBeOfType<NormalDiceRollCommand>();
+        }
+
+        [TestMethod]
+        public void FactoryOnlySplitsOnFirstWhitespace()
+        {
+            var command = CommandFactory.Create("/r 1 d 1") as NormalDiceRollCommand;
+            command.Execute();
+
+            command.RollResult.ShouldBe(1);
+        }
+
+        [TestMethod]
+        public void FactoryShouldThrowExceptionIfThereAreNoArguments()
+        {
+            var result = Should.Throw<NoArgumentsException>(() => CommandFactory.Create("/asdsa"));
+
+            result.Message.ShouldBe("Please provide arguments");
+        }
+
+        [TestMethod]
+        public void FactoryShouldThrowExceptionIfCommandDoesNotExist()
+        {
+            var result = Should.Throw<CommandDoesNotExistException>(() => CommandFactory.Create("/asdsa sdfasd"));
+
+            result.Message.ShouldBe("The command does not exist");
         }
     }
 }

@@ -3,8 +3,6 @@ using Domain.Domain.Commands;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Domain.Test.Domain
 {
@@ -13,7 +11,7 @@ namespace Domain.Test.Domain
     {
         const string Message = "Hello i am hello";
 
-        private ChatMessage result;
+        private ChatMessage chatMessage;
         private User user;
         private Game game;
     
@@ -23,44 +21,54 @@ namespace Domain.Test.Domain
         {
             user = new User();
             game = new Game();
-            result = new ChatMessage(Message, user, game);
+            chatMessage = new ChatMessage(Message, user, game);
         }
 
         [TestMethod]
         public void ConstructorGeneratesId()
         {
-            result.Id.ShouldNotBe(Guid.Empty);
+            chatMessage.Id.ShouldNotBe(Guid.Empty);
         }
 
         [TestMethod]
         public void ConstructorSetsTheMessage()
         {
-            result.Message.ShouldBe(Message);
+            chatMessage.Message.ShouldBe(Message);
         }
 
         [TestMethod]
         public void ConstructorSetTheCreatedDate()
         {
-            result.CreatedDate.ShouldNotBe(DateTime.MinValue);
+            chatMessage.CreatedDate.ShouldNotBe(DateTime.MinValue);
         }
-
-        [TestMethod]
-        public void ConstructorSetADefaultCommandResult()
-        {
-            result.CommandResult.ShouldNotBeNull();
-            result.CommandResult.ShouldBeOfType<DefaultCommand>();
-        }
-
+      
         [TestMethod]
         public void ConstructorSetsTheUser()
         {
-            result.User.ShouldBe(user);
+            chatMessage.User.ShouldBe(user);
         }
 
         [TestMethod]
         public void ConstructorSetsTheGame()
         {
-            result.Game.ShouldBe(game);
+            chatMessage.Game.ShouldBe(game);
         }
+
+        [TestMethod]
+        public void ConstructorSetsADefaultCommandResult()
+        {
+            chatMessage.Command.ShouldNotBeNull();
+            chatMessage.Command.ShouldBeOfType<DefaultCommand>();
+        }
+
+        [TestMethod]
+        public void ConstructorExecutesCommand()
+        {
+            var message = "/r 1d1";
+            var chatMessage = new ChatMessage(message, user, game);
+
+            (chatMessage.Command as NormalDiceRollCommand).RollResult.ShouldBe(1);
+        }
+
     }
 }

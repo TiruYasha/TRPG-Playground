@@ -30,6 +30,7 @@ namespace Domain.Domain.Commands
 
         private void CheckCommandText()
         {
+            CommandText = CommandText.Replace(" ", "");
             var regexPattern = @"^[1-9][0-9]*[dD][1-9][0-9]*([+-][1-9]{1})?$";
             if(!Regex.IsMatch(CommandText, regexPattern))
             {
