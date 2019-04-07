@@ -19,8 +19,12 @@
     width: 100%;
 }
 
+::ng-deep .mat-tab-body-content {
+    overflow: hidden !important;
+}
+
 .right-nav{
     overflow: hidden;
-    min-width: 340px;
-    max-width: 340px;
+    width: 340px;
+    width: 340px;
 }

@@ -1,5 +1,5 @@
-import { Component, OnInit, EventEmitter, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
-import { ChatService } from '../chat.service';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
+import { ChatService } from '../../services/chat.service';
 import { ActiveGameService } from '../../services/active-game.service';
 import { ReceiveMessageModel } from 'src/app/models/chat/receives/receive-message.model';
 

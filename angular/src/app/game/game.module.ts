@@ -4,7 +4,7 @@ import { GameComponent } from './game.component';
 import { ChatModule } from './chat/chat.module';
 import { FormsModule } from '@angular/forms';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatTabsModule } from '@angular/material/tabs';
+import { MatTabsModule, MatCardModule } from '@angular/material';
 import { JournalModule } from './journal/journal.module';
 
 
@@ -16,7 +16,8 @@ import { JournalModule } from './journal/journal.module';
     FormsModule,
     MatSidenavModule,
     MatTabsModule,
-    JournalModule
+    JournalModule,
+    MatCardModule
   ],
   declarations: [GameComponent]
 })

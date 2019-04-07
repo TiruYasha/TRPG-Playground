@@ -1,6 +1,9 @@
+@import "~src/styles/variables.scss";
+
 mat-card{
     margin-left: 32px;
     margin-right: 32px;
+    background-color: $primary;
 }
 
 .mat-card-avatar img{
@@ -15,3 +18,4 @@ mat-card{
 .dice-result{
     font-size: 40px;
 }
+

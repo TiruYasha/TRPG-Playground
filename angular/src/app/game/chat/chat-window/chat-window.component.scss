@@ -6,7 +6,7 @@
 }
 
 .message-container{
-    height: calc(100% - 78px);
+    height: calc(100% - 60px);
     max-width: 100%;
     overflow-y: auto;
 }
@@ -27,27 +27,19 @@
 
 #message-sender{
     position: absolute;
-    height: 78px;
-    bottom: 0px;
-    width: 100%;
-   
-
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+    height: 30px;
+    bottom: 16px;
+    width: calc(100% - 32px);
     
+    margin:16px;
 }
 
 .message-input{
     width: 100%;
-    padding-top: 16px;
-    padding-left: 16px;
-    padding-right: 16px;
 }
 
 ::ng-deep .message-input .mat-form-field {
     width: 100%;
-    padding-bottom: 16px;
 }
 
 .username{

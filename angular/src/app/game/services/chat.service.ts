@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
 import { Subject } from 'rxjs';
-import { ActiveGameService } from '../services/active-game.service';
+import { ActiveGameService } from './active-game.service';
 import { SendMessageModel } from 'src/app/models/chat/requests/send-message.model';
 import { ReceiveMessageModel } from 'src/app/models/chat/receives/receive-message.model';
 import { CommandResult } from 'src/app/models/chat/receives/command-results/command-result.model';
