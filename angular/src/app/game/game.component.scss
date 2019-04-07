@@ -4,6 +4,7 @@
     bottom: 0;
     left: 0;
     right: 0;
+ 
 }
 
 ::ng-deep .mat-tab-body.mat-tab-body-active{
@@ -14,7 +15,12 @@
     height: 100%;
 }
 
+::ng-deep .mat-tab-label{
+    width: 100%;
+}
+
 .right-nav{
     overflow: hidden;
     min-width: 340px;
+    max-width: 340px;
 }

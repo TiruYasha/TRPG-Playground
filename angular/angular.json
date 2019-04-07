@@ -26,7 +26,8 @@
               {
                 "input": "node_modules/@angular/material/prebuilt-themes/indigo-pink.css"
               },
-              "src/styles.css"
+              "src/styles.scss",
+              "src/styles/variables.scss"
             ],
             "scripts": []
           },
@@ -78,7 +79,8 @@
               {
                 "input": "node_modules/@angular/material/prebuilt-themes/indigo-pink.css"
               },
-              "src/styles.css"
+              "src/styles.scss",
+              "src/styles/variables.scss"
             ],
             "scripts": [],
             "assets": [
@@ -129,5 +131,10 @@
       }
     }
   },
-  "defaultProject": "dnd"
+  "defaultProject": "dnd",
+  "schematics": {
+    "@schematics/angular:component": {
+      "styleext": "scss"
+    }
+  }
 }

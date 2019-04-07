@@ -4,7 +4,7 @@ import { ReceiveMessageModel } from 'src/app/models/chat/receives/receive-messag
 @Component({
   selector: 'trpg-plain-text',
   templateUrl: './plain-text.component.html',
-  styleUrls: ['./plain-text.component.css']
+  styleUrls: ['./plain-text.component.scss']
 })
 export class PlainTextComponent {
   @Input() chatMessage: ReceiveMessageModel;

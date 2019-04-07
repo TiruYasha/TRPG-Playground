@@ -5,7 +5,7 @@ import { NormalDiceRollCommandResult } from 'src/app/models/chat/receives/comman
 @Component({
   selector: 'trpg-normal-roll-result',
   templateUrl: './normal-roll-result.component.html',
-  styleUrls: ['./normal-roll-result.component.css']
+  styleUrls: ['./normal-roll-result.component.scss']
 })
 export class NormalRollResultComponent implements OnInit {
   @Input() chatMessage: ReceiveMessageModel;

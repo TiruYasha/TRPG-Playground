@@ -6,7 +6,7 @@ import { GameService } from '../shared/game.service';
 @Component({
   selector: 'trpg-game',
   templateUrl: './game.component.html',
-  styleUrls: ['./game.component.css']
+  styleUrls: ['./game.component.scss']
 })
 export class GameComponent implements OnInit {
 

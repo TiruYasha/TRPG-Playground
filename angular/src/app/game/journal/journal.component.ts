@@ -7,7 +7,7 @@ import { Journal } from './models/journal.model';
 @Component({
   selector: 'trpg-journal',
   templateUrl: './journal.component.html',
-  styleUrls: ['./journal.component.css']
+  styleUrls: ['./journal.component.scss']
 })
 export class JournalComponent implements OnInit {
   nestedDatasource: JournalItem[] = [];

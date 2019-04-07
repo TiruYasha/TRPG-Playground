@@ -1,0 +1,56 @@
+@import "~src/styles/variables.scss";
+
+#chat-container{
+    height: 100%;
+    width: 100%;
+}
+
+.message-container{
+    height: calc(100% - 78px);
+    max-width: 100%;
+    overflow-y: auto;
+}
+
+::ng-deep .mat-list .mat-list-item .mat-line{
+    word-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+::ng-deep  .mat-list-item{
+    height:initial!important;
+}
+
+.list-item{
+    margin-top: 16px;
+    margin-bottom: 16px; 
+  }
+
+#message-sender{
+    position: absolute;
+    height: 78px;
+    bottom: 0px;
+    width: 100%;
+   
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    
+}
+
+.message-input{
+    width: 100%;
+    padding-top: 16px;
+    padding-left: 16px;
+    padding-right: 16px;
+}
+
+::ng-deep .message-input .mat-form-field {
+    width: 100%;
+    padding-bottom: 16px;
+}
+
+.username{
+    color: $accent; 
+    margin-left: 16px;
+}

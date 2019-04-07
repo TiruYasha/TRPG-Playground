@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'trpg-game-catalog',
   templateUrl: './game-catalog.component.html',
-  styleUrls: ['./game-catalog.component.css']
+  styleUrls: ['./game-catalog.component.scss']
 })
 export class GameCatalogComponent implements OnInit {
   games: Observable<GameCatalogItem[]>;

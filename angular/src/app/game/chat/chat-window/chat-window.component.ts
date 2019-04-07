@@ -6,7 +6,7 @@ import { ReceiveMessageModel } from 'src/app/models/chat/receives/receive-messag
 @Component({
   selector: 'trpg-chat-window',
   templateUrl: './chat-window.component.html',
-  styleUrls: ['./chat-window.component.css']
+  styleUrls: ['./chat-window.component.scss']
 })
 export class ChatWindowComponent implements OnInit, AfterViewChecked {
   @ViewChild('scrollMe') private myScrollContainer: ElementRef;

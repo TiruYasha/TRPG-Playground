@@ -11,11 +11,13 @@
       </div>
     </mat-list>
   </div>
+  <mat-divider></mat-divider>
   <div id="message-sender">
-    <mat-divider></mat-divider>
-    <mat-form-field class="message-input">
-      <input matInput placeholder="Message" (keyup.enter)="sendMessage()" [(ngModel)]="chatMessage" value="">
-    </mat-form-field>
-    <button class="send-button" mat-raised-button (click)="sendMessage()">Send</button>
+    <div class="message-input">
+      <mat-form-field>
+        <input matInput placeholder="Message" (keyup.enter)="sendMessage()" [(ngModel)]="chatMessage" value="">
+        <mat-icon matSuffix>send</mat-icon>
+      </mat-form-field>
+    </div>
   </div>
 </div>

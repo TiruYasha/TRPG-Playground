@@ -4,7 +4,7 @@ import { GameCatalogItem } from 'src/app/models/game-catalog/game-catalog-item.m
 @Component({
   selector: 'trpg-game-catalog-item',
   templateUrl: './game-catalog-item.component.html',
-  styleUrls: ['./game-catalog-item.component.css']
+  styleUrls: ['./game-catalog-item.component.scss']
 })
 export class GameCatalogItemComponent implements OnInit {
   @Input() game: GameCatalogItem;

@@ -167,11 +167,10 @@ namespace Domain.Test.Domain
             game.Join(player2);
 
             // Action
-            await game.AddChatMessageAsync(message, "", player2.Id);
+            await game.AddChatMessageAsync(message, "sdfs", player2.Id);
 
             // Assert
             game.ChatMessages.Count.ShouldBe(1);
-            game.ChatMessages.FirstOrDefault().User.ShouldBe(player2);
         }
 
         [TestMethod]

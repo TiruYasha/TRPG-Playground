@@ -5,7 +5,7 @@ import { CreateGameModel } from 'src/app/models/game-catalog/creategame.model';
 @Component({
   selector: 'trpg-create-game',
   templateUrl: './create-game.component.html',
-  styleUrls: ['./create-game.component.css']
+  styleUrls: ['./create-game.component.scss']
 })
 export class CreateGameComponent implements OnInit {
 
