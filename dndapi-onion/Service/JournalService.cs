@@ -3,8 +3,6 @@ using Domain.RepositoryInterfaces;
 using Domain.RequestModels.Journal;
 using Domain.ServiceInterfaces;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Service
@@ -18,11 +16,13 @@ namespace Service
             this.gameRepository = gameRepository;
         }
 
-        public async Task<JournalItem> AddJournalFolderToGameAsync(AddFolderModel model, Guid userId)
+        public async Task<JournalFolder> AddJournalFolderToGameAsync(AddJournalFolderModel model, Guid userId)
         {
             var game = await gameRepository.GetGameByIdAsync(model.GameId);
 
             var result = await game.AddJournalFolderAsync(model, userId);
+
+            await gameRepository.UpdateGameAsync(game);
 
             return result;
         }

@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Domain.Domain;
 using Domain.Domain.Commands;
+using Domain.Domain.JournalItems;
 using RestApi.Models.Chat;
 using RestApi.Models.Chat.CommandResults;
 using RestApi.Models.Game;
+using RestApi.Models.Journal;
 
 namespace DependencyResolver.MappingProfiles
 {
@@ -20,6 +22,8 @@ namespace DependencyResolver.MappingProfiles
                 .Include<NormalDiceRollCommand, NormalDiceRollCommandResult>();
             CreateMap<DefaultCommand, DefaultCommandResult>();
             CreateMap<NormalDiceRollCommand, NormalDiceRollCommandResult>();
+
+            CreateMap<JournalFolder, AddedJournalFolderModel>();
         }
     }
 }

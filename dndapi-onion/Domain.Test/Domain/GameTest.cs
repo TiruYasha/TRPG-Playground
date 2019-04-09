@@ -205,7 +205,7 @@ namespace Domain.Test.Domain
             };
             var game = new Game("hi", owner);
 
-            var model = new AddFolderModel()
+            var model = new AddJournalFolderModel()
             {
                 GameId = game.Id,
                 Name = "folder",
@@ -230,7 +230,7 @@ namespace Domain.Test.Domain
             };
             var game = new Game("hi", owner);
 
-            var model = new AddFolderModel()
+            var model = new AddJournalFolderModel()
             {
                 GameId = Guid.NewGuid(),
                 Name = "folder",
@@ -254,7 +254,7 @@ namespace Domain.Test.Domain
             };
             var game = new Game("hi", owner);
 
-            var parent = new AddFolderModel()
+            var parent = new AddJournalFolderModel()
             {
                 GameId = game.Id,
                 Name = "parent",
@@ -263,7 +263,7 @@ namespace Domain.Test.Domain
 
             var parentFolder = await game.AddJournalFolderAsync(parent, owner.Id);
 
-            var model = new AddFolderModel()
+            var model = new AddJournalFolderModel()
             {
                 GameId = game.Id,
                 Name = "folder",
@@ -288,7 +288,7 @@ namespace Domain.Test.Domain
             };
             var game = new Game("hi", owner);
 
-            var parent = new AddFolderModel()
+            var parent = new AddJournalFolderModel()
             {
                 GameId = game.Id,
                 Name = "parent",
@@ -297,7 +297,7 @@ namespace Domain.Test.Domain
 
             var parentFolder = await game.AddJournalFolderAsync(parent, owner.Id);
 
-            var parent2 = new AddFolderModel()
+            var parent2 = new AddJournalFolderModel()
             {
                 GameId = game.Id,
                 Name = "folder",
@@ -306,7 +306,7 @@ namespace Domain.Test.Domain
 
             var parentFolder2 = await game.AddJournalFolderAsync(parent2, owner.Id);
 
-            var model = new AddFolderModel()
+            var model = new AddJournalFolderModel()
             {
                 GameId = game.Id,
                 Name = "folder",

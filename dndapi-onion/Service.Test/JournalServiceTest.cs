@@ -31,7 +31,7 @@ namespace Service.Test
         [TestMethod]
         public async Task AddFolderToGameJournal()
         {
-            var model = new AddFolderModel
+            var model = new AddJournalFolderModel
             {
                 GameId = Guid.NewGuid(),
                 Name = "Folder",

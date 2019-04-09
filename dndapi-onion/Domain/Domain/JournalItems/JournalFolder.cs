@@ -7,7 +7,7 @@ namespace Domain.Domain.JournalItems
 {
     public class JournalFolder : JournalItem
     {
-        public ICollection<JournalItem> JournalItems { get; set; }
+        public virtual ICollection<JournalItem> JournalItems { get; set; }
         public JournalFolder() : this("")
         {
            

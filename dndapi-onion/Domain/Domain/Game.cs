@@ -83,7 +83,7 @@ namespace Domain.Domain
             });
         }
 
-        public virtual Task<JournalFolder> AddJournalFolderAsync(AddFolderModel model, Guid userId)
+        public virtual Task<JournalFolder> AddJournalFolderAsync(AddJournalFolderModel model, Guid userId)
         {
             return Task.Run(() =>
             {
@@ -108,7 +108,7 @@ namespace Domain.Domain
             });
         }
 
-        private JournalFolder GetParentFolder(AddFolderModel model)
+        private JournalFolder GetParentFolder(AddJournalFolderModel model)
         {
             var items = JournalItems.Select(s => s as JournalFolder).ToList();
             return GetParentsFolderRecursion(items, model.ParentFolderId);
