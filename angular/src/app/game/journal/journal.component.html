@@ -22,7 +22,7 @@
   </mat-nested-tree-node>
 </mat-tree> -->
 <div class="journal-containter">
-  <trpg-speed-dial-fab [mainIcon]="add" [subIcons]="subIcons"></trpg-speed-dial-fab>
+  <trpg-speed-dial-fab [mainIcon]="add" [subIcons]="subIcons" (clickSubIcon)="subIconClicked($event)"></trpg-speed-dial-fab>
   <!-- <button class="journalbutton" mat-fab color="primary">
     <mat-icon>add</mat-icon>
   </button> -->

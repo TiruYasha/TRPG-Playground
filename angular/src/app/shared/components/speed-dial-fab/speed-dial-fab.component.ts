@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { speedDialFabAnimations } from './speed-dial-fab.animations';
 
 @Component({
@@ -11,7 +11,7 @@ export class SpeedDialFabComponent {
   @Input() mainIcon: string;
   @Input() subIcons: string[];
 
-  @Output() subIconClicked = new EventEmitter<string>();
+  @Output() clickSubIcon = new EventEmitter<string>();
 
   buttons = [];
   isToggled = 'inactive';
@@ -30,5 +30,9 @@ export class SpeedDialFabComponent {
 
   onToggleFab() {
     this.buttons.length ? this.hideItems() : this.showItems();
+  }
+
+  subIconClicked(icon: string) {
+    this.clickSubIcon.emit(icon);
   }
 }

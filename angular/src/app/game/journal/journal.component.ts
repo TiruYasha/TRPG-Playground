@@ -3,6 +3,8 @@ import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { JournalItem } from 'src/app/models/journal/receives/journal-item.model';
 import { JournalService } from './journal.service';
+import { CreateFolderDialogComponent } from './create-folder-dialog/create-folder-dialog.component';
+import { MatDialog } from '@angular/material';
 
 @Component({
   selector: 'trpg-journal',
@@ -16,10 +18,33 @@ export class JournalComponent implements OnInit {
 
   subIcons = ['create_new_folder', 'person_add', 'note_add'];
 
-  constructor(private journalService: JournalService) {
+  constructor(private journalService: JournalService, public dialog: MatDialog) {
   }
 
   ngOnInit() {
     // this.journalService.setup();
+  }
+
+  subIconClicked(icon: string) {
+    if (icon === 'create_new_folder') {
+      this.openCreateNewFolderDialog();
+    }
+  }
+
+  private openCreateNewFolderDialog() {
+    const dialogRef = this.dialog.open(CreateFolderDialogComponent, {
+      width: '250px',
+      data: { name: '' }
+    });
+
+    dialogRef.afterClosed().subscribe(this.createNewFolder);
+  }
+
+  private createNewFolder(folderName) {
+    if (folderName === void 0) {
+      return;
+    }
+
+    
   }
 }
