@@ -13,11 +13,12 @@ import { AccountComponent } from './account/account.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AuthGuard } from './shared/authguard';
 import { GameCatalogModule } from './game-catalog/game-catalog.module';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
     AppComponent,
-    AccountComponent
+    AccountComponent,
   ],
   imports: [
     BrowserModule,
@@ -27,7 +28,8 @@ import { GameCatalogModule } from './game-catalog/game-catalog.module';
     GameModule,
     GameCatalogModule,
     FormsModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    MatIconModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },

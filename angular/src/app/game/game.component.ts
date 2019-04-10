@@ -9,7 +9,8 @@ import { GameService } from '../shared/game.service';
   styleUrls: ['./game.component.scss']
 })
 export class GameComponent implements OnInit {
-
+  isOwner = false;
+  
   constructor(private _activatedRoute: ActivatedRoute, private _activeGameService: ActiveGameService, private gameService: GameService) {
    }
 
@@ -19,8 +20,8 @@ export class GameComponent implements OnInit {
     this._activeGameService.gameId = id;
 
     this.gameService.joinGame(id)
-      .subscribe(() => {
-        console.log("succesfully joined the game");
+      .subscribe((isOwner) => {
+        this.isOwner = isOwner;
       });
   }
 }

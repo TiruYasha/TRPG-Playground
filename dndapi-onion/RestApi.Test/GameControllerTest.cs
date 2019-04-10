@@ -86,7 +86,7 @@ namespace RestApi.Test
             };
 
             jwtReader.Setup(s => s.GetUserId()).Returns(userId);
-            gameService.Setup(s => s.JoinGameAsync(model.GameId, userId)).Returns(Task.CompletedTask).Verifiable();
+            gameService.Setup(s => s.JoinGameAsync(model.GameId, userId)).ReturnsAsync(true).Verifiable();
 
             // Action
             var result = await sut.JoinGameAsync(model);

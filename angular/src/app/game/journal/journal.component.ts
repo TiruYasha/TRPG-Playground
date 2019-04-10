@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
-import { JournalItem } from './models/journal-item.model';
-import { Journal } from './models/journal.model';
+import { JournalItem } from 'src/app/models/journal/receives/journal-item.model';
+import { JournalService } from './journal.service';
 
 @Component({
   selector: 'trpg-journal',
@@ -10,27 +10,16 @@ import { Journal } from './models/journal.model';
   styleUrls: ['./journal.component.scss']
 })
 export class JournalComponent implements OnInit {
-  nestedDatasource: JournalItem[] = [];
+  @Input() isOwner;
 
-  nestedTreeControl: NestedTreeControl<JournalItem>;
-  nestedDataSource: MatTreeNestedDataSource<JournalItem>;
+  journalItems: JournalItem[] = [];
 
-  constructor() {
-    const journalItem: JournalItem = {
-      id: '',
-      type: 2,
-      journalItems: []
-    };
-    const journalItems = [journalItem];
-    this.nestedDatasource = journalItems;
-    this.nestedTreeControl = new NestedTreeControl<JournalItem>(this._getJournalItems);
+  subIcons = ['create_new_folder', 'person_add', 'note_add'];
+
+  constructor(private journalService: JournalService) {
   }
 
   ngOnInit() {
+    // this.journalService.setup();
   }
-
-  hasNestedChild = (_: number, nodeData: JournalItem) => !nodeData.type;
-
-  private _getJournalItems = (node: JournalItem) => node.journalItems;
-
 }

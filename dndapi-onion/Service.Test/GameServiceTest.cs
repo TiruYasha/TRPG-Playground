@@ -53,7 +53,7 @@ namespace Service.Test
         }
 
         [TestMethod]
-        public async Task JoinGameAddsThePlayerToTheGame()
+        public async Task JoinGameAddsThePlayerToTheGameAndReturnsFalse()
         {
             // Arrange
             var userId = new Guid("65a5b497-75b8-4729-9ca7-69152e319380");
@@ -71,14 +71,15 @@ namespace Service.Test
             gameRepository.Setup(s => s.UpdateGameAsync(It.Is<Game>(g => g.Id == game.Id && g.Players.Any(p => p.UserId == userId)))).Returns(Task.CompletedTask).Verifiable();
 
             // Action
-            await sut.JoinGameAsync(game.Id, userId);
+            var result = await sut.JoinGameAsync(game.Id, userId);
 
             // Assert
+            result.ShouldBeFalse();
             gameRepository.VerifyAll();
         }
 
         [TestMethod]
-        public async Task JoinGameDoesNothingWhenThePlayerHasAlreadyJoined()
+        public async Task JoinGameDoesNothingWhenThePlayerHasAlreadyJoinedAndReturnsFalse()
         {
             // Arrange
             var userId = new Guid("65a5b497-75b8-4729-9ca7-69152e319380");
@@ -97,15 +98,16 @@ namespace Service.Test
             await sut.JoinGameAsync(game.Id, userId);
 
             // Action
-            await sut.JoinGameAsync(game.Id, userId);
+            var result = await sut.JoinGameAsync(game.Id, userId);
 
             // Assert
+            result.ShouldBeFalse();
             gameRepository.VerifyAll();
             gameRepository.Verify(s => s.UpdateGameAsync(It.Is<Game>(g => g.Id == game.Id && g.Players.Any(p => p.UserId == userId))), Times.Once);
         }
 
         [TestMethod]
-        public async Task JoinGameDoesNothingWhenTheOwnerHasAlreadyJoined()
+        public async Task JoinGameDoesNothingWhenTheOwnerHasAlreadyJoinedAndReturnsTrue()
         {
             // Arrange
             var userId = new Guid();
@@ -118,13 +120,13 @@ namespace Service.Test
 
             var game = new Game("name", new User());
 
-            userRepository.Setup(s => s.GetUserByIdAsync(userId)).ReturnsAsync(user);
             gameRepository.Setup(s => s.GetGameByIdAsync(game.Id)).ReturnsAsync(game).Verifiable();
 
             // Action
-            await sut.JoinGameAsync(game.Id, userId);
+            var result = await sut.JoinGameAsync(game.Id, userId);
 
             // Assert
+            result.ShouldBeTrue();
             gameRepository.VerifyAll();
             gameRepository.Verify(s => s.UpdateGameAsync(It.Is<Game>(g => g.Id == game.Id && g.Players.Any(p => p.UserId == userId))), Times.Never);
         }

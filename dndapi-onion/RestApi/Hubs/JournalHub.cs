@@ -37,5 +37,11 @@ namespace RestApi.Hubs
 
             await Clients.Caller.SendAsync("AddedJournalFolder", message);
         }
+
+        public async Task AddToGroup(Guid gameId)
+        {
+            //TODO Identity check to see if the player/ownerjoined the game
+            await Groups.AddToGroupAsync(Context.ConnectionId, gameId.ToString());
+        }
     }
 }

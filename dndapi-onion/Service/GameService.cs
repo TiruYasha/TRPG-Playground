@@ -41,20 +41,26 @@ namespace Service
                 .Select(g => new Game(g.Name, g.Id)).ToList();
         }
 
-        public async Task JoinGameAsync(Guid gameId, Guid userId)
+        public async Task<bool> JoinGameAsync(Guid gameId, Guid userId)
         {
-            var user = await userRepository.GetUserByIdAsync(userId);
-
             var game = await gameRepository.GetGameByIdAsync(gameId);
 
-            if (game.HasPlayerJoined(userId) || game.IsOwner(userId))
+            if (game.HasPlayerJoined(userId))
             {
-                return;
+                return false;
             }
+            else if (game.IsOwner(userId))
+            {
+                return true;
+            }
+
+            var user = await userRepository.GetUserByIdAsync(userId);
 
             game.Join(user);
 
             await gameRepository.UpdateGameAsync(game);
+
+            return false;
         }
     }
 }

@@ -63,9 +63,9 @@ namespace RestApi
             {
                 var userId = jwtReader.GetUserId();
 
-                await gameService.JoinGameAsync(model.GameId, userId);
+                var result = await gameService.JoinGameAsync(model.GameId, userId);
 
-                return Ok();
+                return Ok(result);
             }
             catch (Exception ex)
             {

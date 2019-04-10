@@ -14,7 +14,6 @@ import { CommandResult } from 'src/app/models/chat/receives/command-results/comm
 export class ChatService {
   receivedMessage = new Subject();
 
-  private connectionIsEstablished = false;
   private _hubConnection: HubConnection;
 
   constructor(private http: HttpClient, private activeGameService: ActiveGameService) { }
@@ -57,7 +56,6 @@ export class ChatService {
     this._hubConnection
       .start()
       .then(() => {
-        this.connectionIsEstablished = true;
         console.log('Hub connection started');
         this.addToGroup();
       })
