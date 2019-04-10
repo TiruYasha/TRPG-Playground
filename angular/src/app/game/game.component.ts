@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ActiveGameService } from './services/active-game.service';
 import { GameService } from '../shared/game.service';
 
 @Component({
@@ -10,14 +9,15 @@ import { GameService } from '../shared/game.service';
 })
 export class GameComponent implements OnInit {
   isOwner = false;
-  
-  constructor(private _activatedRoute: ActivatedRoute, private _activeGameService: ActiveGameService, private gameService: GameService) {
-   }
+  gameId = '';
+
+  constructor(private _activatedRoute: ActivatedRoute, private gameService: GameService) {
+  }
 
   ngOnInit() {
     const id = this._activatedRoute.snapshot.params['id'];
 
-    this._activeGameService.gameId = id;
+    this.gameId = id;
 
     this.gameService.joinGame(id)
       .subscribe((isOwner) => {

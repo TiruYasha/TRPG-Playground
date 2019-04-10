@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
 import { Subject } from 'rxjs';
-import { ActiveGameService } from '../services/active-game.service';
 import { SendMessageModel } from 'src/app/models/chat/requests/send-message.model';
 import { ReceiveMessageModel } from 'src/app/models/chat/receives/receive-message.model';
 import { CommandResult } from 'src/app/models/chat/receives/command-results/command-result.model';
@@ -14,35 +13,26 @@ import { CommandResult } from 'src/app/models/chat/receives/command-results/comm
 export class ChatService {
   receivedMessage = new Subject();
 
-  private _hubConnection: HubConnection;
+  private hubConnection: HubConnection;
 
-  constructor(private http: HttpClient, private activeGameService: ActiveGameService) { }
+  constructor(private http: HttpClient) { }
 
-  setup() {
+  setup(gameId: string) {
     this.createConnection();
     this.registerOnServerEvents();
-    this.startConnection();
+    this.startConnection(gameId);
   }
 
-  sendMessage(chatMessage: string) {
-    if (chatMessage !== '') {
-
-      const message: SendMessageModel = {
-        customUsername: '',
-        gameId: this.activeGameService.gameId,
-        message: chatMessage
-      };
-
-      this._hubConnection.invoke('SendMessageToGroup', message);
-    }
+  sendMessage(chatMessage: SendMessageModel) {
+    this.hubConnection.invoke('SendMessageToGroup', chatMessage);
   }
 
-  addToGroup(): any {
-    this._hubConnection.invoke('AddToGroup', this.activeGameService.gameId);
+  addToGroup(gameId: string): any {
+    this.hubConnection.invoke('AddToGroup', gameId);
   }
 
   private createConnection() {
-    this._hubConnection = new HubConnectionBuilder()
+    this.hubConnection = new HubConnectionBuilder()
       .withUrl(environment.apiUrl + '/chathub', { accessTokenFactory: this.getAccessToken })
       .build();
   }
@@ -52,12 +42,12 @@ export class ChatService {
     return accessToken;
   }
 
-  private startConnection(): void {
-    this._hubConnection
+  private startConnection(gameId: string): void {
+    this.hubConnection
       .start()
       .then(() => {
         console.log('Hub connection started');
-        this.addToGroup();
+        this.addToGroup(gameId);
       })
       .catch(err => {
         console.log('Error while establishing connection, retrying...', err);
@@ -66,7 +56,7 @@ export class ChatService {
   }
 
   private registerOnServerEvents(): void {
-    this._hubConnection.on('ReceiveMessage', (data: CommandResult) => {
+    this.hubConnection.on('ReceiveMessage', (data: CommandResult) => {
       console.log('received message: ', data);
       this.receivedMessage.next(data);
     });

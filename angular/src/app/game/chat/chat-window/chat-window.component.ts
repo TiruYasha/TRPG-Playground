@@ -1,7 +1,7 @@
-import { Component, OnInit, EventEmitter, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
+import { Component, OnInit, EventEmitter, ViewChild, ElementRef, AfterViewChecked, Input } from '@angular/core';
 import { ChatService } from '../chat.service';
-import { ActiveGameService } from '../../services/active-game.service';
 import { ReceiveMessageModel } from 'src/app/models/chat/receives/receive-message.model';
+import { SendMessageModel } from 'src/app/models/chat/requests/send-message.model';
 
 @Component({
   selector: 'trpg-chat-window',
@@ -10,17 +10,18 @@ import { ReceiveMessageModel } from 'src/app/models/chat/receives/receive-messag
 })
 export class ChatWindowComponent implements OnInit, AfterViewChecked {
   @ViewChild('scrollMe') private myScrollContainer: ElementRef;
+  @Input() gameId: string;
 
   messages: ReceiveMessageModel[] = [];
   chatMessage = '';
   scrolledToBottom = false;
 
-  constructor(private activeGameService: ActiveGameService, private chatService: ChatService) {
+  constructor(private chatService: ChatService) {
   }
 
   ngOnInit() {
-    this.chatService.setup();
-    this.chatService.getAllMessagesForGame(this.activeGameService.gameId).subscribe(data => {
+    this.chatService.setup(this.gameId);
+    this.chatService.getAllMessagesForGame(this.gameId).subscribe(data => {
       console.log(data);
       this.messages = data;
     });
@@ -54,7 +55,17 @@ export class ChatWindowComponent implements OnInit, AfterViewChecked {
   }
 
   sendMessage() {
-    this.chatService.sendMessage(this.chatMessage);
+    if (this.chatMessage === '') {
+      return;
+    }
+
+    const message: SendMessageModel = {
+      customUsername: '',
+      gameId: this.gameId,
+      message: this.chatMessage
+    };
+
+    this.chatService.sendMessage(message);
     this.chatMessage = '';
   }
 }

@@ -4,7 +4,9 @@ import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { JournalItem } from 'src/app/models/journal/receives/journal-item.model';
 import { JournalService } from './journal.service';
 import { CreateFolderDialogComponent } from './create-folder-dialog/create-folder-dialog.component';
-import { MatDialog } from '@angular/material';
+import { MatDialog, getMatFormFieldDuplicatedHintError } from '@angular/material';
+import { AddJournalFolderRequestModel } from 'src/app/models/journal/requests/AddJournalFolderRequest.model';
+import { Guid } from 'src/app/utilities/guid.util';
 
 @Component({
   selector: 'trpg-journal',
@@ -12,7 +14,8 @@ import { MatDialog } from '@angular/material';
   styleUrls: ['./journal.component.scss']
 })
 export class JournalComponent implements OnInit {
-  @Input() isOwner;
+  @Input() isOwner: boolean;
+  @Input() gameId: string;
 
   journalItems: JournalItem[] = [];
 
@@ -22,7 +25,7 @@ export class JournalComponent implements OnInit {
   }
 
   ngOnInit() {
-    // this.journalService.setup();
+    this.journalService.setup(this.gameId);
   }
 
   subIconClicked(icon: string) {
@@ -37,7 +40,7 @@ export class JournalComponent implements OnInit {
       data: { name: '' }
     });
 
-    dialogRef.afterClosed().subscribe(this.createNewFolder);
+    dialogRef.afterClosed().subscribe((folderName) => this.createNewFolder(folderName));
   }
 
   private createNewFolder(folderName) {
@@ -45,6 +48,12 @@ export class JournalComponent implements OnInit {
       return;
     }
 
-    
+    const folderRequest: AddJournalFolderRequestModel =  {
+      name: folderName,
+      gameId: this.gameId,
+      parentFolder: Guid.getEmptyGuid()
+    };
+
+    this.journalService.addFolderToGame(folderRequest);
   }
 }

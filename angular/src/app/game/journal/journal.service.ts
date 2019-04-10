@@ -1,9 +1,9 @@
 import { Subject } from 'rxjs';
 import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
 import { HttpClient } from '@angular/common/http';
-import { ActiveGameService } from '../services/active-game.service';
 import { environment } from 'src/environments/environment';
 import { Injectable } from '@angular/core';
+import { AddJournalFolderRequestModel } from 'src/app/models/journal/requests/AddJournalFolderRequest.model';
 
 @Injectable({
     providedIn: 'root'
@@ -11,31 +11,35 @@ import { Injectable } from '@angular/core';
 export class JournalService {
     AddedJournalFolder = new Subject();
 
-    private _hubConnection: HubConnection;
+    private hubConnection: HubConnection;
 
-    constructor(private http: HttpClient, private activeGameService: ActiveGameService) { }
+    constructor(private http: HttpClient) { }
 
-    setup() {
+    setup(gameId: string) {
         this.createConnection();
         this.registerOnServerEvents();
-        this.startConnection();
+        this.startConnection(gameId);
     }
 
-    addToGroup(): any {
-        this._hubConnection.invoke('AddToGroup', this.activeGameService.gameId);
+    addToGroup(gameId: string): any {
+        this.hubConnection.invoke('AddToGroup', gameId);
+    }
+
+    addFolderToGame(model: AddJournalFolderRequestModel) {
+        this.hubConnection.invoke('AddJournalFolderAsync', model);
     }
 
     private createConnection() {
-        this._hubConnection = new HubConnectionBuilder()
-            .withUrl(environment.apiUrl + '/chathub', { accessTokenFactory: this.getAccessToken })
+        this.hubConnection = new HubConnectionBuilder()
+            .withUrl(environment.apiUrl + '/journalhub', { accessTokenFactory: this.getAccessToken })
             .build();
     }
 
-    private startConnection(): void {
-        this._hubConnection
+    private startConnection(gameId: string): void {
+        this.hubConnection
             .start()
             .then(() => {
-                this.addToGroup();
+                this.addToGroup(gameId);
             })
             .catch(err => {
                 console.log('Error while establishing connection, retrying...', err);
@@ -49,11 +53,10 @@ export class JournalService {
     }
 
     private registerOnServerEvents(): void {
-        //   this._hubConnection.on('ReceiveMessage', (data: CommandResult) => {
-        //     console.log('received message: ', data);
-        //     this.receivedMessage.next(data);
-        //   });
+        // TODO change any!!!
+        this.hubConnection.on('AddedJournalFolder', (data: any) => {
+            console.log('received message: ', data);
+
+        });
     }
-
-
 }
