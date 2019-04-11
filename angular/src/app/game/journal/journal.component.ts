@@ -45,7 +45,10 @@ export class JournalComponent implements OnInit {
     this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener)
     const item = new JournalFolder();
     item.name = 'testing';
-    this.journalItems.push(item);
+
+    for (let i = 0; i < 50; i++) {
+      this.journalItems.push(item);
+    }
 
     this.dataSource.data = this.journalItems;
   }
