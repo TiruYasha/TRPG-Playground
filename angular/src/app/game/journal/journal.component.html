@@ -1,29 +1,23 @@
-<!-- <mat-tree [dataSource]="nestedDataSource" [treeControl]="nestedTreeControl">
-  <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
-    <li class="mat-tree-node">
-      <button mat-icon-button disabled></button>
-      {{node.filename}}: {{node.type}}
-    </li>
-  </mat-tree-node>
-  <mat-nested-tree-node *matTreeNodeDef="let node; when: hasNestedChild">
-    <li>
-      <div class="mat-tree-node">
-        <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.filename">
-          <mat-icon class="mat-icon-rtl-mirror">
-            {{nestedTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-          </mat-icon>
-        </button>
-        {{node.filename}}
-      </div>
-      <ul [class.example-tree-invisible]="!nestedTreeControl.isExpanded(node)">
-        <ng-container matTreeNodeOutlet></ng-container>
-      </ul>
-    </li>
-  </mat-nested-tree-node>
-</mat-tree> -->
+
 <div class="journal-containter">
+    <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+        <!-- This is the tree node template for leaf nodes -->
+        <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+          <!-- use a disabled button to provide padding for tree leaf -->
+          <button mat-icon-button disabled></button>
+          {{node.item.name}}
+        </mat-tree-node>
+        <!-- This is the tree node template for expandable nodes -->
+        <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
+          <button mat-icon-button matTreeNodeToggle
+                  [attr.aria-label]="'toggle ' + node.item.name">
+            <mat-icon class="mat-icon-rtl-mirror">
+              {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+            </mat-icon>
+          </button>
+          <trpg-journal-node class="node-container" [journalNode]="node"></trpg-journal-node>
+        </mat-tree-node>
+      </mat-tree>
+
   <trpg-speed-dial-fab [mainIcon]="add" [subIcons]="subIcons" (clickSubIcon)="subIconClicked($event)"></trpg-speed-dial-fab>
-  <!-- <button class="journalbutton" mat-fab color="primary">
-    <mat-icon>add</mat-icon>
-  </button> -->
 </div>

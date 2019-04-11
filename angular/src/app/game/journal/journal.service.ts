@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Injectable } from '@angular/core';
 import { AddJournalFolderRequestModel } from 'src/app/models/journal/requests/AddJournalFolderRequest.model';
+import { AddedJournalFolderModel } from 'src/app/models/journal/receives/added-journal-folder.model';
 
 @Injectable({
     providedIn: 'root'
@@ -54,9 +55,9 @@ export class JournalService {
 
     private registerOnServerEvents(): void {
         // TODO change any!!!
-        this.hubConnection.on('AddedJournalFolder', (data: any) => {
+        this.hubConnection.on('AddedJournalFolder', (data: AddedJournalFolderModel) => {
             console.log('received message: ', data);
-
+            this.AddedJournalFolder.next(data);
         });
     }
 }

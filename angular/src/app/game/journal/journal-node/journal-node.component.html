@@ -1,0 +1,13 @@
+<mat-menu #appMenu="matMenu">
+  <button mat-menu-item>Settings</button>
+  <button mat-menu-item>Help</button>
+</mat-menu>
+
+<div class="node-container" (contextmenu)="triggerMenu($event)" #trigger>
+  {{journalNode.item.name}}
+  <div #menuButton style="position: absolute">
+    <button mat-button [matMenuTriggerFor]="appMenu" style="display: ''">
+
+    </button>
+  </div>
+</div>
