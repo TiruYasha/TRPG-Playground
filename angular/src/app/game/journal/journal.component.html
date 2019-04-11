@@ -15,7 +15,7 @@
               {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
             </mat-icon>
           </button>
-          <trpg-journal-node class="node-container" [journalNode]="node"></trpg-journal-node>
+          <trpg-journal-node class="node-container" [journalNode]="node" (addJournalFolder)="addJournalFolder($event)"></trpg-journal-node>
         </mat-tree-node>
       </mat-tree>
 

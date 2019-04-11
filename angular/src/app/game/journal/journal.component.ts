@@ -46,7 +46,7 @@ export class JournalComponent implements OnInit {
     const item = new JournalFolder();
     item.name = 'testing';
 
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 10; i++) {
       this.journalItems.push(item);
     }
 
@@ -72,6 +72,14 @@ export class JournalComponent implements OnInit {
 
     this.journalItems.push(folder);
     this.dataSource.data = this.journalItems;
+  }
+
+  addJournalFolder(parentFolder: JournalFolder) {
+    // const item = new JournalFolder();
+    // item.name = 'testing';
+    // parentFolder.journalItems.push(item);
+
+    // this.dataSource.data = this.journalItems;
   }
 
   private openCreateNewFolderDialog() {
