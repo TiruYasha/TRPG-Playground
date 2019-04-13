@@ -56,7 +56,7 @@ export class JournalService {
     }
 
     private registerOnServerEvents(): void {
-        
+
         this.hubConnection.on('AddedJournalFolder', (data: AddedJournalFolderModel) => {
             this.AddedJournalFolder.next(data);
         });
