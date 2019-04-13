@@ -4,10 +4,13 @@
     bottom: 0;
     left: 0;
     right: 0;
- 
 }
 
 ::ng-deep .mat-tab-body.mat-tab-body-active{
+    overflow: hidden !important;
+}
+
+::ng-deep .mat-tab-body-content{
     overflow: hidden !important;
 }
 

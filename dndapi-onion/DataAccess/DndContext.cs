@@ -1,5 +1,6 @@
 ﻿using Domain.Domain;
 using Domain.Domain.Commands;
+using Domain.Domain.JournalItems;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -13,6 +14,8 @@ namespace DataAccess
         public DbSet<DefaultCommand> DefaultCommands { get; set; }
         public DbSet<NormalDiceRollCommand> NormalDiceRollCommands { get; set; }
         public DbSet<Command> Commands { get; set; } 
+        public DbSet<JournalFolder> JournalFolders { get; set; }
+        public DbSet<JournalItem> JournalItems { get; set; }
 
         public DndContext(DbContextOptions<DndContext> options) : base(options)
         {

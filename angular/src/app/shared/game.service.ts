@@ -12,14 +12,13 @@ export class GameService {
   constructor(private http: HttpClient) { }
 
   createGame(game: CreateGameModel): Observable<any> {
-    console.log('game', game);
     return this.http.post(environment.apiUrl + '/game/create', game);
   }
 
-  joinGame(id: string) {
+  joinGame(id: string): Observable<boolean> {
     const game = new Game();
     game.id = id;
-    return this.http.put(environment.apiUrl + '/game/join', {gameId: id});
+    return this.http.put<boolean>(environment.apiUrl + '/game/join', {gameId: id});
   }
 
   getGames() {

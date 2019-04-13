@@ -1,5 +1,7 @@
 ﻿using Domain.Domain;
+using Domain.Domain.JournalItems;
 using Domain.Exceptions;
+using Domain.RequestModels.Journal;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using System;
@@ -31,7 +33,7 @@ namespace Domain.Test.Domain
             game.Name.ShouldBe(name);
             game.Owner.ShouldBe(owner);
             game.Id.ToString().ShouldNotBe("00000000-0000-0000-0000-000000000000");
-            
+
         }
 
         [TestMethod]
@@ -68,7 +70,7 @@ namespace Domain.Test.Domain
             // Arrange
             string name = "test";
             User owner = null;
-            
+
             // Action
             var result = Should.Throw<ArgumentException>(() => new Game(name, owner));
 
@@ -121,7 +123,7 @@ namespace Domain.Test.Domain
                 Id = new Guid()
             };
             var game = new Game("testing", owner);
-            
+
             // Action
             var ex = Should.Throw<ArgumentException>(() => game.Join(owner));
 
@@ -191,6 +193,133 @@ namespace Domain.Test.Domain
 
             // Assert
             result.Message.ShouldBe("The player does not exist in this game");
+        }
+
+        [TestMethod]
+        public async Task AddJournalFolderAsyncAddsTheFolder()
+        {
+            // Arrange
+            var owner = new User()
+            {
+                Id = Guid.NewGuid()
+            };
+            var game = new Game("hi", owner);
+
+            var model = new AddJournalFolderModel()
+            {
+                GameId = game.Id,
+                Name = "folder",
+                ParentFolderId = Guid.Empty
+            };
+
+            // Action
+            var result = await game.AddJournalFolderAsync(model, owner.Id);
+
+            // Assert
+            result.Name.ShouldBe(model.Name);
+            game.JournalItems.Count.ShouldBe(1);
+        }
+
+        [TestMethod]
+        public async Task AddJournalFolderAsyncThrowsExceptionIfItIsNotTheOwner()
+        {
+            // Arrange
+            var owner = new User()
+            {
+                Id = Guid.Empty
+            };
+            var game = new Game("hi", owner);
+
+            var model = new AddJournalFolderModel()
+            {
+                GameId = Guid.NewGuid(),
+                Name = "folder",
+                ParentFolderId = Guid.Empty
+            };
+
+            // Action
+            var result = await Should.ThrowAsync<PermissionException>(() => game.AddJournalFolderAsync(model, model.GameId));
+
+            // Assert
+            result.Message.ShouldBe("This is an illegal action! It is only possible for gamemasters to add journal items.");
+        }
+
+        [TestMethod]
+        public async Task AddJournalFolderAsyncAddsTheFolderToParent()
+        {
+            // Arrange
+            var owner = new User()
+            {
+                Id = Guid.NewGuid()
+            };
+            var game = new Game("hi", owner);
+
+            var parent = new AddJournalFolderModel()
+            {
+                GameId = game.Id,
+                Name = "parent",
+                ParentFolderId = Guid.Empty
+            };
+
+            var parentFolder = await game.AddJournalFolderAsync(parent, owner.Id);
+
+            var model = new AddJournalFolderModel()
+            {
+                GameId = game.Id,
+                Name = "folder",
+                ParentFolderId = parentFolder.Id
+            };
+
+            // Action
+            await game.AddJournalFolderAsync(model, owner.Id);
+            var result = game.JournalItems.FirstOrDefault() as JournalFolder;
+
+            // Assert
+            result.JournalItems.Count.ShouldBe(1);
+        }
+
+        [TestMethod]
+        public async Task AddJournalFolderAsyncAddsTheFolderToNestedParent()
+        {
+            // Arrange
+            var owner = new User()
+            {
+                Id = Guid.NewGuid()
+            };
+            var game = new Game("hi", owner);
+
+            var parent = new AddJournalFolderModel()
+            {
+                GameId = game.Id,
+                Name = "parent",
+                ParentFolderId = Guid.Empty
+            };
+
+            var parentFolder = await game.AddJournalFolderAsync(parent, owner.Id);
+
+            var parent2 = new AddJournalFolderModel()
+            {
+                GameId = game.Id,
+                Name = "folder",
+                ParentFolderId = parentFolder.Id
+            };
+
+            var parentFolder2 = await game.AddJournalFolderAsync(parent2, owner.Id);
+
+            var model = new AddJournalFolderModel()
+            {
+                GameId = game.Id,
+                Name = "folder",
+                ParentFolderId = parentFolder2.Id
+            };
+
+            // Action
+            await game.AddJournalFolderAsync(model, owner.Id);
+            var parentResult1 = game.JournalItems.FirstOrDefault() as JournalFolder;
+            var parentResult2 = parentResult1.JournalItems.FirstOrDefault() as JournalFolder;
+
+            // Assert
+            parentResult2.JournalItems.Count.ShouldBe(1);
         }
     }
 }

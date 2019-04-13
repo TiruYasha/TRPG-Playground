@@ -1,4 +1,6 @@
-﻿using Domain.Exceptions;
+﻿using Domain.Domain.JournalItems;
+using Domain.Exceptions;
+using Domain.RequestModels.Journal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,11 +15,13 @@ namespace Domain.Domain
         public virtual User Owner { get; private set; }
         public virtual ICollection<GamePlayer> Players { get; private set; }
         public virtual ICollection<ChatMessage> ChatMessages { get; private set; }
+        public virtual ICollection<JournalItem> JournalItems { get; private set; }
 
         public Game()
         {
             Players = new List<GamePlayer>();
             ChatMessages = new List<ChatMessage>();
+            JournalItems = new List<JournalItem>();
         }
 
         public Game(string name, Guid id)
@@ -77,6 +81,64 @@ namespace Domain.Domain
                 ChatMessages.Add(chatMessage);
                 return chatMessage;
             });
+        }
+
+        public virtual Task<JournalFolder> AddJournalFolderAsync(AddJournalFolderModel model, Guid userId)
+        {
+            return Task.Run(() =>
+            {
+                if (Owner.Id != userId)
+                {
+                    throw new PermissionException("This is an illegal action! It is only possible for gamemasters to add journal items.");
+                }
+
+                var folder = new JournalFolder(model.Name);
+                var parent = GetParentFolder(model);
+
+                if (parent != null)
+                {
+                    parent.AddJournalItem(folder);
+                }
+                else
+                {
+                    JournalItems.Add(folder);
+                }
+
+                return folder;
+            });
+        }
+
+        private JournalFolder GetParentFolder(AddJournalFolderModel model)
+        {
+            var items = JournalItems.Select(s => s as JournalFolder).ToList();
+            return GetParentsFolderRecursion(items, model.ParentFolderId);
+        }
+
+        private JournalFolder GetParentsFolderRecursion(ICollection<JournalFolder> folders, Guid parentId)
+        {
+            if (folders == null)
+            {
+                return null;
+            }
+
+            var folder = folders.FirstOrDefault(f => f.Id == parentId);
+
+            if (folder != null)
+                return folder;
+
+            foreach (var item in folders)
+            {
+                var items = GetJournalFoldersFromJournalItems(item.JournalItems);
+
+                return GetParentsFolderRecursion(items, parentId);
+            }
+
+            return null;
+        }
+
+        private List<JournalFolder> GetJournalFoldersFromJournalItems(ICollection<JournalItem> journalItems)
+        {
+            return journalItems.Where(j => j.GetType() == typeof(JournalFolder)).Select(s => s as JournalFolder).ToList();
         }
 
         private void CheckParameters(string name, User owner)

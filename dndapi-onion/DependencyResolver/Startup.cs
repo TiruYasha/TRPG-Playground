@@ -96,7 +96,7 @@ namespace DependencyResolver
                          // If the request is for our hub...
                          var path = context.HttpContext.Request.Path;
                          if (!string.IsNullOrEmpty(accessToken) &&
-                             (path.StartsWithSegments("/api/chathub")))
+                             (path.StartsWithSegments("/api/chathub") || path.StartsWithSegments("/api/journalhub")))
                          {
                              // Read the token out of the query string
                              context.Token = accessToken;
@@ -132,6 +132,7 @@ namespace DependencyResolver
             services.AddTransient<IGameRepository, GameRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IChatService, ChatService>();
+            services.AddTransient<IJournalService, JournalService>();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
@@ -159,13 +160,13 @@ namespace DependencyResolver
 
             app.UseCors("AllowAll");
 
-
             app.UseHttpsRedirection();
 
             app.UseAuthentication();
             app.UseSignalR(routes =>
             {
                 routes.MapHub<ChatHub>("/api/chatHub");
+                routes.MapHub<JournalHub>("/api/journalHub");
             });
             app.UseMvc();
         }

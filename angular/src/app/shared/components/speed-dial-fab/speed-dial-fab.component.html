@@ -1,0 +1,10 @@
+<div class="fab-container">
+  <button mat-fab class="fab-toggler" (click)="onToggleFab()">
+    <mat-icon class="material-icons" [@fabToggler]="{value: isToggled}">add</mat-icon>
+  </button>
+  <div [@speedDialStagger]="buttons.length">
+    <button *ngFor="let icon of buttons" (click)="subIconClicked(icon)" mat-mini-fab class="fab-secondary" color="secondary">
+      <mat-icon class="material-icons">{{icon}}</mat-icon>
+    </button>
+  </div>
+</div>

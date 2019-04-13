@@ -2,10 +2,10 @@
     <mat-sidenav opened class="right-nav" mode="side" position="end">
         <mat-tab-group>
             <mat-tab label="Chat">
-                <trpg-chat-window></trpg-chat-window>
+                <trpg-chat-window [gameId]="gameId"></trpg-chat-window>
             </mat-tab>
             <mat-tab label="Journal">
-                <!-- <app-journal></app-journal> -->
+                <trpg-journal [isOwner]="isOwner" [gameId]="gameId"></trpg-journal>
             </mat-tab>
         </mat-tab-group>
     </mat-sidenav>
