@@ -6,6 +6,7 @@ using RestApi.Models.Chat;
 using RestApi.Models.Chat.CommandResults;
 using RestApi.Models.Game;
 using RestApi.Models.Journal;
+using RestApi.Models.Journal.JournalItems;
 
 namespace DependencyResolver.MappingProfiles
 {
@@ -24,6 +25,11 @@ namespace DependencyResolver.MappingProfiles
             CreateMap<NormalDiceRollCommand, NormalDiceRollCommandResult>();
 
             CreateMap<JournalFolder, AddedJournalFolderModel>();
+
+            CreateMap<JournalItem, JournalItemModel>()
+                .Include<JournalFolder, JournalFolderModel>();
+
+            CreateMap<JournalFolder, JournalFolderModel>();
         }
     }
 }

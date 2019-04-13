@@ -29,11 +29,13 @@ namespace RestApi.Hubs
 
         public async Task AddJournalFolderAsync(AddJournalFolderModel model)
         {
+            //TODO Identity check to see if the player/ownerjoined the game
             var userId = jwtReader.GetUserId();
 
             var journalFolder = await journalService.AddJournalFolderToGameAsync(model, userId);
 
             var message = mapper.Map<JournalFolder, AddedJournalFolderModel>(journalFolder);
+            message.ParentId = model.ParentFolderId;
 
             await Clients.Caller.SendAsync("AddedJournalFolder", message);
         }
@@ -41,7 +43,11 @@ namespace RestApi.Hubs
         public async Task AddToGroup(Guid gameId)
         {
             //TODO Identity check to see if the player/ownerjoined the game
+            var result = journalService.GetAllJournalItemsAsync(gameId);
+
             await Groups.AddToGroupAsync(Context.ConnectionId, gameId.ToString());
+
+            await Clients.Caller.SendAsync("AddedToGroup", await result);
         }
     }
 }

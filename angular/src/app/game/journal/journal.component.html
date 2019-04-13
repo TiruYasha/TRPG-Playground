@@ -19,7 +19,7 @@
                   {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
                 </mat-icon>
               </button>
-              <trpg-journal-node class="node-container" [journalNode]="node" (addJournalFolder)="addJournalFolder($event)"></trpg-journal-node>
+              <trpg-journal-node class="node-container" [journalNode]="node" (addJournalFolder)="addJournalFolderToParent($event)"></trpg-journal-node>
             </div>
             <ul [class.invisible]="!treeControl.isExpanded(node)">
               <ng-container matTreeNodeOutlet></ng-container>
@@ -28,5 +28,5 @@
         </mat-nested-tree-node>
       </mat-tree>
 
-  <trpg-speed-dial-fab [mainIcon]="add" [subIcons]="subIcons" (clickSubIcon)="subIconClicked($event)"></trpg-speed-dial-fab>
+  <trpg-speed-dial-fab [mainIcon]="'add'" [subIcons]="subIcons" (clickSubIcon)="subIconClicked($event)"></trpg-speed-dial-fab>
 </div>

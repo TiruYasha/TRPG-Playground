@@ -1,5 +1,5 @@
 export class AddJournalFolderRequestModel {
     name: string;
-    parentFolder: string;
+    parentFolderId: string;
     gameId: string;
 }

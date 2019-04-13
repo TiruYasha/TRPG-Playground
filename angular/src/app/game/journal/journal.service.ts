@@ -5,12 +5,14 @@ import { environment } from 'src/environments/environment';
 import { Injectable } from '@angular/core';
 import { AddJournalFolderRequestModel } from 'src/app/models/journal/requests/AddJournalFolderRequest.model';
 import { AddedJournalFolderModel } from 'src/app/models/journal/receives/added-journal-folder.model';
+import { JournalItem } from 'src/app/models/journal/journalitems/journal-item.model';
 
 @Injectable({
     providedIn: 'root'
 })
 export class JournalService {
     AddedJournalFolder = new Subject();
+    AddedToGroup = new Subject();
 
     private hubConnection: HubConnection;
 
@@ -54,10 +56,14 @@ export class JournalService {
     }
 
     private registerOnServerEvents(): void {
-        // TODO change any!!!
+        
         this.hubConnection.on('AddedJournalFolder', (data: AddedJournalFolderModel) => {
-            console.log('received message: ', data);
             this.AddedJournalFolder.next(data);
+        });
+
+        this.hubConnection.on('AddedToGroup', (data: JournalItem[]) => {
+            console.log('addedtoGroup', data);
+            this.AddedToGroup.next(data);
         });
     }
 }

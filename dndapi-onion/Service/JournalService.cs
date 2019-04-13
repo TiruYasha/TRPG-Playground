@@ -3,6 +3,7 @@ using Domain.RepositoryInterfaces;
 using Domain.RequestModels.Journal;
 using Domain.ServiceInterfaces;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Service
@@ -25,6 +26,13 @@ namespace Service
             await gameRepository.UpdateGameAsync(game);
 
             return result;
+        }
+
+        public async Task<ICollection<JournalItem>> GetAllJournalItemsAsync(Guid gameId)
+        {
+            var game = await gameRepository.GetGameByIdAsync(gameId);
+
+            return game.JournalItems;
         }
     }
 }
