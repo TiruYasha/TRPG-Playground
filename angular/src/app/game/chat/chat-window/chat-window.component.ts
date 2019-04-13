@@ -1,7 +1,7 @@
 import { Component, OnInit, EventEmitter, ViewChild, ElementRef, AfterViewChecked, Input } from '@angular/core';
-import { ChatService } from '../chat.service';
 import { ReceiveMessageModel } from 'src/app/models/chat/receives/receive-message.model';
 import { SendMessageModel } from 'src/app/models/chat/requests/send-message.model';
+import { ChatService } from '../../services/chat.service';
 
 @Component({
   selector: 'trpg-chat-window',

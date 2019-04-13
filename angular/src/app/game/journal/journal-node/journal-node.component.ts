@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, ViewChild, ElementRef, ViewChildren, Output, EventEmitter } from '@angular/core';
-import { JournalNode } from 'src/app/models/journal/journal-node.model';
 import { MatMenuTrigger } from '@angular/material';
 import { JournalFolder } from 'src/app/models/journal/journalitems/journal-folder.model';
+import { JournalItem } from 'src/app/models/journal/journalitems/journal-item.model';
 
 @Component({
   selector: 'trpg-journal-node',
@@ -9,7 +9,7 @@ import { JournalFolder } from 'src/app/models/journal/journalitems/journal-folde
   styleUrls: ['./journal-node.component.scss']
 })
 export class JournalNodeComponent {
-  @Input() journalNode: JournalNode;
+  @Input() journalNode: JournalItem;
   @Output() addJournalFolder = new EventEmitter<JournalFolder>();
 
   @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
@@ -28,6 +28,6 @@ export class JournalNodeComponent {
   }
 
   addFolder() {
-    this.addJournalFolder.emit(this.journalNode.item as JournalFolder);
+    this.addJournalFolder.emit(this.journalNode as JournalFolder);
   }
 }

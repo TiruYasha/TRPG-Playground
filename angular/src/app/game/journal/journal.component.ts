@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { FlatTreeControl } from '@angular/cdk/tree';
-import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
+import { FlatTreeControl, NestedTreeControl } from '@angular/cdk/tree';
+import { MatTreeFlatDataSource, MatTreeFlattener, MatTreeNestedDataSource } from '@angular/material/tree';
 import { JournalItem } from 'src/app/models/journal/journalitems/journal-item.model';
 import { JournalService } from './journal.service';
 import { CreateFolderDialogComponent } from './create-folder-dialog/create-folder-dialog.component';
@@ -9,7 +9,9 @@ import { AddJournalFolderRequestModel } from 'src/app/models/journal/requests/Ad
 import { Guid } from 'src/app/utilities/guid.util';
 import { AddedJournalFolderModel } from 'src/app/models/journal/receives/added-journal-folder.model';
 import { JournalFolder } from 'src/app/models/journal/journalitems/journal-folder.model';
-import { JournalNode } from '../../models/journal/journal-node.model';
+
+type getChildren = (item: any) => any[];
+type compare = (id: any, item: any) => boolean;
 
 @Component({
   selector: 'trpg-journal',
@@ -24,32 +26,21 @@ export class JournalComponent implements OnInit {
 
   subIcons = ['create_new_folder', 'person_add', 'note_add'];
 
-  treeControl = new FlatTreeControl<JournalNode>(
-    node => node.level, node => node.expandable
-  );
+  treeControl = new NestedTreeControl<JournalItem>((node: JournalFolder) => node.journalItems);
+  dataSource = new MatTreeNestedDataSource<JournalItem>();
 
-  treeFlattener: MatTreeFlattener<JournalItem, JournalNode>;
-
-  dataSource: MatTreeFlatDataSource<JournalItem, JournalNode>;
-
-  hasChild = (_: number, node: JournalNode) => node.expandable;
+  hasChild = (_: number, node: JournalFolder) => !!node.journalItems;
 
   constructor(private journalService: JournalService, public dialog: MatDialog) {
-    this.treeFlattener = new MatTreeFlattener(
-      this.transformer,
-      node => node.level,
-      node => node.expandable,
-      node => (<JournalFolder>node).journalItems
-    );
+    const journalItem = new JournalFolder();
+    journalItem.id = 'dsfsd';
+    journalItem.name = 'dsfdasf';
+    const nested = new JournalFolder();
+    nested.id = 'sadasd';
+    nested.name = 'dsfasdfasd';
+    journalItem.journalItems.push(nested);
 
-    this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener)
-    const item = new JournalFolder();
-    item.name = 'testing';
-
-    for (let i = 0; i < 10; i++) {
-      this.journalItems.push(item);
-    }
-
+    this.journalItems.push(journalItem);
     this.dataSource.data = this.journalItems;
   }
 
@@ -71,16 +62,83 @@ export class JournalComponent implements OnInit {
     folder.id = model.id;
 
     this.journalItems.push(folder);
-    this.dataSource.data = this.journalItems;
   }
 
   addJournalFolder(parentFolder: JournalFolder) {
-    // const item = new JournalFolder();
-    // item.name = 'testing';
-    // parentFolder.journalItems.push(item);
+    const item = new JournalFolder();
+    item.name = 'testing';
 
-    // this.dataSource.data = this.journalItems;
+    const child = this.findChild(
+      parentFolder.id,
+      this.journalItems,
+      (item: JournalItem) => (item as JournalFolder).journalItems,
+      (id: string, item: JournalItem) => id === item.id) as JournalFolder;
+
+    child.journalItems.push(item);
+
+    this.refreshDataSource();
   }
+
+  private refreshDataSource() {
+    this.dataSource.data = null;
+    this.dataSource.data = this.journalItems;
+  }
+
+  private findChild<ID, ITEM>(id: ID, items: ITEM[], getChildren: getChildren, compare: compare): ITEM {
+    for (let item of items) {
+      compare(id, item);
+      if (compare(id, item)) {
+        return item;
+      }
+
+      const child = this.findChildImpl(id, item, getChildren, compare);
+
+      if (child) {
+        return child;
+      }
+    }
+
+    return null;
+  }
+
+  private findChildImpl<ID, ITEM>(id: ID, root: ITEM, getChildren: getChildren, compare: compare): ITEM {
+    const stack: ITEM[] = []
+    let node: ITEM, ii;
+    stack.push(root);
+
+    while (stack.length > 0) {
+      node = stack.pop();
+      const children = getChildren(node);
+      if (compare(id, node)) {
+        return node;
+      } else if (children && children.length) {
+        for (ii = 0; ii < children.length; ii += 1) {
+          stack.push(children[ii]);
+        }
+      }
+    }
+
+    return null;
+  }
+
+  // private findChildImpl(root: JournalFolder, id: string) {
+  //   const stack: JournalFolder[] = []
+  //   let node: JournalFolder, ii;
+  //   stack.push(root);
+
+  //   while (stack.length > 0) {
+  //     node = stack.pop();
+  //     if (node.id === id) {
+  //       return node;
+  //     } else if (node.journalItems && node.journalItems.length) {
+  //       for (ii = 0; ii < node.journalItems.length; ii += 1) {
+  //         stack.push(node.journalItems[ii] as JournalFolder);
+  //       }
+  //     }
+  //   }
+
+  //   return null;
+  // }
 
   private openCreateNewFolderDialog() {
     const dialogRef = this.dialog.open(CreateFolderDialogComponent, {
@@ -103,15 +161,5 @@ export class JournalComponent implements OnInit {
     };
 
     this.journalService.addFolderToGame(folderRequest);
-  }
-
-  private transformer = (node: JournalItem, level: number): JournalNode => {
-    const journalFolder = node as JournalFolder;
-
-    return {
-      expandable: !!journalFolder,
-      item: node,
-      level: level
-    };
   }
 }

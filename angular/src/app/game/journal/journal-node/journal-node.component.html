@@ -4,7 +4,7 @@
 </mat-menu>
 
 <div class="node-container" (contextmenu)="triggerMenu($event)" #trigger>
-  {{journalNode.item.name}}
+  {{journalNode.name}}
   <div #menuButton style="position: absolute">
     <button mat-button [matMenuTriggerFor]="appMenu" style="display: ''">
 
