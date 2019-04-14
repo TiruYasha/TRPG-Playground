@@ -1,4 +1,6 @@
-﻿namespace RestApi.Models.Chat.CommandResults
+﻿using Domain.Domain.Commands;
+
+namespace RestApi.Models.Chat.CommandResults
 {
     public class DefaultCommandResult : CommandResult
     {

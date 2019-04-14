@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Domain.Commands;
+using System;
 
 namespace RestApi.Models.Chat.CommandResults
 {
