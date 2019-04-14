@@ -79,21 +79,18 @@ namespace RestApi.Test
         {
             // Arrange
             var userId = new Guid();
-
-            var model = new JoinGameModel
-            {
-                GameId = new Guid(),
-            };
+            var gameId = Guid.NewGuid();
 
             jwtReader.Setup(s => s.GetUserId()).Returns(userId);
-            gameService.Setup(s => s.JoinGameAsync(model.GameId, userId)).ReturnsAsync(true).Verifiable();
+            jwtReader.Setup(s => s.GetGameId()).Returns(gameId);
+            gameService.Setup(s => s.JoinGameAsync(gameId, userId)).ReturnsAsync(true);
 
             // Action
-            var result = await sut.JoinGameAsync(model);
+            var result = await sut.JoinGameAsync() as OkObjectResult;
 
             // Assert
             result.ShouldBeOfType<OkObjectResult>();
-            gameService.VerifyAll();
+            result.Value.ShouldBe(true);
         }
 
         [TestMethod]
@@ -109,12 +106,11 @@ namespace RestApi.Test
             jwtReader.Setup(s => s.GetUserId()).Throws(new ArgumentException(errorMessage));
 
             // Action
-            var result = await sut.JoinGameAsync(model) as BadRequestObjectResult;
+            var result = await sut.JoinGameAsync() as BadRequestObjectResult;
 
             // Assert
             result.ShouldBeOfType<BadRequestObjectResult>();
             result.Value.ShouldBe(errorMessage);
         }
-
     }
 }
