@@ -41,6 +41,19 @@ namespace DataAccess
                 .HasOne(gp => gp.User)
                 .WithMany(g => g.JoinedGames)
                 .HasForeignKey(gp => gp.UserId);
+
+            modelBuilder.Entity<JournalItemPemission>()
+                .HasKey(j => new { j.JournalItemId, j.GameId, j.UserId });
+
+            modelBuilder.Entity<JournalItemPemission>()
+                .HasOne(j => j.JournalItem)
+                .WithMany(j => j.Pemissions)
+                .HasForeignKey(j => j.JournalItemId);
+            modelBuilder.Entity<JournalItemPemission>()
+                .HasOne(j => j.Player)
+                .WithMany(j => j.JournalItemPermissions)
+                .HasForeignKey(j => new { j.GameId, j.UserId });
         }
+
     }
 }

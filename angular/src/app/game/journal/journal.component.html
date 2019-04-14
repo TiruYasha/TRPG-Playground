@@ -19,7 +19,7 @@
                   {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
                 </mat-icon>
               </button>
-              <trpg-journal-node class="node-container" [journalNode]="node" (addJournalFolder)="addJournalFolderToParent($event)" (clickFolder)="clickFolder(node)"></trpg-journal-node>
+              <trpg-journal-node class="node-container" [isOwner]="isOwner" [journalNode]="node" (addJournalFolder)="addJournalFolderToParent($event)" (clickFolder)="clickFolder(node)"></trpg-journal-node>
             </div>
             <ul [class.invisible]="!treeControl.isExpanded(node)">
               <ng-container matTreeNodeOutlet></ng-container>

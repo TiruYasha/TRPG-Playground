@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Domain.Domain.JournalItems;
+using System;
+using System.Collections.Generic;
 
 namespace Domain.Domain
 {
@@ -8,7 +10,7 @@ namespace Domain.Domain
         public virtual User User { get; private set; }
         public Guid GameId { get; private set; }
         public virtual Game Game { get; private set; }
-
+        public virtual ICollection<JournalItemPemission> JournalItemPermissions { get; set; }
         public GamePlayer() { }
 
         public GamePlayer(Game game, User user)
