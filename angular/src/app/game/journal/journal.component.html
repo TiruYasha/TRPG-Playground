@@ -27,5 +27,5 @@
           </li>
         </mat-nested-tree-node>
       </mat-tree>
-  <trpg-speed-dial-fab [mainIcon]="'add'" [subIcons]="subIcons" (clickSubIcon)="subIconClicked($event)"></trpg-speed-dial-fab>
+  <trpg-speed-dial-fab *ngIf="isOwner" [mainIcon]="'add'" [subIcons]="subIcons" (clickSubIcon)="subIconClicked($event)"></trpg-speed-dial-fab>
 </div>

@@ -21,7 +21,7 @@ namespace Domain.Domain.Commands
                 case "/r":
                     return new NormalDiceRollCommand(arguments);
                 default:
-                    throw new CommandDoesNotExistException($"Unrecognized command: {message}");
+                    throw new UnrecognizedCommandException($"Unrecognized command: {message}");
             }
         }
 

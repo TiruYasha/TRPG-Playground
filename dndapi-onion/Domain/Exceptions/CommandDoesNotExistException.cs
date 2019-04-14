@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Domain.Exceptions
 {
-    public class CommandDoesNotExistException : Exception
+    public class UnrecognizedCommandException : Exception
     {
-        public CommandDoesNotExistException(string message) : base(message)
+        public UnrecognizedCommandException(string message) : base(message)
         {
         }
     }

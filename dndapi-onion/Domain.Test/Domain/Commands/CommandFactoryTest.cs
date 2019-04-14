@@ -47,9 +47,11 @@ namespace Domain.Test.Domain.Commands
         [TestMethod]
         public void FactoryShouldThrowExceptionIfCommandDoesNotExist()
         {
-            var result = Should.Throw<CommandDoesNotExistException>(() => CommandFactory.Create("/asdsa sdfasd"));
+            var message = "/dsfdsf dsaf sdf";
 
-            result.Message.ShouldBe("The command does not exist");
+            var result = Should.Throw<UnrecognizedCommandException>(() => CommandFactory.Create(message));
+
+            result.Message.ShouldBe("Unrecognized command: " + message);
         }
     }
 }

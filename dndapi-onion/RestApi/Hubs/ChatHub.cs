@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Domain.Domain;
+using Domain.Exceptions;
 using Domain.RequestModels.Chat;
 using Domain.ServiceInterfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -28,12 +29,24 @@ namespace RestApi.Hubs
         public async Task SendMessageToGroup(SendMessageModel messageModel)
         {
             var userId = jwtReader.GetUserId();
+            try
+            {
+                var chatMessage = await chatService.AddMessageToChatAsync(messageModel, userId);
 
-            var chatMessage = await chatService.AddMessageToChatAsync(messageModel, userId);
+                var message = mapper.Map<ChatMessage, ReceiveMessageModel>(chatMessage);
 
-            var message = mapper.Map<ChatMessage, ReceiveMessageModel>(chatMessage);
+                await Clients.Group(messageModel.GameId.ToString()).SendAsync("ReceiveMessage", message);
+            }
+            catch(Exception ex)
+            {
+                var message = new ReceiveMessageModel
+                {
+                    CommandResult = new Models.Chat.CommandResults.UnrecognizedCommandResult(),
+                    Message = ex.Message
+                };
 
-            await Clients.Group(messageModel.GameId.ToString()).SendAsync("ReceiveMessage", message);
+                await Clients.Caller.SendAsync("ReceiveMessage", message);
+            }
         }
 
         public async Task AddToGroup(Guid gameId)

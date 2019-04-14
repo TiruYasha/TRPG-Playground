@@ -75,7 +75,8 @@ export class JournalComponent implements OnInit {
   }
 
   private findChild(model: AddedJournalFolderModel) {
-    return TreeTraversal.findChild(model.parentId, this.journalItems, (item: JournalItem) => (item as JournalFolder).journalItems, (id: string, item: JournalItem) => id === item.id) as JournalFolder;
+    return TreeTraversal.findChild(model.parentId, this.journalItems,
+      (item: JournalItem) => (item as JournalFolder).journalItems, (id: string, item: JournalItem) => id === item.id) as JournalFolder;
   }
 
   private refreshDataSource() {

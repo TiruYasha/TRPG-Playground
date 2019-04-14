@@ -10,6 +10,7 @@ import { JournalItem } from 'src/app/models/journal/journalitems/journal-item.mo
 })
 export class JournalNodeComponent {
   @Input() journalNode: JournalItem;
+  @Input() isOwner: boolean;
   @Output() addJournalFolder = new EventEmitter<JournalFolder>();
   @Output() clickFolder = new EventEmitter<JournalItem>();
 
