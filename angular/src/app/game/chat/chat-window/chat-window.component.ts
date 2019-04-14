@@ -21,8 +21,7 @@ export class ChatWindowComponent implements OnInit, AfterViewChecked {
 
   ngOnInit() {
     this.chatService.setup(this.gameId);
-    this.chatService.getAllMessagesForGame(this.gameId).subscribe(data => {
-      console.log(data);
+    this.chatService.getAllMessagesForGame().subscribe(data => {
       this.messages = data;
     });
 

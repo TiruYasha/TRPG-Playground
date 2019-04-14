@@ -15,10 +15,8 @@ export class GameService {
     return this.http.post(environment.apiUrl + '/game/create', game);
   }
 
-  joinGame(id: string): Observable<boolean> {
-    const game = new Game();
-    game.id = id;
-    return this.http.put<boolean>(environment.apiUrl + '/game/join', {gameId: id});
+  joinGame(): Observable<boolean> {
+    return this.http.put<boolean>(environment.apiUrl + '/game/join', {});
   }
 
   getGames() {

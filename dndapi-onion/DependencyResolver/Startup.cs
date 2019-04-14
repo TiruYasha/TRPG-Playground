@@ -5,6 +5,7 @@ using Domain.Domain;
 using Domain.RepositoryInterfaces;
 using Domain.ServiceInterfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -15,6 +16,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using RestApi;
+using RestApi.Filters;
 using RestApi.Hubs;
 using RestApi.Utilities;
 using Service;
@@ -38,7 +40,7 @@ namespace DependencyResolver
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddAutoMapper();
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1).AddApplicationPart(typeof(AccountController).Assembly);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2).AddApplicationPart(typeof(AccountController).Assembly);
 
             services.AddOptions();
             services.Configure<TokenConfig>(Configuration.GetSection("TokenConfig"));
@@ -92,6 +94,7 @@ namespace DependencyResolver
                      OnMessageReceived = context =>
                      {
                          var accessToken = context.Request.Query["access_token"];
+                         
 
                          // If the request is for our hub...
                          var path = context.HttpContext.Request.Path;
@@ -101,6 +104,7 @@ namespace DependencyResolver
                              // Read the token out of the query string
                              context.Token = accessToken;
                          }
+
                          return Task.CompletedTask;
                      }
                  };
@@ -125,6 +129,12 @@ namespace DependencyResolver
                 options.User.RequireUniqueEmail = true;
             });
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("IsGameOwner", policy => policy.Requirements.Add(new IsOwnerRequirement()));
+                options.AddPolicy("IsGamePlayer", policy => policy.Requirements.Add(new IsPlayerRequirement()));
+            });
+
             services.AddSignalR();
             services.AddTransient<IAccountService, AccountService>();
             services.AddTransient<IGameService, GameService>();
@@ -134,7 +144,10 @@ namespace DependencyResolver
             services.AddTransient<IChatService, ChatService>();
             services.AddTransient<IJournalService, JournalService>();
 
+            services.AddScoped<IAuthorizationHandler, IsOwnerRequirementHandler>();
+            services.AddScoped<IAuthorizationHandler, IsPlayerRequirementHandler>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

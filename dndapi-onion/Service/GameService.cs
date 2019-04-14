@@ -62,5 +62,15 @@ namespace Service
 
             return false;
         }
+
+        public Task<bool> IsGamePlayerOrOwnerOfGameAsync(Guid userId, Guid activeGameId)
+        {
+            return gameRepository.IsGamePlayerOrOwnerOfGameAsync(userId, activeGameId);
+        }
+
+        public Task<bool> IsOwnerOfGameAsync(Guid userId, Guid activeGameId)
+        {
+            return gameRepository.IsOwnerOfGameAsync(userId, activeGameId);
+        }
     }
 }

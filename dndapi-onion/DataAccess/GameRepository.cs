@@ -34,11 +34,6 @@ namespace DataAccess
             return await context.Games.FirstOrDefaultAsync(g => g.Id == gameId);
         }
 
-        public User GetUserById(Guid id)
-        {
-            return context.Users.FirstOrDefault(u => u.Id == id);
-        }
-
         public async Task UpdateGameAsync(Game game)
         {
             context.Games.Update(game);
@@ -46,5 +41,16 @@ namespace DataAccess
             
             await context.SaveChangesAsync();
         }
+
+        public Task<bool> IsGamePlayerOrOwnerOfGameAsync(Guid userId, Guid activeGameId)
+        {
+            return context.Games.AnyAsync(g => g.Id == activeGameId && (g.Players.Any(p => p.UserId == userId) || g.Owner.Id == userId));
+        }
+
+        public Task<bool> IsOwnerOfGameAsync(Guid userId, Guid activeGameId)
+        {
+            return context.Games.AnyAsync(g => g.Id == activeGameId && g.Owner.Id == userId);
+        }
+
     }
 }

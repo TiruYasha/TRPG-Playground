@@ -92,7 +92,7 @@ namespace RestApi.Test
             var result = await sut.JoinGameAsync(model);
 
             // Assert
-            result.ShouldBeOfType<OkResult>();
+            result.ShouldBeOfType<OkObjectResult>();
             gameService.VerifyAll();
         }
 

@@ -3,7 +3,7 @@
   <button mat-menu-item>Help</button>
 </mat-menu>
 
-<div class="node-container" (contextmenu)="triggerMenu($event)" #trigger>
+<div class="node-container" (contextmenu)="triggerMenu($event)" (click)="clickedFolder()" #trigger>
   {{journalNode.name}}
   <div #menuButton style="position: absolute">
     <button mat-button [matMenuTriggerFor]="appMenu" style="display: ''">

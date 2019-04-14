@@ -11,6 +11,7 @@ namespace Domain.RepositoryInterfaces
         Task UpdateGameAsync(Game game);
         Task<Game> GetGameByIdAsync(Guid gameId);
         IQueryable<Game> GetAllGames();
-        User GetUserById(Guid id);
+        Task<bool> IsOwnerOfGameAsync(Guid userId, Guid activeGameId);
+        Task<bool> IsGamePlayerOrOwnerOfGameAsync(Guid userId, Guid activeGameId);
     }
 }

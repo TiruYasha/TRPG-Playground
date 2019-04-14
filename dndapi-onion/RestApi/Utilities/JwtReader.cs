@@ -14,6 +14,12 @@ namespace RestApi.Utilities
             this.httpContextAccessor = httpContextAccessor;
         }
 
+        public Guid GetGameId()
+        {
+            httpContextAccessor.HttpContext.Request.Headers.TryGetValue("GameId", out var gameId);
+            return new Guid(gameId);
+        }
+
         public Guid GetUserId()
         {
             var id = httpContextAccessor?.HttpContext?.User?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;

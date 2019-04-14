@@ -70,6 +70,10 @@ export class JournalComponent implements OnInit {
     this.openCreateNewFolderDialog(parentFolder.id);
   }
 
+  clickFolder(node: JournalItem) {
+    this.treeControl.toggle(node);
+  }
+
   private findChild(model: AddedJournalFolderModel) {
     return TreeTraversal.findChild(model.parentId, this.journalItems, (item: JournalItem) => (item as JournalFolder).journalItems, (id: string, item: JournalItem) => id === item.id) as JournalFolder;
   }

@@ -14,7 +14,7 @@ namespace RestApi
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Policy = "IsGamePlayer")]
     public class ChatController : ControllerBase
     {
         private readonly IChatService chatService;
@@ -30,8 +30,9 @@ namespace RestApi
 
         [HttpGet]
         [Route("all")]
-        public async Task<IActionResult> GetAllChatMessages(Guid gameId)
+        public async Task<IActionResult> GetAllChatMessages()
         {
+            var gameId = jwtReader.GetGameId();
             var messages = await chatService.GetAllMessagesAsync(gameId);
             var mappedMessages = mapper.Map<IList<ChatMessage>, IList<ReceiveMessageModel>>(messages);
 

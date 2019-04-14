@@ -11,6 +11,7 @@ import { JournalItem } from 'src/app/models/journal/journalitems/journal-item.mo
 export class JournalNodeComponent {
   @Input() journalNode: JournalItem;
   @Output() addJournalFolder = new EventEmitter<JournalFolder>();
+  @Output() clickFolder = new EventEmitter<JournalItem>();
 
   @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
   @ViewChild('menuButton') button: ElementRef;
@@ -29,5 +30,9 @@ export class JournalNodeComponent {
 
   addFolder() {
     this.addJournalFolder.emit(this.journalNode as JournalFolder);
+  }
+
+  clickedFolder() {
+    this.clickFolder.emit(this.journalNode);
   }
 }

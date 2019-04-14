@@ -62,7 +62,7 @@ export class ChatService {
     });
   }
 
-  getAllMessagesForGame(gameId: string) {
-    return this.http.get<ReceiveMessageModel[]>(environment.apiUrl + '/chat/all?gameId=' + gameId);
+  getAllMessagesForGame() {
+    return this.http.get<ReceiveMessageModel[]>(environment.apiUrl + '/chat/all');
   }
 }

@@ -16,5 +16,8 @@ namespace Domain.ServiceInterfaces
         /// <returns>Returns a boolean. When the boolean is true it is the owner of the game. If it is false it is a player</returns>
         Task<bool> JoinGameAsync(Guid gameId, Guid userId);
         IList<Game> GetAllGames();
+        Task<bool> IsOwnerOfGameAsync(Guid userId, Guid activeGameId);
+        Task<bool> IsGamePlayerOrOwnerOfGameAsync(Guid userId, Guid activeGameId);
+
     }
 }

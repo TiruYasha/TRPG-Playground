@@ -138,7 +138,7 @@ namespace Domain.Domain
 
         private List<JournalFolder> GetJournalFoldersFromJournalItems(ICollection<JournalItem> journalItems)
         {
-            return journalItems.Where(j => j.GetType() == typeof(JournalFolder)).Select(s => s as JournalFolder).ToList();
+            return journalItems.Where(j => j.Type == JournalItemType.Folder).Select(s => s as JournalFolder).ToList();
         }
 
         private void CheckParameters(string name, User owner)

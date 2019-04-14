@@ -57,13 +57,14 @@ namespace RestApi
 
         [HttpPut]
         [Route("join")]
-        public async Task<IActionResult> JoinGameAsync([FromBody] JoinGameModel model)
+        public async Task<IActionResult> JoinGameAsync()
         {
             try
             {
                 var userId = jwtReader.GetUserId();
+                var gameId = jwtReader.GetGameId();
 
-                var result = await gameService.JoinGameAsync(model.GameId, userId);
+                var result = await gameService.JoinGameAsync(gameId, userId);
 
                 return Ok(result);
             }

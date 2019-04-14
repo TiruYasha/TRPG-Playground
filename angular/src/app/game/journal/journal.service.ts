@@ -34,7 +34,9 @@ export class JournalService {
 
     private createConnection() {
         this.hubConnection = new HubConnectionBuilder()
-            .withUrl(environment.apiUrl + '/journalhub', { accessTokenFactory: this.getAccessToken })
+            .withUrl(environment.apiUrl + '/journalhub', {
+                accessTokenFactory: this.getAccessToken,
+            })
             .build();
     }
 
@@ -50,7 +52,6 @@ export class JournalService {
             });
     }
 
-
     private getAccessToken() {
         return localStorage.getItem('token');
     }
@@ -62,7 +63,6 @@ export class JournalService {
         });
 
         this.hubConnection.on('AddedToGroup', (data: JournalItem[]) => {
-            console.log('addedtoGroup', data);
             this.AddedToGroup.next(data);
         });
     }
