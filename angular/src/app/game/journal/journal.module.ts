@@ -9,6 +9,7 @@ import { MatFormFieldModule, MatDialogModule, MatInputModule, MatMenuModule } fr
 import { CreateFolderDialogComponent } from './create-folder-dialog/create-folder-dialog.component';
 import { FormsModule } from '@angular/forms';
 import { JournalNodeComponent } from './journal-node/journal-node.component';
+import { CreateHandoutDialogComponent } from './create-handout-dialog/create-handout-dialog.component';
 
 @NgModule({
   imports: [
@@ -26,7 +27,7 @@ import { JournalNodeComponent } from './journal-node/journal-node.component';
   exports: [
     JournalComponent
   ],
-  declarations: [JournalComponent, CreateFolderDialogComponent, JournalNodeComponent],
+  declarations: [JournalComponent, CreateFolderDialogComponent, JournalNodeComponent, CreateHandoutDialogComponent],
   entryComponents: [CreateFolderDialogComponent]
 })
 export class JournalModule { }

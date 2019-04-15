@@ -73,5 +73,19 @@ namespace RestApi
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet]
+        [Route("players")]
+        [Authorize(Policy = "IsGamePlayer")]
+        public async Task<IActionResult> GetAllPlayersAsync()
+        {
+            var gameId = jwtReader.GetGameId();
+
+            IList<GamePlayer> players = await gameService.GetPlayersAsync(gameId);
+
+            var result = mapper.Map<IList<GamePlayer>, IList<GetPlayersModel>>(players);
+
+            return Ok(result);
+        }
     }
 }

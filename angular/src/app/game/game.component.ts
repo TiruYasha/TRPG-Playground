@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GameService } from '../shared/game.service';
 import { ActiveGameService } from '../shared/services/active-game.service';
+import { Player } from '../models/game/player.model';
 
 @Component({
   selector: 'trpg-game',
@@ -9,6 +10,7 @@ import { ActiveGameService } from '../shared/services/active-game.service';
   styleUrls: ['./game.component.scss']
 })
 export class GameComponent implements OnInit {
+  players: Player[] = [];
   isOwner = false;
   gameId = '';
 
@@ -24,6 +26,12 @@ export class GameComponent implements OnInit {
     this.gameService.joinGame()
       .subscribe((isOwner) => {
         this.isOwner = isOwner;
+      });
+
+    this.gameService.getPlayers()
+      .subscribe((players) => {
+        console.log(players);
+        this.players = players;
       });
   }
 }

@@ -1,5 +1,6 @@
 ﻿using Domain.Domain;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,5 +14,6 @@ namespace Domain.RepositoryInterfaces
         IQueryable<Game> GetAllGames();
         Task<bool> IsOwnerOfGameAsync(Guid userId, Guid activeGameId);
         Task<bool> IsGamePlayerOrOwnerOfGameAsync(Guid userId, Guid activeGameId);
+        Task<IQueryable<GamePlayer>> GetPlayersFromGameAsync(Guid gameId);
     }
 }

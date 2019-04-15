@@ -5,6 +5,7 @@ using Domain.ServiceInterfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using RestApi.Models.Journal;
+using RestApi.Models.Journal.JournalItems;
 using RestApi.Utilities;
 using System;
 using System.Collections.Generic;
@@ -43,11 +44,14 @@ namespace RestApi.Hubs
         public async Task AddToGroup(Guid gameId)
         {
             //TODO Identity check to see if the player/ownerjoined the game
-            var result = journalService.GetAllJournalItemsAsync(gameId);
+            var result = await journalService.GetAllJournalItemsAsync(gameId);
 
             await Groups.AddToGroupAsync(Context.ConnectionId, gameId.ToString());
 
-            await Clients.Caller.SendAsync("AddedToGroup", await result);
+            var result2 = mapper.Map<ICollection<JournalItem>, ICollection<JournalItemModel>>(result);
+
+
+            await Clients.Caller.SendAsync("AddedToGroup", result2);
         }
     }
 }

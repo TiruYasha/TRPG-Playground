@@ -10,6 +10,7 @@ namespace DataAccess
     public class DndContext : IdentityDbContext<User, Role, Guid>
     {
         public DbSet<Game> Games { get; set; }
+        public DbSet<GamePlayer> GamePlayers { get; set; }
         public DbSet<ChatMessage> ChatMessages { get; set; }
         public DbSet<DefaultCommand> DefaultCommands { get; set; }
         public DbSet<NormalDiceRollCommand> NormalDiceRollCommands { get; set; }

@@ -72,5 +72,11 @@ namespace Service
         {
             return gameRepository.IsOwnerOfGameAsync(userId, activeGameId);
         }
+
+        public async Task<IList<GamePlayer>> GetPlayersAsync(Guid gameId)
+        {
+            var result = await gameRepository.GetPlayersFromGameAsync(gameId);
+            return result.Select(g => new GamePlayer { UserId = g.UserId, User = new User { UserName = g.User.UserName } }).ToList();
+        }
     }
 }

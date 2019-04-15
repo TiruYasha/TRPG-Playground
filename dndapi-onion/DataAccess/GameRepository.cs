@@ -2,6 +2,7 @@
 using Domain.RepositoryInterfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -52,5 +53,12 @@ namespace DataAccess
             return context.Games.AnyAsync(g => g.Id == activeGameId && g.Owner.Id == userId);
         }
 
+        public Task<IQueryable<GamePlayer>> GetPlayersFromGameAsync(Guid gameId)
+        {
+            return Task.Run(() =>
+            {
+                return context.GamePlayers.Where(g => g.GameId == gameId);
+            });
+        }
     }
 }

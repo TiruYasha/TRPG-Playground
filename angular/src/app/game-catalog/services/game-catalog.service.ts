@@ -18,12 +18,6 @@ export class GameCatalogService {
     return this.http.post<string>(environment.apiUrl + '/game/create', game, options);
   }
 
-  joinGame(id: string) {
-    const game = new Game();
-    game.id = id;
-    return this.http.put(environment.apiUrl + '/game/join', {gameId: id});
-  }
-
   getGames(): Observable<GameCatalogItem[]> {
     return this.http.get<GameCatalogItem[]>(environment.apiUrl + '/game/all');
   }

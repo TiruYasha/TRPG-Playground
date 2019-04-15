@@ -30,6 +30,8 @@ namespace DependencyResolver.MappingProfiles
                 .Include<JournalFolder, JournalFolderModel>();
 
             CreateMap<JournalFolder, JournalFolderModel>();
+
+            CreateMap<GamePlayer, GetPlayersModel>().ForMember(dest => dest.Username, opt => opt.MapFrom(from => from.User.UserName));
         }
     }
 }

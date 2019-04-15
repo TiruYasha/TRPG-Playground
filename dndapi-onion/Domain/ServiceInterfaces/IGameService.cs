@@ -18,6 +18,6 @@ namespace Domain.ServiceInterfaces
         IList<Game> GetAllGames();
         Task<bool> IsOwnerOfGameAsync(Guid userId, Guid activeGameId);
         Task<bool> IsGamePlayerOrOwnerOfGameAsync(Guid userId, Guid activeGameId);
-
+        Task<IList<GamePlayer>> GetPlayersAsync(Guid gameId);
     }
 }

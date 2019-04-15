@@ -6,10 +6,10 @@ namespace Domain.Domain
 {
     public class GamePlayer
     {
-        public Guid UserId { get; private set; }
-        public virtual User User { get; private set; }
-        public Guid GameId { get; private set; }
-        public virtual Game Game { get; private set; }
+        public Guid UserId { get; set; }
+        public virtual User User { get; set; }
+        public Guid GameId { get; set; }
+        public virtual Game Game { get; set; }
         public virtual ICollection<JournalItemPemission> JournalItemPermissions { get; set; }
         public GamePlayer() { }
 
