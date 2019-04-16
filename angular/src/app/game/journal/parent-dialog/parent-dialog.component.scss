@@ -1,0 +1,25 @@
+::ng-deep .mat-dialog-container {
+  padding: 0;
+}
+
+.dialog-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 24px;
+    padding: 4px;
+}
+
+.content {
+  padding: 24px;
+}
+
+.dragger {
+  height: 100%;
+  cursor: grab;
+  width: calc(100% - 24px);
+}
+
+.clickPointer {
+    cursor: pointer;
+}

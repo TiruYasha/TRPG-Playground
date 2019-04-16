@@ -4,7 +4,7 @@ import {
 } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
-import { ActiveGameService } from '../shared/services/active-game.service';
+import { ActiveGameService } from '../game/services/active-game.service';
 
 /** Pass untouched request through to the next request handler. */
 @Injectable()

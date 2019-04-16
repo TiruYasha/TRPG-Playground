@@ -3,13 +3,15 @@ import { CommonModule } from '@angular/common';
 import { JournalComponent } from './journal.component';
 import { MatTreeModule } from '@angular/material/tree';
 import { MatIconModule } from '@angular/material/icon';
-import {MatButtonModule} from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
 import { SharedModule } from 'src/app/shared/components/shared.module';
-import { MatFormFieldModule, MatDialogModule, MatInputModule, MatMenuModule } from '@angular/material';
+import { MatFormFieldModule, MatDialogModule, MatInputModule, MatMenuModule, MatAutocompleteModule } from '@angular/material';
 import { CreateFolderDialogComponent } from './create-folder-dialog/create-folder-dialog.component';
 import { FormsModule } from '@angular/forms';
 import { JournalNodeComponent } from './journal-node/journal-node.component';
 import { CreateHandoutDialogComponent } from './create-handout-dialog/create-handout-dialog.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { ParentDialogComponent } from './parent-dialog/parent-dialog.component';
 
 @NgModule({
   imports: [
@@ -22,12 +24,14 @@ import { CreateHandoutDialogComponent } from './create-handout-dialog/create-han
     MatInputModule,
     MatFormFieldModule,
     FormsModule,
-    SharedModule
+    SharedModule,
+    MatAutocompleteModule,
+    DragDropModule
   ],
   exports: [
     JournalComponent
   ],
-  declarations: [JournalComponent, CreateFolderDialogComponent, JournalNodeComponent, CreateHandoutDialogComponent],
-  entryComponents: [CreateFolderDialogComponent]
+  declarations: [JournalComponent, CreateFolderDialogComponent, JournalNodeComponent, CreateHandoutDialogComponent, ParentDialogComponent],
+  entryComponents: [ParentDialogComponent]
 })
 export class JournalModule { }

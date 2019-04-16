@@ -10,8 +10,9 @@ import { Guid } from 'src/app/utilities/guid.util';
 import { AddedJournalFolderModel } from 'src/app/models/journal/receives/added-journal-folder.model';
 import { JournalFolder } from 'src/app/models/journal/journalitems/journal-folder.model';
 import { TreeTraversal } from 'src/app/utilities/tree-traversal.util';
-
-
+import { ActiveGameService } from '../services/active-game.service';
+import { Player } from 'src/app/models/game/player.model';
+import { ParentDialogComponent } from './parent-dialog/parent-dialog.component';
 
 @Component({
   selector: 'trpg-journal',
@@ -19,8 +20,8 @@ import { TreeTraversal } from 'src/app/utilities/tree-traversal.util';
   styleUrls: ['./journal.component.scss']
 })
 export class JournalComponent implements OnInit {
-  @Input() isOwner: boolean;
-  @Input() gameId: string;
+  isOwner: boolean;
+  players: Player[] = [];
 
   journalItems: JournalItem[] = [];
 
@@ -31,17 +32,24 @@ export class JournalComponent implements OnInit {
 
   hasChild = (_: number, node: JournalFolder) => !!node.journalItems;
 
-  constructor(private journalService: JournalService, public dialog: MatDialog) {
+  constructor(private journalService: JournalService, private activeGameService: ActiveGameService, public dialog: MatDialog) {
     this.dataSource.data = this.journalItems;
   }
 
   ngOnInit() {
-    this.journalService.setup(this.gameId);
-
+    this.journalService.setup();
     this.journalService.AddedJournalFolder.subscribe((model: AddedJournalFolderModel) => this.addFolderToJournalItems(model));
     this.journalService.AddedToGroup.subscribe((data: JournalItem[]) => {
       this.journalItems = data;
       this.refreshDataSource();
+    });
+
+    this.activeGameService.isOwnerObservable.subscribe((isOwner) => {
+      this.isOwner = isOwner;
+    });
+
+    this.activeGameService.playersObservable.subscribe((players) => {
+      this.players = players;
     });
   }
 
@@ -85,9 +93,10 @@ export class JournalComponent implements OnInit {
   }
 
   private openCreateNewFolderDialog(parentFolderId: string = null) {
-    const dialogRef = this.dialog.open(CreateFolderDialogComponent, {
-      width: '250px',
-      data: { name: '' }
+    const dialogRef = this.dialog.open(ParentDialogComponent, {
+      width: 'auto',
+      data: { name: '' },
+      hasBackdrop: false
     });
 
     dialogRef.afterClosed().subscribe((folderName) => this.createNewFolder(folderName, parentFolderId));
@@ -100,7 +109,7 @@ export class JournalComponent implements OnInit {
 
     const folderRequest: AddJournalFolderRequestModel = {
       name: folderName,
-      gameId: this.gameId,
+      gameId: this.activeGameService.activeGameId,
       parentFolderId: parentFolderId ? parentFolderId : Guid.getEmptyGuid()
     };
 

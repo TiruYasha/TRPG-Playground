@@ -1,0 +1,10 @@
+<div class="dialog-container">
+  <div class="dialog-header">
+    <div class="dragger" cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle></div>
+    <mat-icon class="clickPointer" (click)="exitDialog()">close</mat-icon>
+  </div>
+  <div #dialogContainer class="content">
+    <trpg-create-folder-dialog></trpg-create-folder-dialog>
+  </div>
+  <div style="height: 20px" (mousedown)="startResize($event)"></div>
+</div>

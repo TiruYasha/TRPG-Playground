@@ -6,6 +6,7 @@ import { Injectable } from '@angular/core';
 import { AddJournalFolderRequestModel } from 'src/app/models/journal/requests/AddJournalFolderRequest.model';
 import { AddedJournalFolderModel } from 'src/app/models/journal/receives/added-journal-folder.model';
 import { JournalItem } from 'src/app/models/journal/journalitems/journal-item.model';
+import { ActiveGameService } from '../services/active-game.service';
 
 @Injectable({
     providedIn: 'root'
@@ -16,16 +17,16 @@ export class JournalService {
 
     private hubConnection: HubConnection;
 
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient, private activeGameService: ActiveGameService) { }
 
-    setup(gameId: string) {
+    setup() {
         this.createConnection();
         this.registerOnServerEvents();
-        this.startConnection(gameId);
+        this.startConnection();
     }
 
-    addToGroup(gameId: string): any {
-        this.hubConnection.invoke('AddToGroup', gameId);
+    addToGroup(): any {
+        this.hubConnection.invoke('AddToGroup', this.activeGameService.activeGameId);
     }
 
     addFolderToGame(model: AddJournalFolderRequestModel) {
@@ -40,11 +41,11 @@ export class JournalService {
             .build();
     }
 
-    private startConnection(gameId: string): void {
+    private startConnection(): void {
         this.hubConnection
             .start()
             .then(() => {
-                this.addToGroup(gameId);
+                this.addToGroup();
             })
             .catch(err => {
                 console.log('Error while establishing connection, retrying...', err);
