@@ -44,6 +44,7 @@ namespace DependencyResolver
 
             services.AddOptions();
             services.Configure<TokenConfig>(Configuration.GetSection("TokenConfig"));
+            
 
             services.AddSwaggerGen(c =>
             {
@@ -60,10 +61,10 @@ namespace DependencyResolver
                    .AllowAnyMethod()
                    .AllowCredentials()));
 
-            var connection = @"Host=localhost;Port=32768;Database=Dnd;Username=postgres";
-            services.AddEntityFrameworkNpgsql().AddDbContext<DndContext>
+            var connection = Configuration.GetSection("ConnectionStrings").GetSection("ConnectionString").Value;
+            services.AddEntityFrameworkSqlServer().AddDbContext<DndContext>
                 (options => options.UseLazyLoadingProxies()
-                                    .UseNpgsql(connection));
+                                    .UseSqlServer(connection));
 
             var key = Configuration.GetSection("TokenConfig").GetSection("Key").Value;
 

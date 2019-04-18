@@ -9,7 +9,6 @@ import { TokenInterceptor } from './http-interceptors/token-interceptor';
 import { AppRoutingModule } from './app-routing.module';
 import { GameModule } from './game/game.module';
 import { FormsModule } from '@angular/forms';
-import { AccountComponent } from './account/account.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AuthGuard } from './shared/authguard';
 import { GameCatalogModule } from './game-catalog/game-catalog.module';
@@ -18,7 +17,6 @@ import { MatIconModule } from '@angular/material/icon';
 @NgModule({
   declarations: [
     AppComponent,
-    AccountComponent,
   ],
   imports: [
     BrowserModule,
