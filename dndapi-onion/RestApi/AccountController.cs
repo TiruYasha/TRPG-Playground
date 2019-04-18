@@ -48,5 +48,12 @@ namespace RestApi
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet]
+        [Route("test")]
+        public IActionResult Test()
+        {
+            return Ok("dsafdsfdsaf");
+        }
     }
 }
