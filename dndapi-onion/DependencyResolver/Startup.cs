@@ -22,6 +22,7 @@ using RestApi.Utilities;
 using Service;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
+using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -44,7 +45,7 @@ namespace DependencyResolver
 
             services.AddOptions();
             services.Configure<TokenConfig>(Configuration.GetSection("TokenConfig"));
-            
+
 
             services.AddSwaggerGen(c =>
             {
@@ -61,10 +62,21 @@ namespace DependencyResolver
                    .AllowAnyMethod()
                    .AllowCredentials()));
 
-            var connection = Configuration.GetSection("ConnectionStrings").GetSection("ConnectionString").Value;
-            services.AddEntityFrameworkSqlServer().AddDbContext<DndContext>
-                (options => options.UseLazyLoadingProxies()
-                                    .UseSqlServer(connection));
+            if (!Debugger.IsAttached)
+            {
+                var connection = Configuration.GetSection("ConnectionStrings").GetSection("ConnectionString").Value;
+                services.AddEntityFrameworkSqlServer().AddDbContext<DndContext>
+                    (options => options.UseLazyLoadingProxies()
+                                        .UseSqlServer(connection));
+
+            }
+            else
+            {
+                var connection = Configuration.GetSection("ConnectionStrings").GetSection("ConnectionStringDebug").Value;
+                services.AddEntityFrameworkNpgsql().AddDbContext<DndContext>
+                    (options => options.UseLazyLoadingProxies()
+                                        .UseNpgsql(connection));
+            }
 
             var key = Configuration.GetSection("TokenConfig").GetSection("Key").Value;
 
@@ -95,7 +107,7 @@ namespace DependencyResolver
                      OnMessageReceived = context =>
                      {
                          var accessToken = context.Request.Query["access_token"];
-                         
+
 
                          // If the request is for our hub...
                          var path = context.HttpContext.Request.Path;
@@ -148,7 +160,7 @@ namespace DependencyResolver
             services.AddScoped<IAuthorizationHandler, IsOwnerRequirementHandler>();
             services.AddScoped<IAuthorizationHandler, IsPlayerRequirementHandler>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

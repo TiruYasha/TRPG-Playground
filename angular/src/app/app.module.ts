@@ -13,6 +13,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AuthGuard } from './shared/authguard';
 import { GameCatalogModule } from './game-catalog/game-catalog.module';
 import { MatIconModule } from '@angular/material/icon';
+import { AccountModule } from './account/account.module';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { MatIconModule } from '@angular/material/icon';
     GameCatalogModule,
     FormsModule,
     BrowserAnimationsModule,
-    MatIconModule
+    MatIconModule,
+    AccountModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },

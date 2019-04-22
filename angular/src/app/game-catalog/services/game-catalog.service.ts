@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { environment } from 'src/environments/environment.prod';
+import { environment } from 'src/environments/environment';
 import { CreateGameModel } from 'src/app/models/game-catalog/creategame.model';
-import { Game } from 'src/app/models/game.model';
 import { GameCatalogItem } from 'src/app/models/game-catalog/game-catalog-item.model';
 
 @Injectable({

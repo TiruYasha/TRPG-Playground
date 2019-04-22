@@ -50,7 +50,6 @@ namespace RestApi.Hubs
 
             var result2 = mapper.Map<ICollection<JournalItem>, ICollection<JournalItemModel>>(result);
 
-
             await Clients.Caller.SendAsync("AddedToGroup", result2);
         }
     }

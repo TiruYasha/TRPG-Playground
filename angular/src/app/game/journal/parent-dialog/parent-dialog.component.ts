@@ -39,12 +39,12 @@ export class ParentDialogComponent implements OnInit {
     this.mouseMove = fromEvent(document, 'mousemove');
 
     this.mouseMoveSubscription = this.mouseMove
-      .subscribe((event: MouseEvent) => {
-        this.resize(event);
+      .subscribe((next: MouseEvent) => {
+        this.resize(next);
       });
 
     this.mouseUp = fromEvent(document, 'mouseup');
-    this.mouseUpSubscription = this.mouseUp.subscribe((event: MouseEvent) => this.cancelResize(event));
+    this.mouseUpSubscription = this.mouseUp.subscribe((next: MouseEvent) => this.cancelResize(next));
   }
 
   resize(event: MouseEvent) {
