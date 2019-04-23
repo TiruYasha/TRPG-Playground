@@ -1,9 +1,8 @@
 ﻿using Domain.Domain.JournalItems;
+using Domain.Exceptions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Domain.Test.Domain.JournalItems
 {
@@ -34,6 +33,16 @@ namespace Domain.Test.Domain.JournalItems
             var result = new JournalFolder(name);
 
             result.Name.ShouldBe(name);
+        }
+
+        [TestMethod]
+        public void ConstructorThrowsJournalItemExceptionOnEmptyName()
+        {
+            var name = "";
+
+            var result = Should.Throw<JournalItemException>(() => new JournalFolder(name));
+
+            result.Message.ShouldBe("The folder name is empty");
         }
 
         [TestMethod]

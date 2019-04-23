@@ -39,7 +39,6 @@ export class JournalComponent implements OnInit {
   ngOnInit() {
     this.journalService.setup();
     this.journalService.journalFolderAdded.subscribe((model: AddedJournalFolderModel) => {
-      console.log('journalFolderAdded');
       this.addFolderToJournalItems(model);
     });
     this.journalService.getAllJournalItems().subscribe(data => {

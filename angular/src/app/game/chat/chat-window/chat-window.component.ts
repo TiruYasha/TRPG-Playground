@@ -66,7 +66,7 @@ export class ChatWindowComponent implements OnInit, AfterViewChecked {
 
     this.chatService.sendMessage(message)
       .subscribe(() => {
-        
+
       });
     this.chatMessage = '';
   }

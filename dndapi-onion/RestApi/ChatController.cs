@@ -10,7 +10,6 @@ using RestApi.Models.Chat;
 using RestApi.Utilities;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace RestApi
