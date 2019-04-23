@@ -38,8 +38,11 @@ export class JournalComponent implements OnInit {
 
   ngOnInit() {
     this.journalService.setup();
-    this.journalService.AddedJournalFolder.subscribe((model: AddedJournalFolderModel) => this.addFolderToJournalItems(model));
-    this.journalService.AddedToGroup.subscribe((data: JournalItem[]) => {
+    this.journalService.journalFolderAdded.subscribe((model: AddedJournalFolderModel) => {
+      console.log('journalFolderAdded');
+      this.addFolderToJournalItems(model);
+    });
+    this.journalService.getAllJournalItems().subscribe(data => {
       this.journalItems = data;
       this.refreshDataSource();
     });
@@ -113,6 +116,8 @@ export class JournalComponent implements OnInit {
       parentFolderId: parentFolderId ? parentFolderId : Guid.getEmptyGuid()
     };
 
-    this.journalService.addFolderToGame(folderRequest);
+    this.journalService.addFolderToGame(folderRequest).subscribe(() => {
+
+    });
   }
 }

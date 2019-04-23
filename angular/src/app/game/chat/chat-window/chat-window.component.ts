@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, ViewChild, ElementRef, AfterViewChecked, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
 import { ReceiveMessageModel } from 'src/app/models/chat/receives/receive-message.model';
 import { SendMessageModel } from 'src/app/models/chat/requests/send-message.model';
 import { ChatService } from '../../services/chat.service';
@@ -25,7 +25,7 @@ export class ChatWindowComponent implements OnInit, AfterViewChecked {
       this.messages = data;
     });
 
-    this.chatService.receivedMessage.subscribe((data: ReceiveMessageModel) => {
+    this.chatService.chatMessageSent.subscribe((data: ReceiveMessageModel) => {
       this.checkScrollAtBottom();
 
       this.messages.push(data);
@@ -64,7 +64,10 @@ export class ChatWindowComponent implements OnInit, AfterViewChecked {
       message: this.chatMessage
     };
 
-    this.chatService.sendMessage(message);
+    this.chatService.sendMessage(message)
+      .subscribe(() => {
+        
+      });
     this.chatMessage = '';
   }
 }

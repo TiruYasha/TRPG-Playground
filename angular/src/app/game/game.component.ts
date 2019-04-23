@@ -23,6 +23,8 @@ export class GameComponent implements OnInit {
     this.gameId = id;
     this.activeGameService.activeGameId = id;
 
+    this.activeGameService.setup();
+
     this.gameService.joinGame()
       .subscribe((isOwner) => {
         this.activeGameService.updateIsOwner(isOwner);

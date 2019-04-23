@@ -1,4 +1,4 @@
-import { Subject } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
 import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
@@ -12,59 +12,26 @@ import { ActiveGameService } from '../services/active-game.service';
     providedIn: 'root'
 })
 export class JournalService {
-    AddedJournalFolder = new Subject();
-    AddedToGroup = new Subject();
-
-    private hubConnection: HubConnection;
+    private journalFolderAddedSubject = new Subject<AddedJournalFolderModel>();
+    journalFolderAdded = this.journalFolderAddedSubject.asObservable();
 
     constructor(private http: HttpClient, private activeGameService: ActiveGameService) { }
 
     setup() {
-        this.createConnection();
         this.registerOnServerEvents();
-        this.startConnection();
-    }
-
-    addToGroup(): any {
-        this.hubConnection.invoke('AddToGroup', this.activeGameService.activeGameId);
     }
 
     addFolderToGame(model: AddJournalFolderRequestModel) {
-        this.hubConnection.invoke('AddJournalFolderAsync', model);
+        return this.http.post(environment.apiUrl + '/journal/addJournalFolder', model);
     }
 
-    private createConnection() {
-        this.hubConnection = new HubConnectionBuilder()
-            .withUrl(environment.apiUrl + '/journalhub', {
-                accessTokenFactory: this.getAccessToken,
-            })
-            .build();
-    }
-
-    private startConnection(): void {
-        this.hubConnection
-            .start()
-            .then(() => {
-                this.addToGroup();
-            })
-            .catch(err => {
-                console.log('Error while establishing connection, retrying...', err);
-                setTimeout(this.startConnection, 5000);
-            });
-    }
-
-    private getAccessToken() {
-        return localStorage.getItem('token');
+    getAllJournalItems(): Observable<JournalItem[]> {
+        return this.http.get<JournalItem[]>(environment.apiUrl + '/journal/all');
     }
 
     private registerOnServerEvents(): void {
-
-        this.hubConnection.on('AddedJournalFolder', (data: AddedJournalFolderModel) => {
-            this.AddedJournalFolder.next(data);
-        });
-
-        this.hubConnection.on('AddedToGroup', (data: JournalItem[]) => {
-            this.AddedToGroup.next(data);
+        this.activeGameService.hubConnection.on('JournalFolderAdded', (data: AddedJournalFolderModel) => {
+            this.journalFolderAddedSubject.next(data);
         });
     }
 }

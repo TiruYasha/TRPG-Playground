@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
 using Domain.Domain;
+using Domain.RequestModels.Chat;
 using Domain.ServiceInterfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using RestApi.Hubs;
 using RestApi.Models.Chat;
 using RestApi.Utilities;
 using System;
@@ -20,14 +23,16 @@ namespace RestApi
         private readonly IChatService chatService;
         private readonly IJwtReader jwtReader;
         private readonly IMapper mapper;
+        private readonly IHubContext<GameHub> hubContext;
 
-        public ChatController(IChatService chatService, IJwtReader jwtReader, IMapper mapper)
+        public ChatController(IChatService chatService, IJwtReader jwtReader, IMapper mapper, IHubContext<GameHub> hubContext)
         {
             this.chatService = chatService;
             this.jwtReader = jwtReader;
             this.mapper = mapper;
+            this.hubContext = hubContext;
         }
-
+     
         [HttpGet]
         [Route("all")]
         public async Task<IActionResult> GetAllChatMessages()
@@ -38,5 +43,32 @@ namespace RestApi
 
             return Ok(mappedMessages);
         }
+
+        [HttpPost]
+        [Route("SendMessage")]
+        public async Task SendMessage(SendMessageModel messageModel)
+        {
+            var userId = jwtReader.GetUserId();
+            try
+            {
+                var chatMessage = await chatService.AddMessageToChatAsync(messageModel, userId);
+
+                var message = mapper.Map<ChatMessage, ReceiveMessageModel>(chatMessage);
+
+                await hubContext.Clients.Group(messageModel.GameId.ToString()).SendAsync("ChatMessageSent", message);
+            }
+            catch (Exception ex)
+            {
+                var message = new ReceiveMessageModel
+                {
+                    CommandResult = new Models.Chat.CommandResults.UnrecognizedCommandResult(),
+                    Message = ex.Message
+                };
+
+                await hubContext.Clients.User(userId.ToString()).SendAsync("ChatMessageSent", message);
+            }
+        }
+
+
     }
 }

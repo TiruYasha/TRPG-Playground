@@ -2,11 +2,15 @@ import { Injectable } from '@angular/core';
 import { Guid } from 'src/app/utilities/guid.util';
 import { BehaviorSubject } from 'rxjs';
 import { Player } from 'src/app/models/game/player.model';
+import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
     providedIn: 'root'
 })
 export class ActiveGameService {
+    private _hubConnection: HubConnection;
+
     public activeGameId = Guid.getEmptyGuid();
 
     private playersSubject = new BehaviorSubject<Player[]>([]);
@@ -14,12 +18,51 @@ export class ActiveGameService {
 
     public playersObservable = this.playersSubject.asObservable();
     public isOwnerObservable = this.isOwnerSubject.asObservable();
-    
-    public updatePlayers(players: Player[]){
+
+    constructor() { }
+
+    setup() {
+        this.createConnection();
+        this.startConnection();
+    }
+
+    get hubConnection(): HubConnection {
+        return this._hubConnection;
+    }
+
+    public updatePlayers(players: Player[]) {
         this.playersSubject.next(players);
     }
 
-    public updateIsOwner(isOwner: boolean){
+    public updateIsOwner(isOwner: boolean) {
         this.isOwnerSubject.next(isOwner);
+    }
+
+    private startConnection() {
+        this._hubConnection
+            .start()
+            .then(() => {
+                this.addToGroup();
+            })
+            .catch(err => {
+                console.log('Error while establishing connection,  retrying...', err);
+                setTimeout(this.startConnection, 4000);
+            });
+    }
+
+    private addToGroup() {
+        this._hubConnection.invoke('AddToGroup', this.activeGameId);
+    }
+
+    private createConnection() {
+        this._hubConnection = new HubConnectionBuilder()
+            .withUrl(environment.apiUrl + '/gamehub', {
+                accessTokenFactory: this.getAccessToken
+            })
+            .build();
+    }
+
+    private getAccessToken() {
+        return localStorage.getItem('token');
     }
 }
