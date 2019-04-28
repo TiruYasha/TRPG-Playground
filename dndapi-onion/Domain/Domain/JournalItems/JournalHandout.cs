@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.RequestModels.Journal;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -8,7 +9,7 @@ namespace Domain.Domain.JournalItems
     {
         public string Description { get; set; }
         public string OwnerNotes { get; set; }
-        public JournalHandout() : base(JournalItemType.Handout, "")
+        public JournalHandout(AddJournalItemModel model) : base(JournalItemType.Handout, model.Name)
         {
 
         }

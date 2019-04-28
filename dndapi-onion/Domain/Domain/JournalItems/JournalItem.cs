@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Exceptions;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -18,6 +19,7 @@ namespace Domain.Domain.JournalItems
 
         public JournalItem(JournalItemType type, string name)
         {
+            CheckArguments(name);
             Id = Guid.NewGuid();
             this.Type = type;
             this.Name = name;
@@ -25,5 +27,14 @@ namespace Domain.Domain.JournalItems
             LastEditedOn = DateTime.UtcNow;
             Pemissions = new List<JournalItemPemission>();
         }
+
+        private void CheckArguments(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new JournalItemException("The name is empty");
+            }
+        }
+
     }
 }

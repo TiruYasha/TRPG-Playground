@@ -196,7 +196,7 @@ namespace Domain.Test.Domain
         }
 
         [TestMethod]
-        public async Task AddJournalFolderAsyncAddsTheFolder()
+        public async Task AddAddJournalItemAsyncAddsTheFolder()
         {
             // Arrange
             var owner = new User()
@@ -205,15 +205,14 @@ namespace Domain.Test.Domain
             };
             var game = new Game("hi", owner);
 
-            var model = new AddJournalFolderModel()
+            var model = new AddJournalItemModel()
             {
-                GameId = game.Id,
                 Name = "folder",
                 ParentFolderId = Guid.Empty
             };
 
             // Action
-            var result = await game.AddJournalFolderAsync(model, owner.Id);
+            var result = await game.AddJournalItemAsync(model, owner.Id);
 
             // Assert
             result.Name.ShouldBe(model.Name);
@@ -221,7 +220,7 @@ namespace Domain.Test.Domain
         }
 
         [TestMethod]
-        public async Task AddJournalFolderAsyncThrowsExceptionIfItIsNotTheOwner()
+        public async Task AddJournalItemAsyncThrowsExceptionIfItIsNotTheOwner()
         {
             // Arrange
             var owner = new User()
@@ -230,22 +229,21 @@ namespace Domain.Test.Domain
             };
             var game = new Game("hi", owner);
 
-            var model = new AddJournalFolderModel()
+            var model = new AddJournalItemModel()
             {
-                GameId = Guid.NewGuid(),
                 Name = "folder",
                 ParentFolderId = Guid.Empty
             };
 
             // Action
-            var result = await Should.ThrowAsync<PermissionException>(() => game.AddJournalFolderAsync(model, model.GameId));
+            var result = await Should.ThrowAsync<PermissionException>(() => game.AddJournalItemAsync(model, game.Id));
 
             // Assert
             result.Message.ShouldBe("This is an illegal action! It is only possible for gamemasters to add journal items.");
         }
 
         [TestMethod]
-        public async Task AddJournalFolderAsyncAddsTheFolderToParent()
+        public async Task AddJournalItemAsyncAddsTheItemToParent()
         {
             // Arrange
             var owner = new User()
@@ -254,24 +252,22 @@ namespace Domain.Test.Domain
             };
             var game = new Game("hi", owner);
 
-            var parent = new AddJournalFolderModel()
+            var parent = new AddJournalItemModel()
             {
-                GameId = game.Id,
                 Name = "parent",
                 ParentFolderId = Guid.Empty
             };
 
-            var parentFolder = await game.AddJournalFolderAsync(parent, owner.Id);
+            var parentFolder = await game.AddJournalItemAsync(parent, owner.Id);
 
-            var model = new AddJournalFolderModel()
+            var model = new AddJournalItemModel()
             {
-                GameId = game.Id,
                 Name = "folder",
                 ParentFolderId = parentFolder.Id
             };
 
             // Action
-            await game.AddJournalFolderAsync(model, owner.Id);
+            await game.AddJournalItemAsync(model, owner.Id);
             var result = game.JournalItems.FirstOrDefault() as JournalFolder;
 
             // Assert
@@ -288,33 +284,30 @@ namespace Domain.Test.Domain
             };
             var game = new Game("hi", owner);
 
-            var parent = new AddJournalFolderModel()
+            var parent = new AddJournalItemModel()
             {
-                GameId = game.Id,
                 Name = "parent",
                 ParentFolderId = Guid.Empty
             };
 
-            var parentFolder = await game.AddJournalFolderAsync(parent, owner.Id);
+            var parentFolder = await game.AddJournalItemAsync(parent, owner.Id);
 
-            var parent2 = new AddJournalFolderModel()
+            var parent2 = new AddJournalItemModel()
             {
-                GameId = game.Id,
                 Name = "folder",
                 ParentFolderId = parentFolder.Id
             };
 
-            var parentFolder2 = await game.AddJournalFolderAsync(parent2, owner.Id);
+            var parentFolder2 = await game.AddJournalItemAsync(parent2, owner.Id);
 
-            var model = new AddJournalFolderModel()
+            var model = new AddJournalItemModel()
             {
-                GameId = game.Id,
                 Name = "folder",
                 ParentFolderId = parentFolder2.Id
             };
 
             // Action
-            await game.AddJournalFolderAsync(model, owner.Id);
+            await game.AddJournalItemAsync(model, owner.Id);
             var parentResult1 = game.JournalItems.FirstOrDefault() as JournalFolder;
             var parentResult2 = parentResult1.JournalItems.FirstOrDefault() as JournalFolder;
 

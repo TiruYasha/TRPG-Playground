@@ -3,11 +3,10 @@ import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { JournalItem } from 'src/app/models/journal/journalitems/journal-item.model';
 import { JournalService } from './journal.service';
-import { CreateFolderDialogComponent } from './create-folder-dialog/create-folder-dialog.component';
 import { MatDialog } from '@angular/material';
-import { AddJournalFolderRequestModel } from 'src/app/models/journal/requests/AddJournalFolderRequest.model';
+import { AddJournalItemRequestModel } from 'src/app/models/journal/requests/add-journal-folder-request.model';
 import { Guid } from 'src/app/utilities/guid.util';
-import { AddedJournalFolderModel } from 'src/app/models/journal/receives/added-journal-folder.model';
+import { AddedJournalItemModel } from 'src/app/models/journal/receives/added-journal-folder.model';
 import { JournalFolder } from 'src/app/models/journal/journalitems/journal-folder.model';
 import { TreeTraversal } from 'src/app/utilities/tree-traversal.util';
 import { ActiveGameService } from '../services/active-game.service';
@@ -38,7 +37,7 @@ export class JournalComponent implements OnInit {
 
   ngOnInit() {
     this.journalService.setup();
-    this.journalService.journalFolderAdded.subscribe((model: AddedJournalFolderModel) => {
+    this.journalService.journalFolderAdded.subscribe((model: AddedJournalItemModel) => {
       this.addFolderToJournalItems(model);
     });
     this.journalService.getAllJournalItems().subscribe(data => {
@@ -61,7 +60,7 @@ export class JournalComponent implements OnInit {
     }
   }
 
-  addFolderToJournalItems(model: AddedJournalFolderModel): void {
+  addFolderToJournalItems(model: AddedJournalItemModel): void {
     const folder = new JournalFolder();
     folder.name = model.name;
     folder.id = model.id;
@@ -84,7 +83,7 @@ export class JournalComponent implements OnInit {
     this.treeControl.toggle(node);
   }
 
-  private findChild(model: AddedJournalFolderModel) {
+  private findChild(model: AddedJournalItemModel) {
     return TreeTraversal.findChild(model.parentId, this.journalItems,
       (item: JournalItem) => (item as JournalFolder).journalItems, (id: string, item: JournalItem) => id === item.id) as JournalFolder;
   }
@@ -109,9 +108,8 @@ export class JournalComponent implements OnInit {
       return;
     }
 
-    const folderRequest: AddJournalFolderRequestModel = {
+    const folderRequest: AddJournalItemRequestModel = {
       name: folderName,
-      gameId: this.activeGameService.activeGameId,
       parentFolderId: parentFolderId ? parentFolderId : Guid.getEmptyGuid()
     };
 

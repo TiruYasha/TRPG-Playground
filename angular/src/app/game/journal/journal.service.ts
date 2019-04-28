@@ -1,10 +1,9 @@
 import { Subject, Observable } from 'rxjs';
-import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Injectable } from '@angular/core';
-import { AddJournalFolderRequestModel } from 'src/app/models/journal/requests/AddJournalFolderRequest.model';
-import { AddedJournalFolderModel } from 'src/app/models/journal/receives/added-journal-folder.model';
+import { AddJournalItemRequestModel } from 'src/app/models/journal/requests/add-journal-folder-request.model';
+import { AddedJournalItemModel } from 'src/app/models/journal/receives/added-journal-folder.model';
 import { JournalItem } from 'src/app/models/journal/journalitems/journal-item.model';
 import { ActiveGameService } from '../services/active-game.service';
 
@@ -12,7 +11,7 @@ import { ActiveGameService } from '../services/active-game.service';
     providedIn: 'root'
 })
 export class JournalService {
-    private journalFolderAddedSubject = new Subject<AddedJournalFolderModel>();
+    private journalFolderAddedSubject = new Subject<AddedJournalItemModel>();
     journalFolderAdded = this.journalFolderAddedSubject.asObservable();
 
     constructor(private http: HttpClient, private activeGameService: ActiveGameService) { }
@@ -21,7 +20,7 @@ export class JournalService {
         this.registerOnServerEvents();
     }
 
-    addFolderToGame(model: AddJournalFolderRequestModel) {
+    addFolderToGame(model: AddJournalItemRequestModel) {
         return this.http.post(environment.apiUrl + '/journal/addJournalFolder', model);
     }
 
@@ -30,7 +29,7 @@ export class JournalService {
     }
 
     private registerOnServerEvents(): void {
-        this.activeGameService.hubConnection.on('JournalFolderAdded', (data: AddedJournalFolderModel) => {
+        this.activeGameService.hubConnection.on('JournalFolderAdded', (data: AddedJournalItemModel) => {
             this.journalFolderAddedSubject.next(data);
         });
     }

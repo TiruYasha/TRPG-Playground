@@ -46,13 +46,14 @@ namespace RestApi
 
         [HttpPost]
         [Route("AddJournalFolder")]
-        public async Task<IActionResult> AddJournalFolderAsync([FromBody] AddJournalFolderModel model)
+        public async Task<IActionResult> AddJournalFolderAsync([FromBody] AddJournalItemModel model)
         {
             var userId = jwtReader.GetUserId();
+            var gameId = jwtReader.GetGameId();
 
-            var journalFolder = await journalService.AddJournalFolderToGameAsync(model, userId);
+            var journalFolder = await journalService.AddJournalItemToGameAsync(model, gameId, userId);
 
-            var message = mapper.Map<JournalFolder, AddedJournalFolderModel>(journalFolder);
+            var message = mapper.Map<JournalItem, AddedJournalFolderModel>(journalFolder);
             message.ParentId = model.ParentFolderId;
 
             await hubContext.Clients.User(userId.ToString()).SendAsync("JournalFolderAdded", message);

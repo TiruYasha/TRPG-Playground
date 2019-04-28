@@ -31,12 +31,12 @@ namespace Service.Test
         [TestMethod]
         public async Task AddFolderToGameJournal()
         {
-            var model = new AddJournalFolderModel
+            var model = new AddJournalItemModel
             {
-                GameId = Guid.NewGuid(),
                 Name = "Folder",
                 ParentFolderId = Guid.NewGuid()
             };
+            var gameId = Guid.NewGuid();
 
             var userId = Guid.NewGuid();
 
@@ -44,10 +44,10 @@ namespace Service.Test
 
             var folder = new JournalFolder();
 
-            gameRepository.Setup(g => g.GetGameByIdAsync(model.GameId)).ReturnsAsync(game.Object);
-            game.Setup(g => g.AddJournalFolderAsync(model, userId)).ReturnsAsync(folder);
+            gameRepository.Setup(g => g.GetGameByIdAsync(gameId)).ReturnsAsync(game.Object);
+            game.Setup(g => g.AddJournalItemAsync(model, userId)).ReturnsAsync(folder);
 
-            var result = await sut.AddJournalFolderToGameAsync(model, userId);
+            var result = await sut.AddJournalItemToGameAsync(model, gameId, userId);
 
             result.ShouldBe(folder);
         }
