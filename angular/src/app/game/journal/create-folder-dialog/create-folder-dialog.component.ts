@@ -3,13 +3,14 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { CreateFolderDialogModel } from './create-folder-dialog.model';
 import { ParentDialogComponent } from '../parent-dialog/parent-dialog.component';
 import { FormControl, Validators } from '@angular/forms';
+import { CustomValidators } from 'src/app/utilities/CustomValidators';
 
 @Component({
   selector: 'trpg-create-folder-dialog',
   templateUrl: './create-folder-dialog.component.html'
 })
 export class CreateFolderDialogComponent implements OnInit {
-  name = new FormControl('', [Validators.required, this.noWhitespaceValidator]);
+  name = new FormControl('', [Validators.required, CustomValidators.noWhitespaceValidator]);
 
   constructor(
     public dialogRef: MatDialogRef<ParentDialogComponent>,
@@ -26,11 +27,5 @@ export class CreateFolderDialogComponent implements OnInit {
   Ok() {
     this.data.name = this.name.value;
     this.dialogRef.close(this.data.name);
-  }
-
-  private noWhitespaceValidator(control: FormControl) {
-    const isWhitespace = (control.value || '').trim().length === 0;
-    const isValid = !isWhitespace;
-    return isValid ? null : { 'whitespace': true };
   }
 }

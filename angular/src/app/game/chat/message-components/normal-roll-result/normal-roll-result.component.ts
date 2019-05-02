@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ReceiveMessageModel } from 'src/app/models/chat/receives/receive-message.model';
-import { NormalDiceRollCommandResult } from 'src/app/models/chat/receives/command-results/normal-dice-roll-command-result.model';
+import { NormalDiceRollCommandResult } from 'src/app/models/chat/command-results/normal-dice-roll-command-result.model';
 
 @Component({
   selector: 'trpg-normal-roll-result',
