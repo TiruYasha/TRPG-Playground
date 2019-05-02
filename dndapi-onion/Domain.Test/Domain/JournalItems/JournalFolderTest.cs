@@ -1,5 +1,6 @@
 ﻿using Domain.Domain.JournalItems;
 using Domain.Exceptions;
+using Domain.RequestModels.Journal;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using System;
@@ -28,21 +29,22 @@ namespace Domain.Test.Domain.JournalItems
         [TestMethod]
         public void ConstructorSetsTheName()
         {
-            var name = "folder";
+            var model = new AddJournalItemModel
+            {
+                Name = "hi"
+            };
 
-            var result = new JournalFolder(name);
+            var result = new JournalFolder(model);
 
-            result.Name.ShouldBe(name);
+            result.Name.ShouldBe(model.Name);
         }
 
         [TestMethod]
         public void ConstructorThrowsJournalItemExceptionOnEmptyName()
         {
-            var name = "";
+            var result = Should.Throw<JournalItemException>(() => new JournalFolder(new AddJournalItemModel()));
 
-            var result = Should.Throw<JournalItemException>(() => new JournalFolder(name));
-
-            result.Message.ShouldBe("The folder name is empty");
+            result.Message.ShouldBe("The name is empty");
         }
 
         [TestMethod]

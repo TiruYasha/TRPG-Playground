@@ -17,11 +17,11 @@ namespace Service
             this.gameRepository = gameRepository;
         }
 
-        public async Task<JournalFolder> AddJournalFolderToGameAsync(AddJournalFolderModel model, Guid userId)
+        public async Task<JournalItem> AddJournalItemToGameAsync(AddJournalItemModel model, Guid gameId, Guid userId)
         {
-            var game = await gameRepository.GetGameByIdAsync(model.GameId);
+            var game = await gameRepository.GetGameByIdAsync(gameId);
 
-            var result = await game.AddJournalFolderAsync(model, userId);
+            var result = await game.AddJournalItemAsync(model, userId);
 
             await gameRepository.UpdateGameAsync(game);
 

@@ -1,4 +1,5 @@
 ﻿using Domain.Exceptions;
+using Domain.RequestModels.Journal;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,27 +10,16 @@ namespace Domain.Domain.JournalItems
     public class JournalFolder : JournalItem
     {
         public virtual ICollection<JournalItem> JournalItems { get; set; }
-        public JournalFolder() : this("t")
+        public JournalFolder() : base(JournalItemType.Folder, "t")
         {
-           
-        }
-
-        public JournalFolder(string name) : base(JournalItemType.Folder, name)
-        {
-            CheckArguments(name);
-
-            Name = name;
             JournalItems = new List<JournalItem>();
         }
 
-        private void CheckArguments(string name)
+        public JournalFolder(AddJournalItemModel model) : base(JournalItemType.Folder, model.Name)
         {
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                throw new JournalItemException("The folder name is empty");
-            }
+            JournalItems = new List<JournalItem>();
         }
-
+     
         public void AddJournalItem(JournalItem item)
         {
             if(item == null)

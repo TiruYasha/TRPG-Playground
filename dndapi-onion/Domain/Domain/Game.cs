@@ -83,7 +83,7 @@ namespace Domain.Domain
             });
         }
 
-        public virtual Task<JournalFolder> AddJournalFolderAsync(AddJournalFolderModel model, Guid userId)
+        public virtual Task<JournalItem> AddJournalItemAsync(AddJournalItemModel model, Guid userId)
         {
             return Task.Run(() =>
             {
@@ -92,23 +92,23 @@ namespace Domain.Domain
                     throw new PermissionException("This is an illegal action! It is only possible for gamemasters to add journal items.");
                 }
 
-                var folder = new JournalFolder(model.Name);
+                var journalItem = JournalItemFactory.Create(model);
                 var parent = GetParentFolder(model);
 
                 if (parent != null)
                 {
-                    parent.AddJournalItem(folder);
+                    parent.AddJournalItem(journalItem);
                 }
                 else
                 {
-                    JournalItems.Add(folder);
+                    JournalItems.Add(journalItem);
                 }
 
-                return folder;
+                return journalItem;
             });
         }
 
-        private JournalFolder GetParentFolder(AddJournalFolderModel model)
+        private JournalFolder GetParentFolder(AddJournalItemModel model)
         {
             var items = JournalItems.Select(s => s as JournalFolder).ToList();
             return GetParentsFolderRecursion(items, model.ParentFolderId);

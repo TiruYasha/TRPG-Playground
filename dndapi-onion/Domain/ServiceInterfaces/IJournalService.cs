@@ -9,7 +9,7 @@ namespace Domain.ServiceInterfaces
 {
     public interface IJournalService
     {
-        Task<JournalFolder> AddJournalFolderToGameAsync(AddJournalFolderModel model, Guid userId);
+        Task<JournalItem> AddJournalItemToGameAsync(AddJournalItemModel model, Guid gameId, Guid userId);
         Task<ICollection<JournalItem>> GetAllJournalItemsAsync(Guid gameId);
     }
 }
