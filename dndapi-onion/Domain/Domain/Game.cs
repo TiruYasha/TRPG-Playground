@@ -110,13 +110,13 @@ namespace Domain.Domain
 
         private JournalFolder GetParentFolder(AddJournalItemModel model)
         {
-            var items = JournalItems.Select(s => s as JournalFolder).ToList();
+            var items = JournalItems.Where(w => w.Type == JournalItemType.Folder).Select(s => s as JournalFolder).ToList();
             return GetParentsFolderRecursion(items, model.ParentFolderId);
         }
 
         private JournalFolder GetParentsFolderRecursion(ICollection<JournalFolder> folders, Guid parentId)
         {
-            if (folders == null)
+            if (folders == null || parentId == Guid.Empty)
             {
                 return null;
             }

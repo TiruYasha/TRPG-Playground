@@ -1,5 +1,6 @@
 ﻿using Domain.Domain.JournalItems;
 using Domain.RequestModels.Journal;
+using Domain.RequestModels.Journal.JournalItems;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using System;
@@ -14,15 +15,24 @@ namespace Domain.Test.Domain.JournalItems
         [TestMethod]
         public void ConstructorSetsTheHandoutData()
         {
-            //var model = new AddJournalItemModel
-            //{
-            //    Name = "test"
-            //};
+            var handoutModel = new JournalHandoutModel
+            {
+                Name = "handout",
+                Description = "description",
+                OwnerNotes = "ownerNotes"
+            };
 
-            //var result = new JournalHandout(model);
+            var model = new AddJournalItemModel
+            {
+               JournalItem = handoutModel
+            };
 
-            //result.Type.ShouldBe(JournalItemType.Handout);
-            //result.Name.ShouldBe(model.Name);
+            var result = new JournalHandout(model);
+
+            result.Type.ShouldBe(JournalItemType.Handout);
+            result.Name.ShouldBe(handoutModel.Name);
+            result.Description.ShouldBe(handoutModel.Description);
+            result.OwnerNotes.ShouldBe(handoutModel.OwnerNotes);
         }
     }
 }

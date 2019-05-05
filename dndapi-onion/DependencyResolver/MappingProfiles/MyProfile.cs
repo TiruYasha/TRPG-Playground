@@ -24,7 +24,8 @@ namespace DependencyResolver.MappingProfiles
             CreateMap<DefaultCommand, DefaultCommandResult>();
             CreateMap<NormalDiceRollCommand, NormalDiceRollCommandResult>();
 
-            CreateMap<JournalFolder, AddedJournalFolderModel>();
+            CreateMap<JournalFolder, AddedJournalItemModel>();
+            CreateMap<JournalHandout, AddedJournalItemModel>();
 
             CreateMap<JournalItem, JournalItemModel>()
                 .Include<JournalFolder, JournalFolderModel>();

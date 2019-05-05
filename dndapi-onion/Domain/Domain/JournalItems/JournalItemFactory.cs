@@ -13,6 +13,8 @@ namespace Domain.Domain.JournalItems
             {
                 case JournalItemType.Folder:
                     return new JournalFolder(model);
+                case JournalItemType.Handout:
+                    return new JournalHandout(model);
                 default:
                     throw new NotImplementedException();
             }

@@ -7,7 +7,6 @@ import { JournalItemType } from 'src/app/models/journal/journalitems/journal-ite
 import { JournalService } from '../journal.service';
 import { JournalHandout } from 'src/app/models/journal/journalitems/journal-handout.model';
 import { AddJournalItemRequestModel } from 'src/app/models/journal/requests/add-journal-folder-request.model';
-import { JournalFolder } from 'src/app/models/journal/journalitems/journal-folder.model';
 
 @Component({
   selector: 'trpg-journal-parent-dialog',
@@ -53,8 +52,7 @@ export class ParentDialogComponent implements OnInit {
       parentFolderId: this.data.parentFolderId,
       journalItem: journalItem
     };
-    console.log(request);
-    this.journalService.addJournalItemToGame(request).subscribe();
+    this.journalService.addJournalItemToGame(request).subscribe(() => this.exitDialog());
   }
 
   saveHandout(journalItem: JournalHandout) {
@@ -73,6 +71,7 @@ export class ParentDialogComponent implements OnInit {
       .subscribe(i => {
         // TODO integrate with newer backend
         // TODO upload image
+        this.exitDialog();
       });
   }
 

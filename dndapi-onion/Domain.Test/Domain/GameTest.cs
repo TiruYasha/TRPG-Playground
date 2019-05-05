@@ -268,7 +268,6 @@ namespace Domain.Test.Domain
                 Name = "parent"
             };
 
-
             var parent = new AddJournalItemModel()
             {
                 JournalItem = parentFolderModel,
@@ -340,11 +339,65 @@ namespace Domain.Test.Domain
 
             // Action
             await game.AddJournalItemAsync(model, owner.Id);
-            var parentResult1 = game.JournalItems.FirstOrDefault() as JournalFolder;
-            var parentResult2 = parentResult1.JournalItems.FirstOrDefault() as JournalFolder;
+            var parentResult1 = game.JournalItems.FirstOrDefault(j => j.Type == JournalItemType.Folder) as JournalFolder;
+            var parentResult2 = parentResult1.JournalItems.FirstOrDefault(j => j.Type == JournalItemType.Folder) as JournalFolder;
 
             // Assert
             parentResult2.JournalItems.Count.ShouldBe(1);
+        }
+
+        [TestMethod]
+        public async Task AddJournalItemAsyncFixNullReferenceExceptionWhenOtherJournalItemsTypeExist()
+        {
+            // Arrange
+            var owner = new User()
+            {
+                Id = Guid.NewGuid()
+            };
+            var game = new Game("hi", owner);
+
+            var parentFolderModel = new JournalFolderModel
+            {
+                Name = "parent"
+            };
+
+            var parent = new AddJournalItemModel()
+            {
+                JournalItem = parentFolderModel,
+                ParentFolderId = Guid.Empty
+            };
+
+            var handoutModel = new JournalHandoutModel
+            {
+                Name = "test"
+            };
+
+            var handout = new AddJournalItemModel()
+            {
+                JournalItem = handoutModel,
+                ParentFolderId = Guid.Empty
+            };
+
+            await game.AddJournalItemAsync(handout, owner.Id);
+            var parentFolder = await game.AddJournalItemAsync(parent, owner.Id);
+
+            var folder = new JournalFolderModel
+            {
+                Name = "folder"
+            };
+
+            var model = new AddJournalItemModel()
+            {
+                JournalItem = folder,
+                ParentFolderId = parentFolder.Id
+            };
+
+            // Action
+            await game.AddJournalItemAsync(model, owner.Id);
+            var result = game.JournalItems.FirstOrDefault(j => j.Type == JournalItemType.Folder) as JournalFolder;
+
+            // Assert
+            result.JournalItems.Count.ShouldBe(1);
         }
     }
 }

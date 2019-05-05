@@ -16,13 +16,13 @@ namespace Domain.Domain.JournalItems
 
         private JournalItem() { }
 
-        public JournalItem(JournalItemType type, string name, string imagePath, ICollection<User> canSee, ICollection<User> canEdit)
+        public JournalItem(JournalItemType type, string name, string imageId, ICollection<User> canSee, ICollection<User> canEdit)
         {
             CheckArguments(name);
             Id = Guid.NewGuid();
             Type = type;
             Name = name;
-            ImageId = imagePath;
+            ImageId = imageId;
             CreatedOn = DateTime.UtcNow;
             LastEditedOn = DateTime.UtcNow;
         }

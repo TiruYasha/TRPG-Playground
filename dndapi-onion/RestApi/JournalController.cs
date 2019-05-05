@@ -53,7 +53,7 @@ namespace RestApi
 
             var journalFolder = await journalService.AddJournalItemToGameAsync(model, gameId, userId);
 
-            var message = mapper.Map<JournalItem, AddedJournalFolderModel>(journalFolder);
+            var message = mapper.Map<JournalItem, AddedJournalItemModel>(journalFolder);
             message.ParentId = model.ParentFolderId;
 
             await hubContext.Clients.User(userId.ToString()).SendAsync("JournalFolderAdded", message);

@@ -13,6 +13,8 @@ import { Player } from 'src/app/models/game/player.model';
 import { ParentDialogComponent } from './parent-dialog/parent-dialog.component';
 import { ParentDialogModel } from './parent-dialog/parent-dialog.model';
 import { JournalHandout } from 'src/app/models/journal/journalitems/journal-handout.model';
+import { JournalItemType } from 'src/app/models/journal/journalitems/journal-item-type.enum';
+import { JournalNodeContextMenuClick } from './journal-node/journal-node-context-menu-click.model';
 
 @Component({
   selector: 'trpg-journal',
@@ -30,7 +32,7 @@ export class JournalComponent implements OnInit {
   treeControl = new NestedTreeControl<JournalItem>((node: JournalFolder) => node.journalItems);
   dataSource = new MatTreeNestedDataSource<JournalItem>();
 
-  hasChild = (_: number, node: JournalFolder) => !!node.journalItems;
+  hasChild = (_: number, node: JournalItem) => node.type === JournalItemType.Folder;
 
   constructor(private journalService: JournalService, private activeGameService: ActiveGameService, public dialog: MatDialog) {
     this.dataSource.data = this.journalItems;
@@ -67,22 +69,23 @@ export class JournalComponent implements OnInit {
   }
 
   addJournalItem(model: AddedJournalItemModel): void {
-    const folder = new JournalFolder();
-    folder.name = model.name;
-    folder.id = model.id;
+    const journalItem = new JournalItem(model.type);
+    journalItem.name = model.name;
+    journalItem.id = model.id;
+    journalItem.imageId = model.imageId;
 
     if (model.parentId !== Guid.getEmptyGuid()) {
       const child = this.findChild(model);
-      child.journalItems.push(folder);
+      child.journalItems.push(journalItem);
     } else {
-      this.journalItems.push(folder);
+      this.journalItems.push(journalItem);
     }
 
     this.refreshDataSource();
   }
 
-  addJournalFolderToParent(parentFolder: JournalFolder) {
-    this.openDialog(new JournalFolder(), parentFolder.id);
+  addJournalItemToParent(click: JournalNodeContextMenuClick) {
+    this.openDialog(click.item, click.id);
   }
 
   clickFolder(node: JournalItem) {

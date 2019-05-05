@@ -1,5 +1,10 @@
+import { JournalItemType } from '../journalitems/journal-item-type.enum';
+
 export class AddedJournalItemModel {
-    public id: string;
-    public name: string;
-    public parentId: string;
+    id: string;
+    name: string;
+    parentId: string;
+    imageId: string;
+    type: JournalItemType;
+
 }

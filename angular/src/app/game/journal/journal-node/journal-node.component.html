@@ -1,10 +1,11 @@
 <mat-menu #appMenu="matMenu">
-  <button mat-menu-item *ngIf="isOwner" (click)="addFolder()">Add folder</button>
+  <button mat-menu-item *ngIf="isOwner && journalItem.type === type.Folder" (click)="addFolder()">Add folder</button>
+  <button mat-menu-item *ngIf="isOwner && journalItem.type === type.Folder" (click)="addHandout()">Add handout</button>
   <button mat-menu-item>Help</button>
 </mat-menu>
 
 <div class="node-container" (contextmenu)="triggerMenu($event)" (click)="clickedFolder()" #trigger>
-  {{journalNode.name}}
+  {{journalItem.name}}
   <div #menuButton style="position: absolute">
     <button mat-button [matMenuTriggerFor]="appMenu" style="display: ''">
 
