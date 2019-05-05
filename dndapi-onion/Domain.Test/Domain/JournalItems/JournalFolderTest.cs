@@ -27,27 +27,6 @@ namespace Domain.Test.Domain.JournalItems
         }
 
         [TestMethod]
-        public void ConstructorSetsTheName()
-        {
-            var model = new AddJournalItemModel
-            {
-                Name = "hi"
-            };
-
-            var result = new JournalFolder(model);
-
-            result.Name.ShouldBe(model.Name);
-        }
-
-        [TestMethod]
-        public void ConstructorThrowsJournalItemExceptionOnEmptyName()
-        {
-            var result = Should.Throw<JournalItemException>(() => new JournalFolder(new AddJournalItemModel()));
-
-            result.Message.ShouldBe("The name is empty");
-        }
-
-        [TestMethod]
         public void AddJournalItemAddsTheJournalItem()
         {
             var journalItem = new JournalFolder();

@@ -10,12 +10,12 @@ namespace Domain.Domain.JournalItems
     public class JournalFolder : JournalItem
     {
         public virtual ICollection<JournalItem> JournalItems { get; set; }
-        public JournalFolder() : base(JournalItemType.Folder, "t")
+        public JournalFolder() : base(JournalItemType.Folder, "t", null, null, null)
         {
             JournalItems = new List<JournalItem>();
         }
 
-        public JournalFolder(AddJournalItemModel model) : base(JournalItemType.Folder, model.Name)
+        public JournalFolder(AddJournalItemModel model) : base(JournalItemType.Folder, model.Name, null, null, null)
         {
             JournalItems = new List<JournalItem>();
         }

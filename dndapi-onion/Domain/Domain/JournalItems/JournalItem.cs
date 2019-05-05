@@ -1,6 +1,5 @@
 ﻿using Domain.Exceptions;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Domain.Domain.JournalItems
@@ -8,7 +7,7 @@ namespace Domain.Domain.JournalItems
     public abstract class JournalItem
     {
         public Guid Id { get; set; }
-        public string Name { get; set;  }
+        public string Name { get; set; }
         public string ImagePath { get; set; }
         public JournalItemType Type { get; set; }
         public DateTime CreatedOn { get; set; }
@@ -17,15 +16,15 @@ namespace Domain.Domain.JournalItems
 
         private JournalItem() { }
 
-        public JournalItem(JournalItemType type, string name)
+        public JournalItem(JournalItemType type, string name, string imagePath, ICollection<User> canSee, ICollection<User> canEdit)
         {
             CheckArguments(name);
             Id = Guid.NewGuid();
-            this.Type = type;
-            this.Name = name;
+            Type = type;
+            Name = name;
+            ImagePath = imagePath;
             CreatedOn = DateTime.UtcNow;
             LastEditedOn = DateTime.UtcNow;
-            Pemissions = new List<JournalItemPemission>();
         }
 
         private void CheckArguments(string name)
@@ -35,6 +34,5 @@ namespace Domain.Domain.JournalItems
                 throw new JournalItemException("The name is empty");
             }
         }
-
     }
 }

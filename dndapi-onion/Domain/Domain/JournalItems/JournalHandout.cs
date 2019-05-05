@@ -9,7 +9,7 @@ namespace Domain.Domain.JournalItems
     {
         public string Description { get; set; }
         public string OwnerNotes { get; set; }
-        public JournalHandout(AddJournalItemModel model) : base(JournalItemType.Handout, model.Name)
+        public JournalHandout(AddJournalItemModel model) : base(JournalItemType.Handout, model.Name, null, null,null)
         {
 
         }
