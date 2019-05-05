@@ -4,7 +4,13 @@
     <mat-icon class="clickPointer" (click)="exitDialog()">close</mat-icon>
   </div>
   <div #dialogContainer class="content">
-    <trpg-create-folder-dialog></trpg-create-folder-dialog>
+    <trpg-create-folder-dialog *ngIf="data.data.type === handoutType.Folder"
+      (journalItem)="saveJournalItem($event)"
+      (close)="exitDialog()"></trpg-create-folder-dialog>
+    <trpg-create-handout-dialog *ngIf="data.data.type === handoutType.Handout" 
+      [players]="data.players" 
+      [data]="data.data"
+      (journalItem)="saveJournalItem($event)"></trpg-create-handout-dialog>
   </div>
   <div style="height: 20px" (mousedown)="startResize($event)"></div>
 </div>

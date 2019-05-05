@@ -11,8 +11,8 @@ import { ActiveGameService } from '../services/active-game.service';
     providedIn: 'root'
 })
 export class JournalService {
-    private journalFolderAddedSubject = new Subject<AddedJournalItemModel>();
-    journalFolderAdded = this.journalFolderAddedSubject.asObservable();
+    private journalItemAddedSubject = new Subject<AddedJournalItemModel>();
+    journalItemAdded = this.journalItemAddedSubject.asObservable();
 
     constructor(private http: HttpClient, private activeGameService: ActiveGameService) { }
 
@@ -20,7 +20,7 @@ export class JournalService {
         this.registerOnServerEvents();
     }
 
-    addFolderToGame(model: AddJournalItemRequestModel) {
+    addJournalItemToGame(model: AddJournalItemRequestModel) {
         return this.http.post(environment.apiUrl + '/journal/addJournalFolder', model);
     }
 
@@ -30,7 +30,7 @@ export class JournalService {
 
     private registerOnServerEvents(): void {
         this.activeGameService.hubConnection.on('JournalFolderAdded', (data: AddedJournalItemModel) => {
-            this.journalFolderAddedSubject.next(data);
+            this.journalItemAddedSubject.next(data);
         });
     }
 }

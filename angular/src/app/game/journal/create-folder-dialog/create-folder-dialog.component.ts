@@ -1,31 +1,28 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { CreateFolderDialogModel } from './create-folder-dialog.model';
-import { ParentDialogComponent } from '../parent-dialog/parent-dialog.component';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { CustomValidators } from 'src/app/utilities/CustomValidators';
+import { ValidatorFunctions } from 'src/app/utilities/validator-functions';
+import { JournalFolder } from 'src/app/models/journal/journalitems/journal-folder.model';
+import { JournalItem } from 'src/app/models/journal/journalitems/journal-item.model';
 
 @Component({
   selector: 'trpg-create-folder-dialog',
   templateUrl: './create-folder-dialog.component.html'
 })
-export class CreateFolderDialogComponent implements OnInit {
-  name = new FormControl('', [Validators.required, CustomValidators.noWhitespaceValidator]);
+export class CreateFolderDialogComponent {
+  @Output() journalItem = new EventEmitter<JournalItem>();
+  @Output() close = new EventEmitter();
 
-  constructor(
-    public dialogRef: MatDialogRef<ParentDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: CreateFolderDialogModel) { }
+  name = new FormControl('', [Validators.required, ValidatorFunctions.noWhitespaceValidator]);
 
-  ngOnInit(): void {
-    this.name.setValue(this.data.name);
-  }
+  constructor() { }
 
   onNoClick(): void {
-    this.dialogRef.close();
+    this.close.emit();
   }
 
   Ok() {
-    this.data.name = this.name.value;
-    this.dialogRef.close(this.data.name);
+    const folder = new JournalFolder();
+    folder.name = this.name.value;
+    this.journalItem.emit(folder);
   }
 }

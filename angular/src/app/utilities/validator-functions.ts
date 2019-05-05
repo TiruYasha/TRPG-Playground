@@ -1,6 +1,6 @@
 import { FormControl } from '@angular/forms';
 
-export class CustomValidators {
+export class ValidatorFunctions {
     static noWhitespaceValidator(control: FormControl) {
         const isWhitespace = (control.value || '').trim().length === 0;
         const isValid = !isWhitespace;

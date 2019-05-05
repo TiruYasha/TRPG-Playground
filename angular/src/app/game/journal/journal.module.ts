@@ -5,7 +5,14 @@ import { MatTreeModule } from '@angular/material/tree';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { SharedModule } from 'src/app/shared/components/shared.module';
-import { MatFormFieldModule, MatDialogModule, MatInputModule, MatMenuModule, MatAutocompleteModule } from '@angular/material';
+import {
+  MatFormFieldModule,
+  MatDialogModule,
+  MatInputModule,
+  MatMenuModule,
+  MatAutocompleteModule,
+  MatSelectModule,
+} from '@angular/material';
 import { CreateFolderDialogComponent } from './create-folder-dialog/create-folder-dialog.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { JournalNodeComponent } from './journal-node/journal-node.component';
@@ -27,7 +34,8 @@ import { ParentDialogComponent } from './parent-dialog/parent-dialog.component';
     SharedModule,
     MatAutocompleteModule,
     DragDropModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatSelectModule
   ],
   exports: [
     JournalComponent

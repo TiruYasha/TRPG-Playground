@@ -1,10 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { JournalItem } from 'src/app/models/journal/journalitems/journal-item.model';
 import { JournalService } from './journal.service';
 import { MatDialog } from '@angular/material';
-import { AddJournalItemRequestModel } from 'src/app/models/journal/requests/add-journal-folder-request.model';
 import { Guid } from 'src/app/utilities/guid.util';
 import { AddedJournalItemModel } from 'src/app/models/journal/receives/added-journal-folder.model';
 import { JournalFolder } from 'src/app/models/journal/journalitems/journal-folder.model';
@@ -12,6 +11,8 @@ import { TreeTraversal } from 'src/app/utilities/tree-traversal.util';
 import { ActiveGameService } from '../services/active-game.service';
 import { Player } from 'src/app/models/game/player.model';
 import { ParentDialogComponent } from './parent-dialog/parent-dialog.component';
+import { ParentDialogModel } from './parent-dialog/parent-dialog.model';
+import { JournalHandout } from 'src/app/models/journal/journalitems/journal-handout.model';
 
 @Component({
   selector: 'trpg-journal',
@@ -37,8 +38,8 @@ export class JournalComponent implements OnInit {
 
   ngOnInit() {
     this.journalService.setup();
-    this.journalService.journalFolderAdded.subscribe((model: AddedJournalItemModel) => {
-      this.addFolderToJournalItems(model);
+    this.journalService.journalItemAdded.subscribe((model: AddedJournalItemModel) => {
+      this.addJournalItem(model);
     });
     this.journalService.getAllJournalItems().subscribe(data => {
       this.journalItems = data;
@@ -55,12 +56,17 @@ export class JournalComponent implements OnInit {
   }
 
   subIconClicked(icon: string) {
-    if (icon === 'create_new_folder') {
-      this.openCreateNewFolderDialog();
+    switch (icon) {
+      case this.subIcons[0]:
+        this.openDialog(new JournalFolder());
+        break;
+      case this.subIcons[2]:
+        this.openDialog(new JournalHandout());
+        break;
     }
   }
 
-  addFolderToJournalItems(model: AddedJournalItemModel): void {
+  addJournalItem(model: AddedJournalItemModel): void {
     const folder = new JournalFolder();
     folder.name = model.name;
     folder.id = model.id;
@@ -76,7 +82,7 @@ export class JournalComponent implements OnInit {
   }
 
   addJournalFolderToParent(parentFolder: JournalFolder) {
-    this.openCreateNewFolderDialog(parentFolder.id);
+    this.openDialog(new JournalFolder(), parentFolder.id);
   }
 
   clickFolder(node: JournalItem) {
@@ -93,28 +99,17 @@ export class JournalComponent implements OnInit {
     this.dataSource.data = this.journalItems;
   }
 
-  private openCreateNewFolderDialog(parentFolderId: string = null) {
-    const dialogRef = this.dialog.open(ParentDialogComponent, {
-      width: 'auto',
-      data: { name: '' },
-      hasBackdrop: false
-    });
-
-    dialogRef.afterClosed().subscribe((folderName) => this.createNewFolder(folderName, parentFolderId));
-  }
-
-  private createNewFolder(folderName: string, parentFolderId: string) {
-    if (folderName === void 0) {
-      return;
-    }
-
-    const folderRequest: AddJournalItemRequestModel = {
-      name: folderName,
-      parentFolderId: parentFolderId ? parentFolderId : Guid.getEmptyGuid()
+  private openDialog(journalItem: JournalItem, parentFolderId: string = Guid.getEmptyGuid()) {
+    const data: ParentDialogModel = {
+      players: this.players,
+      isOwner: this.isOwner,
+      parentFolderId: parentFolderId,
+      data: journalItem
     };
-
-    this.journalService.addFolderToGame(folderRequest).subscribe(() => {
-
+    this.dialog.open(ParentDialogComponent, {
+      width: 'auto',
+      data: data,
+      hasBackdrop: false
     });
   }
 }

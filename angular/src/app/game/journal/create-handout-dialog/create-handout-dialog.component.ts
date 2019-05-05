@@ -1,24 +1,71 @@
-import { Component, OnInit, Input, Inject } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
-import { CustomValidators } from 'src/app/utilities/CustomValidators';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ParentDialogComponent } from '../parent-dialog/parent-dialog.component';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Player } from 'src/app/models/game/player.model';
+import { FormControl, Validators, FormGroup } from '@angular/forms';
+import { ValidatorFunctions } from 'src/app/utilities/validator-functions';
 import { JournalHandout } from 'src/app/models/journal/journalitems/journal-handout.model';
+import { Guid } from 'src/app/utilities/guid.util';
 
 @Component({
   selector: 'trpg-create-handout-dialog',
   templateUrl: './create-handout-dialog.component.html',
   styleUrls: ['./create-handout-dialog.component.scss']
 })
-export class CreateHandoutDialogComponent implements OnInit {
-  name = new FormControl('', [Validators.required, CustomValidators.noWhitespaceValidator]);
+export class CreateHandoutDialogComponent {
+  @Input() players: Player[];
+  @Input() data: JournalHandout;
+  @Input() isOwner: boolean;
 
-  constructor(
-    public dialogRef: MatDialogRef<ParentDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: JournalHandout
-  ) { }
+  @Output() journalItem = new EventEmitter<JournalHandout>();
 
-  ngOnInit() {
+  form = new FormGroup({
+    name: new FormControl('', [Validators.required, ValidatorFunctions.noWhitespaceValidator]),
+    canSee: new FormControl(),
+    canEdit: new FormControl(),
+    description: new FormControl(),
+    ownerNotes: new FormControl(),
+    image: new FormControl()
+  });
+
+  constructor() {
   }
 
+  get name() { return this.form.get('name'); }
+  get description() { return this.form.get('description'); }
+  get ownerNotes() { return this.form.get('ownerNotes'); }
+  get canSee() { return this.form.get('canSee'); }
+  get canEdit() { return this.form.get('canEdit'); }
+  get image() { return this.form.get('image'); }
+
+  save() {
+    const canSee = (this.canSee.value as Player[]).map(m => m.userId);
+    const canEdit = (this.canEdit.value as Player[]).map(m => m.userId);
+
+    const handout = new JournalHandout();
+    handout.id = Guid.getEmptyGuid();
+    handout.name = this.name.value;
+    handout.description = this.description.value;
+    handout.ownerNotes = this.ownerNotes.value;
+    handout.canSee = canSee;
+    handout.canEdit = canEdit;
+    handout.image = this.image.value;
+
+    this.journalItem.emit(handout);
+  }
+
+  onImageChange(event: Event) {
+    const target = event.target as HTMLInputElement;
+
+    const reader = new FileReader();
+
+    if (target.files && target.files.length) {
+      const file = target.files[0];
+      reader.readAsDataURL(file);
+
+      reader.onload = () => {
+        this.form.patchValue({
+          image: reader.result
+        });
+      };
+    }
+  }
 }
