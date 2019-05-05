@@ -1,8 +1,10 @@
 import { Player } from 'src/app/models/game/player.model';
-import { JournalItemType } from 'src/app/models/journal/journalitems/journal-item-type.enum';
+import { JournalItem } from 'src/app/models/journal/journalitems/journal-item.model';
+import { Guid } from 'src/app/utilities/guid.util';
 
-export class ParentDialogModel<T> {
+export class ParentDialogModel {
     players: Player[];
-    journalItemType: JournalItemType;
-    data: T;
+    data?: JournalItem;
+    isOwner: boolean;
+    parentFolderId?: string = Guid.getEmptyGuid();
 }

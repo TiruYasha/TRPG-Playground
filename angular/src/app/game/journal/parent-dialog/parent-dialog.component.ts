@@ -1,10 +1,16 @@
 import { Component, OnInit, Inject, ViewChild, ElementRef } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { CreateFolderDialogModel } from '../create-folder-dialog/create-folder-dialog.model';
 import { fromEvent, Observable, Subscription } from 'rxjs';
+import { ParentDialogModel } from './parent-dialog.model';
+import { JournalItem } from 'src/app/models/journal/journalitems/journal-item.model';
+import { JournalItemType } from 'src/app/models/journal/journalitems/journal-item-type.enum';
+import { JournalService } from '../journal.service';
+import { JournalHandout } from 'src/app/models/journal/journalitems/journal-handout.model';
+import { AddJournalItemRequestModel } from 'src/app/models/journal/requests/add-journal-folder-request.model';
+import { JournalFolder } from 'src/app/models/journal/journalitems/journal-folder.model';
 
 @Component({
-  selector: 'trpg-parent-dialog',
+  selector: 'trpg-journal-parent-dialog',
   templateUrl: './parent-dialog.component.html',
   styleUrls: ['./parent-dialog.component.scss']
 })
@@ -20,12 +26,51 @@ export class ParentDialogComponent implements OnInit {
   mouseUp: Observable<Event>;
   mouseUpSubscription: Subscription;
 
+  handoutType = JournalItemType;
+
   constructor(
     public dialogRef: MatDialogRef<ParentDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: CreateFolderDialogModel
+    @Inject(MAT_DIALOG_DATA) public data: ParentDialogModel,
+    private journalService: JournalService
   ) { }
 
   ngOnInit() {
+  }
+
+  saveJournalItem(journalItem: JournalItem) {
+    switch (journalItem.type) {
+      case JournalItemType.Folder:
+        this.saveItem(journalItem);
+        break;
+      case JournalItemType.Handout:
+        this.saveHandout(journalItem as JournalHandout);
+        break;
+    }
+  }
+
+  saveItem(journalItem: JournalItem) {
+    const request: AddJournalItemRequestModel = {
+      parentFolderId: this.data.parentFolderId,
+      journalItem: journalItem
+    };
+    console.log(request);
+    this.journalService.addJournalItemToGame(request).subscribe();
+  }
+
+  saveHandout(journalItem: JournalHandout) {
+    const image = journalItem.image.slice();
+    journalItem.image = null;
+
+    const request: AddJournalItemRequestModel = {
+      parentFolderId: this.data.parentFolderId,
+      journalItem: journalItem
+    };
+
+    this.journalService.addJournalItemToGame(request)
+      .subscribe(i => {
+        // TODO integrate with newer backend
+        // TODO upload image
+      });
   }
 
   exitDialog(): void {

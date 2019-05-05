@@ -78,6 +78,7 @@
               "browserTarget": "dnd:build:production"
             },
             "dev": {
+              "hmr": true,
               "browserTarget": "dnd:build:dev"
             }
           }
