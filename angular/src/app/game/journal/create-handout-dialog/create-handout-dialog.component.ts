@@ -19,11 +19,11 @@ export class CreateHandoutDialogComponent {
 
   form = new FormGroup({
     name: new FormControl('', [Validators.required, ValidatorFunctions.noWhitespaceValidator]),
-    canSee: new FormControl(),
-    canEdit: new FormControl(),
-    description: new FormControl(),
-    ownerNotes: new FormControl(),
-    image: new FormControl()
+    canSee: new FormControl([]),
+    canEdit: new FormControl([]),
+    description: new FormControl(''),
+    ownerNotes: new FormControl(''),
+    image: new FormControl(null)
   });
 
   constructor() {

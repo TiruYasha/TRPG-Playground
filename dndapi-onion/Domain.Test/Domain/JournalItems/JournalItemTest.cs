@@ -24,9 +24,7 @@ namespace Domain.Test.Domain.JournalItems
 
             result.Type.ShouldBe(itemType);
             result.Name.ShouldBe(name);
-            result.ImagePath.ShouldBe(imagePath);
-            result.CanSee.ShouldBe(canSee);
-            result.CanEdit.ShouldBe(canEdit);
+            result.ImageId.ShouldBe(imagePath);
         }
 
         [TestMethod]

@@ -46,7 +46,7 @@ namespace RestApi
 
         [HttpPost]
         [Route("AddJournalFolder")]
-        public async Task<IActionResult> AddJournalFolderAsync([FromBody] AddJournalItemModel model)
+        public async Task<IActionResult> AddJournalItemAsync([FromBody] AddJournalItemModel model)
         {
             var userId = jwtReader.GetUserId();
             var gameId = jwtReader.GetGameId();

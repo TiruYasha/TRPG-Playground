@@ -2,6 +2,7 @@
 using Domain.Domain.JournalItems;
 using Domain.Exceptions;
 using Domain.RequestModels.Journal;
+using Domain.RequestModels.Journal.JournalItems;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using System;
@@ -205,9 +206,14 @@ namespace Domain.Test.Domain
             };
             var game = new Game("hi", owner);
 
+            var folder = new JournalFolderModel
+            {
+                Name = "folder"
+            };
+
             var model = new AddJournalItemModel()
             {
-                Name = "folder",
+                JournalItem = folder,
                 ParentFolderId = Guid.Empty
             };
 
@@ -215,7 +221,7 @@ namespace Domain.Test.Domain
             var result = await game.AddJournalItemAsync(model, owner.Id);
 
             // Assert
-            result.Name.ShouldBe(model.Name);
+            result.Name.ShouldBe(model.JournalItem.Name);
             game.JournalItems.Count.ShouldBe(1);
         }
 
@@ -229,9 +235,14 @@ namespace Domain.Test.Domain
             };
             var game = new Game("hi", owner);
 
+            var folder = new JournalFolderModel
+            {
+                Name = "folder"
+            };
+
             var model = new AddJournalItemModel()
             {
-                Name = "folder",
+                JournalItem = folder,
                 ParentFolderId = Guid.Empty
             };
 
@@ -252,17 +263,28 @@ namespace Domain.Test.Domain
             };
             var game = new Game("hi", owner);
 
+            var parentFolderModel = new JournalFolderModel
+            {
+                Name = "parent"
+            };
+
+
             var parent = new AddJournalItemModel()
             {
-                Name = "parent",
+                JournalItem = parentFolderModel,
                 ParentFolderId = Guid.Empty
             };
 
             var parentFolder = await game.AddJournalItemAsync(parent, owner.Id);
 
+            var folder = new JournalFolderModel
+            {
+                Name = "folder"
+            };
+
             var model = new AddJournalItemModel()
             {
-                Name = "folder",
+                JournalItem = folder,
                 ParentFolderId = parentFolder.Id
             };
 
@@ -284,17 +306,27 @@ namespace Domain.Test.Domain
             };
             var game = new Game("hi", owner);
 
+            var parentFolderModel = new JournalFolderModel
+            {
+                Name = "parent"
+            };
+
             var parent = new AddJournalItemModel()
             {
-                Name = "parent",
+                JournalItem = parentFolderModel,
                 ParentFolderId = Guid.Empty
             };
 
             var parentFolder = await game.AddJournalItemAsync(parent, owner.Id);
 
+            var folderModel = new JournalFolderModel
+            {
+                Name = "folder"
+            };
+
             var parent2 = new AddJournalItemModel()
             {
-                Name = "folder",
+                JournalItem = folderModel,
                 ParentFolderId = parentFolder.Id
             };
 
@@ -302,7 +334,7 @@ namespace Domain.Test.Domain
 
             var model = new AddJournalItemModel()
             {
-                Name = "folder",
+                JournalItem = folderModel,
                 ParentFolderId = parentFolder2.Id
             };
 

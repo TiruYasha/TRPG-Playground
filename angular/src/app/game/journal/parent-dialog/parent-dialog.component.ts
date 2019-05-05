@@ -58,7 +58,10 @@ export class ParentDialogComponent implements OnInit {
   }
 
   saveHandout(journalItem: JournalHandout) {
-    const image = journalItem.image.slice();
+    let image: Blob;
+    if (journalItem.image) {
+      image = journalItem.image.slice();
+    }
     journalItem.image = null;
 
     const request: AddJournalItemRequestModel = {

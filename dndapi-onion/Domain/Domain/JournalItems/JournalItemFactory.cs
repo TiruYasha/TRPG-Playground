@@ -9,7 +9,7 @@ namespace Domain.Domain.JournalItems
     {
         public static JournalItem Create(AddJournalItemModel model)
         {
-            switch (model.JournalItemType)
+            switch (model.JournalItem.Type)
             {
                 case JournalItemType.Folder:
                     return new JournalFolder(model);

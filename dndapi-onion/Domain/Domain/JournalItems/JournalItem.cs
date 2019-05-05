@@ -8,7 +8,7 @@ namespace Domain.Domain.JournalItems
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public string ImagePath { get; set; }
+        public string ImageId { get; set; }
         public JournalItemType Type { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime LastEditedOn { get; set; }
@@ -22,7 +22,7 @@ namespace Domain.Domain.JournalItems
             Id = Guid.NewGuid();
             Type = type;
             Name = name;
-            ImagePath = imagePath;
+            ImageId = imagePath;
             CreatedOn = DateTime.UtcNow;
             LastEditedOn = DateTime.UtcNow;
         }

@@ -2,6 +2,7 @@
 using Domain.Domain.JournalItems;
 using Domain.RepositoryInterfaces;
 using Domain.RequestModels.Journal;
+using Domain.RequestModels.Journal.JournalItems;
 using Domain.ServiceInterfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -33,9 +34,13 @@ namespace Service.Test
         {
             var model = new AddJournalItemModel
             {
-                Name = "Folder",
+                JournalItem = new JournalFolderModel
+                {
+                    Name = "folder"
+                },
                 ParentFolderId = Guid.NewGuid()
             };
+
             var gameId = Guid.NewGuid();
 
             var userId = Guid.NewGuid();

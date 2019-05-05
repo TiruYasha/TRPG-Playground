@@ -15,7 +15,7 @@ namespace Domain.Domain.JournalItems
             JournalItems = new List<JournalItem>();
         }
 
-        public JournalFolder(AddJournalItemModel model) : base(JournalItemType.Folder, model.Name, null, null, null)
+        public JournalFolder(AddJournalItemModel model) : base(JournalItemType.Folder, model.JournalItem.Name, null, null, null)
         {
             JournalItems = new List<JournalItem>();
         }
