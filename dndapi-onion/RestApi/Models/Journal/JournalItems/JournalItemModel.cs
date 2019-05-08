@@ -1,7 +1,5 @@
 ﻿using Domain.Domain.JournalItems;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace RestApi.Models.Journal.JournalItems
 {

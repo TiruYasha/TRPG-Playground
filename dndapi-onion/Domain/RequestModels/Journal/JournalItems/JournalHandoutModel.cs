@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Domain.RequestModels.Journal.JournalItems
+﻿namespace Domain.RequestModels.Journal.JournalItems
 {
     public class JournalHandoutModel : JournalItemModel
     {

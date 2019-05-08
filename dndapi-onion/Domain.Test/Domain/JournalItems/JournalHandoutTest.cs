@@ -4,8 +4,6 @@ using Domain.RequestModels.Journal.JournalItems;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Domain.Test.Domain.JournalItems
 {
@@ -27,7 +25,7 @@ namespace Domain.Test.Domain.JournalItems
                JournalItem = handoutModel
             };
 
-            var result = new JournalHandout(model);
+            var result = new JournalHandout(model, Guid.NewGuid());
 
             result.Type.ShouldBe(JournalItemType.Handout);
             result.Name.ShouldBe(handoutModel.Name);

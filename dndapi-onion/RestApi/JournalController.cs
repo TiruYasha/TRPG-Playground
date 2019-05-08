@@ -45,7 +45,7 @@ namespace RestApi
         }
 
         [HttpPost]
-        [Route("AddJournalFolder")]
+        [Route("AddJournalItem")]
         public async Task<IActionResult> AddJournalItemAsync([FromBody] AddJournalItemModel model)
         {
             var userId = jwtReader.GetUserId();
@@ -56,7 +56,7 @@ namespace RestApi
             var message = mapper.Map<JournalItem, AddedJournalItemModel>(journalFolder);
             message.ParentId = model.ParentFolderId;
 
-            await hubContext.Clients.User(userId.ToString()).SendAsync("JournalFolderAdded", message);
+            await hubContext.Clients.User(userId.ToString()).SendAsync("JournalItemAdded", message);
 
             return Ok();
         }

@@ -1,6 +1,4 @@
 ﻿using Domain.Domain.JournalItems;
-using Domain.Exceptions;
-using Domain.RequestModels.Journal;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using System;

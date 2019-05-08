@@ -92,7 +92,7 @@ namespace Domain.Domain
                     throw new PermissionException("This is an illegal action! It is only possible for gamemasters to add journal items.");
                 }
 
-                var journalItem = JournalItemFactory.Create(model);
+                var journalItem = JournalItemFactory.Create(model, Id);
                 var parent = GetParentFolder(model);
 
                 if (parent != null)

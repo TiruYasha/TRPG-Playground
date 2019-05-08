@@ -1,21 +1,18 @@
-﻿using Domain.Exceptions;
-using Domain.RequestModels.Journal;
+﻿using Domain.RequestModels.Journal;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Domain.Domain.JournalItems
 {
     public class JournalFolder : JournalItem
     {
         public virtual ICollection<JournalItem> JournalItems { get; set; }
-        public JournalFolder() : base(JournalItemType.Folder, "t", null, null, null)
+        public JournalFolder() : base()
         {
             JournalItems = new List<JournalItem>();
         }
 
-        public JournalFolder(AddJournalItemModel model) : base(JournalItemType.Folder, model.JournalItem.Name, null, null, null)
+        public JournalFolder(AddJournalItemModel model, Guid gameId) : base(JournalItemType.Folder, model.JournalItem.Name, gameId, null, null, null)
         {
             JournalItems = new List<JournalItem>();
         }

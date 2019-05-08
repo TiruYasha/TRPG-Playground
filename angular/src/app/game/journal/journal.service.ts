@@ -21,7 +21,7 @@ export class JournalService {
     }
 
     addJournalItemToGame(model: AddJournalItemRequestModel) {
-        return this.http.post(environment.apiUrl + '/journal/addJournalFolder', model);
+        return this.http.post(environment.apiUrl + '/journal/AddJournalItem', model);
     }
 
     getAllJournalItems(): Observable<JournalItem[]> {
@@ -29,7 +29,7 @@ export class JournalService {
     }
 
     private registerOnServerEvents(): void {
-        this.activeGameService.hubConnection.on('JournalFolderAdded', (data: AddedJournalItemModel) => {
+        this.activeGameService.hubConnection.on('JournalItemAdded', (data: AddedJournalItemModel) => {
             this.journalItemAddedSubject.next(data);
         });
     }

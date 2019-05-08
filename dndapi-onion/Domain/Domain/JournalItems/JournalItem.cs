@@ -12,19 +12,41 @@ namespace Domain.Domain.JournalItems
         public JournalItemType Type { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime LastEditedOn { get; set; }
-        public virtual ICollection<JournalItemPemission> Pemissions { get; set; }
+        public virtual Game Game { get; set; }
+        public Guid GameId { get; }
+        public virtual ICollection<JournalItemPemission> Permissions { get; set; }
 
-        private JournalItem() { }
+        public JournalItem() { }
 
-        public JournalItem(JournalItemType type, string name, string imageId, ICollection<User> canSee, ICollection<User> canEdit)
+        public JournalItem(JournalItemType type, string name, Guid gameId, string imageId, ICollection<Guid> canSee, ICollection<Guid> canEdit)
         {
+            Permissions = new List<JournalItemPemission>();
             CheckArguments(name);
             Id = Guid.NewGuid();
             Type = type;
             Name = name;
+            GameId = gameId;
             ImageId = imageId;
             CreatedOn = DateTime.UtcNow;
             LastEditedOn = DateTime.UtcNow;
+
+            SetPermissions(canSee, canEdit);
+        }
+
+        private void SetPermissions(ICollection<Guid> canSee, ICollection<Guid> canEdit)
+        {
+            if(canSee == null) { return; }
+            foreach (var s in canSee)
+            {
+                if (canEdit.Contains(s))
+                {
+                    Permissions.Add(new JournalItemPemission(Id, s, GameId, true, true));
+                }
+                else
+                {
+                    Permissions.Add(new JournalItemPemission(Id, s, GameId, true));
+                }
+            }
         }
 
         private void CheckArguments(string name)

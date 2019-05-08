@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace RestApi.Models.Chat.CommandResults
+﻿namespace RestApi.Models.Chat.CommandResults
 {
     public class UnrecognizedCommandResult: CommandResult
     {

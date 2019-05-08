@@ -1,8 +1,6 @@
 ﻿using Domain.RequestModels.Journal;
 using Domain.RequestModels.Journal.JournalItems;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Domain.Domain.JournalItems
 {
@@ -11,12 +9,12 @@ namespace Domain.Domain.JournalItems
         public string Description { get; set; }
         public string OwnerNotes { get; set; }
 
-        public JournalHandout() : base(JournalItemType.Handout, "t", null, null, null)
+        public JournalHandout() : base()
         {
 
         }
 
-        public JournalHandout(AddJournalItemModel model) : base(JournalItemType.Handout, model.JournalItem.Name, null, null,null)
+        public JournalHandout(AddJournalItemModel model, Guid gameId) : base(JournalItemType.Handout, model.JournalItem.Name, gameId, null, model.JournalItem.CanSee, model.JournalItem.CanEdit)
         {
             var handoutModel = model.JournalItem as JournalHandoutModel;
             Description = handoutModel.Description;

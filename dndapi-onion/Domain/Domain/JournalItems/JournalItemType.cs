@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Domain.Domain.JournalItems
+﻿namespace Domain.Domain.JournalItems
 {
     public enum JournalItemType
     {

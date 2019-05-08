@@ -1,8 +1,6 @@
 ﻿using Domain.ServiceInterfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using RestApi.Utilities;
-using System;
 using System.Threading.Tasks;
 
 namespace RestApi.Filters
