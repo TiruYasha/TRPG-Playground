@@ -13,6 +13,7 @@ export class GameComponent implements OnInit {
   players: Player[] = [];
   isOwner = false;
   gameId = '';
+  joined = false;
 
   constructor(private _activatedRoute: ActivatedRoute, private gameService: GameService, private activeGameService: ActiveGameService) {
   }
@@ -28,8 +29,12 @@ export class GameComponent implements OnInit {
     this.gameService.joinGame()
       .subscribe((isOwner) => {
         this.activeGameService.updateIsOwner(isOwner);
+        this.initializeGame();
       });
+  }
 
+  initializeGame() {
+    this.joined = true;
     this.gameService.getPlayers()
       .subscribe((players) => {
         this.activeGameService.updatePlayers(players);

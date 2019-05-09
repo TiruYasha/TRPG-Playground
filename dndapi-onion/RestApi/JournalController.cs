@@ -37,7 +37,8 @@ namespace RestApi
         public async Task<IActionResult> GetAllJournalItemsAsync()
         {
             var gameId = jwtReader.GetGameId();
-            var result = await journalService.GetAllJournalItemsAsync(gameId);
+            var userId = jwtReader.GetUserId();
+            var result = await journalService.GetAllJournalItemsAsync(userId, gameId);
 
             var mappedResult = mapper.Map<ICollection<JournalItem>, ICollection<JournalItemModel>>(result);
 

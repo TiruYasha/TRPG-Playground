@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using Domain.Domain;
+using System;
+using System.Threading.Tasks;
 
 namespace Domain.ServiceInterfaces
 {

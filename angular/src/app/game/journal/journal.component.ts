@@ -69,7 +69,7 @@ export class JournalComponent implements OnInit {
   }
 
   addJournalItem(model: AddedJournalItemModel): void {
-    const journalItem = new JournalItem(model.type);
+    const journalItem = new JournalFolder();
     journalItem.name = model.name;
     journalItem.id = model.id;
     journalItem.imageId = model.imageId;

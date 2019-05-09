@@ -67,7 +67,5 @@ namespace RestApi
                 await hubContext.Clients.User(userId.ToString()).SendAsync("ChatMessageSent", message);
             }
         }
-
-
     }
 }

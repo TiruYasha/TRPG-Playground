@@ -14,6 +14,7 @@ export class ActiveGameService {
     public activeGameId = Guid.getEmptyGuid();
 
     private playersSubject = new BehaviorSubject<Player[]>([]);
+
     private isOwnerSubject = new BehaviorSubject<boolean>(false);
 
     public playersObservable = this.playersSubject.asObservable();
@@ -24,6 +25,21 @@ export class ActiveGameService {
     setup() {
         this.createConnection();
         this.startConnection();
+        this.registerOnServerEvents();
+    }
+
+    registerOnServerEvents() {
+        this.hubConnection.on('ActivePlayerJoined', (data: string) => {
+
+        });
+
+        this.hubConnection.on('ActivePlayerLeft', (data: string) => {
+
+        });
+
+        this.hubConnection.on('PlayerJoined', (data: Player) => {
+
+        });
     }
 
     get hubConnection(): HubConnection {

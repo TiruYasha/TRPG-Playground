@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Domain.Domain;
 using Domain.ServiceInterfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+using RestApi.Models.Game;
 using RestApi.Utilities;
 using System;
 using System.Threading.Tasks;
@@ -12,12 +14,14 @@ namespace RestApi.Hubs
     public class GameHub : Hub
     {
         private readonly IGameService gameService;
+        private readonly IAccountService accountService;
         private readonly IJwtReader jwtReader;
         private readonly IMapper mapper;
 
-        public GameHub(IGameService gameService, IJwtReader jwtReader, IMapper mapper)
+        public GameHub(IGameService gameService, IAccountService accountService, IJwtReader jwtReader, IMapper mapper)
         {
             this.gameService = gameService;
+            this.accountService = accountService;
             this.jwtReader = jwtReader;
             this.mapper = mapper;
         }
@@ -29,6 +33,11 @@ namespace RestApi.Hubs
             {
                 await Groups.AddToGroupAsync(Context.ConnectionId, gameId.ToString());
             }
+        }
+
+        public override async Task OnDisconnectedAsync(Exception exception)
+        {
+            var userId = jwtReader.GetUserId();
         }
     }
 }
