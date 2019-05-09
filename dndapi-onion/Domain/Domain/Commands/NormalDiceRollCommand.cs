@@ -29,7 +29,7 @@ namespace Domain.Domain.Commands
         private void CheckCommandText()
         {
             CommandText = CommandText.Replace(" ", "");
-            var regexPattern = @"^[1-9][0-9]*[dD][1-9][0-9]*([+-][1-9]{1})?$";
+            var regexPattern = @"^[1-9][0-9]*[dD][1-9][0-9]*([+-][1-9]{1}[0-9]*)?$";
             if(!Regex.IsMatch(CommandText, regexPattern))
             {
                 throw new FormatException("The format was not correct.");

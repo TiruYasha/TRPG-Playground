@@ -141,5 +141,17 @@ namespace Domain.Test.Domain.Commands
 
             exception.Message.ShouldBe("The format was not correct.");
         }
+
+        [TestMethod]
+        public void ExecuteShouldCheckCommandAndNotThrowException()
+        {
+            var commandText = "1d20+5000";
+
+            var command = new NormalDiceRollCommand(commandText);
+
+            command.Execute();
+
+            command.RollResult.ShouldBeGreaterThan(5000);
+        }
     }
 }
