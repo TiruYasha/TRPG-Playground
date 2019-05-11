@@ -1,15 +1,22 @@
 # Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
+This is a webapp for playing tabletop rpgs online with your friends. At first it will only support DnD 5e, but it will be build in such a way that expanding with other games should be easy. The app is build with Angular as frontend and .NET Core as backend with entity framework so the database is flexible.
 
 # Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+
+
 
 # Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+
+## Angular app
+```
+  npm install
+  
+  ng serve
+```
+
+## Webapi
+
+Open the solution and build/run the solution.
 
 # Contribute
 TODO: Explain how other users and developers can contribute to make your code better. 
