@@ -12,7 +12,7 @@ namespace DataAccess
 
         public UserRepository(DbContextOptions<DndContext> options)
         {
-            this.context = new DndContext(options);
+            context = new DndContext(options);
         }
 
         public Task<User> GetUserByIdAsync(Guid userId)

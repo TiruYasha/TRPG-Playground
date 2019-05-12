@@ -3,7 +3,6 @@ using Domain.Domain;
 using Domain.ServiceInterfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-using RestApi.Models.Game;
 using RestApi.Utilities;
 using System;
 using System.Threading.Tasks;

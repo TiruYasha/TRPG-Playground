@@ -40,7 +40,7 @@ namespace DependencyResolver
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAutoMapper();
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2).AddApplicationPart(typeof(AccountController).Assembly);
 
             services.AddOptions();
@@ -66,16 +66,14 @@ namespace DependencyResolver
             {
                 var connection = Configuration.GetSection("ConnectionStrings").GetSection("ConnectionString").Value;
                 services.AddEntityFrameworkSqlServer().AddDbContext<DndContext>
-                    (options => options.UseLazyLoadingProxies()
-                                        .UseSqlServer(connection));
+                    (options => options.UseSqlServer(connection));
 
             }
             else
             {
                 var connection = Configuration.GetSection("ConnectionStrings").GetSection("ConnectionStringDebug").Value;
                 services.AddEntityFrameworkNpgsql().AddDbContext<DndContext>
-                    (options => options.UseLazyLoadingProxies()
-                                        .UseNpgsql(connection));
+                    (options => options.UseNpgsql(connection));
             }
 
             var key = Configuration.GetSection("TokenConfig").GetSection("Key").Value;

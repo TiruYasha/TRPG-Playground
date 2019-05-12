@@ -3,11 +3,12 @@ using Domain.Domain;
 using Domain.ServiceInterfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RestApi.Models.Game;
 using RestApi.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Domain.RequestModels.Game;
+using Domain.ReturnModels.Game;
 
 namespace RestApi
 {
@@ -18,13 +19,11 @@ namespace RestApi
     {
         private readonly IGameService gameService;
         private readonly IJwtReader jwtReader;
-        private readonly IMapper mapper;
 
-        public GameController(IGameService gameService, IJwtReader jwtReader, IMapper mapper)
+        public GameController(IGameService gameService, IJwtReader jwtReader)
         {
             this.gameService = gameService;
             this.jwtReader = jwtReader;
-            this.mapper = mapper;
         }
 
         [HttpPost]
@@ -47,12 +46,11 @@ namespace RestApi
 
         [HttpGet]
         [Route("all")]
-        public IActionResult GetAllGames()
+        public async Task<IActionResult> GetAllGames()
         {
-            var games = gameService.GetAllGames();
-            var mappedGames = mapper.Map<IList<Game>, IList<GameCatalogItemModel>>(games);
+            var games = await gameService.GetAllGames();
 
-            return Ok(mappedGames);
+            return Ok(games);
         }
 
         [HttpPut]
@@ -81,9 +79,7 @@ namespace RestApi
         {
             var gameId = jwtReader.GetGameId();
 
-            IList<GamePlayer> players = await gameService.GetPlayersAsync(gameId);
-
-            var result = mapper.Map<IList<GamePlayer>, IList<GetPlayersModel>>(players);
+            var result = await gameService.GetPlayersAsync(gameId);
 
             return Ok(result);
         }

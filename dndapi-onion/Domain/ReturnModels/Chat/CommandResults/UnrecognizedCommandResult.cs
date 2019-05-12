@@ -1,10 +1,10 @@
-﻿namespace RestApi.Models.Chat.CommandResults
+﻿namespace Domain.ReturnModels.Chat.CommandResults
 {
     public class UnrecognizedCommandResult: CommandResult
     {
         public UnrecognizedCommandResult()
         {
-            Type = Domain.Domain.Commands.CommandType.UnrecognizedCommand;
+            Type = global::Domain.Domain.Commands.CommandType.UnrecognizedCommand;
         }
     }
 }

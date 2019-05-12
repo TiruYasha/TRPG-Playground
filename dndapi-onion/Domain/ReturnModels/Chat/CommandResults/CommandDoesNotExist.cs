@@ -1,6 +1,6 @@
 ﻿using Domain.Domain.Commands;
 
-namespace RestApi.Models.Chat.CommandResults
+namespace Domain.ReturnModels.Chat.CommandResults
 {
     public class CommandDoesNotExist : CommandResult
     {

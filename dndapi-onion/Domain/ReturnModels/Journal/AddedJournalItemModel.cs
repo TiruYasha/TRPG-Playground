@@ -1,7 +1,7 @@
-﻿using Domain.Domain.JournalItems;
-using System;
+﻿using System;
+using Domain.Domain.JournalItems;
 
-namespace RestApi.Models.Journal
+namespace Domain.ReturnModels.Journal
 {
     public class AddedJournalItemModel
     {

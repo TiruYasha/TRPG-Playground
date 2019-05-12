@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace RestApi.Models.Journal.JournalItems
+namespace Domain.ReturnModels.Journal.JournalItems
 {
     public class JournalFolderModel : JournalItemModel
     {

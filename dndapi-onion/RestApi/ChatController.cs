@@ -6,11 +6,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using RestApi.Hubs;
-using RestApi.Models.Chat;
 using RestApi.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Domain.ReturnModels.Chat;
+using Domain.ReturnModels.Chat.CommandResults;
 
 namespace RestApi
 {
@@ -60,7 +61,7 @@ namespace RestApi
             {
                 var message = new ReceiveMessageModel
                 {
-                    CommandResult = new Models.Chat.CommandResults.UnrecognizedCommandResult(),
+                    CommandResult = new UnrecognizedCommandResult(),
                     Message = ex.Message
                 };
 

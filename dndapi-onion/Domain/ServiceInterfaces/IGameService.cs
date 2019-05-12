@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Domain.ReturnModels.Game;
 
 namespace Domain.ServiceInterfaces
 {
@@ -15,9 +16,9 @@ namespace Domain.ServiceInterfaces
         /// <param name="userId"></param>
         /// <returns>Returns a boolean. When the boolean is true it is the owner of the game. If it is false it is a player</returns>
         Task<bool> JoinGameAsync(Guid gameId, Guid userId);
-        IList<Game> GetAllGames();
+        Task<IEnumerable<GameCatalogItemModel>> GetAllGames();
         Task<bool> IsOwnerOfGameAsync(Guid userId, Guid activeGameId);
         Task<bool> IsGamePlayerOrOwnerOfGameAsync(Guid userId, Guid activeGameId);
-        Task<IList<GamePlayer>> GetPlayersAsync(Guid gameId);
+        Task<IEnumerable<GetPlayersModel>> GetPlayersAsync(Guid gameId);
     }
 }

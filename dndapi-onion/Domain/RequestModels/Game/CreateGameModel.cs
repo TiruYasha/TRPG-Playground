@@ -1,4 +1,4 @@
-﻿namespace RestApi.Models.Game
+﻿namespace Domain.RequestModels.Game
 {
     public class CreateGameModel
     {

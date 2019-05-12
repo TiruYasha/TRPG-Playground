@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using RestApi.Hubs;
-using RestApi.Models.Journal;
-using RestApi.Models.Journal.JournalItems;
 using RestApi.Utilities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Domain.ReturnModels.Journal;
+using Domain.ReturnModels.Journal.JournalItems;
 
 namespace RestApi
 {
