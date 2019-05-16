@@ -83,62 +83,16 @@ namespace Domain.Domain
             });
         }
 
-        public virtual Task<JournalItem> AddJournalItemAsync(AddJournalItemModel model, Guid userId)
+        public virtual Task<JournalItem> AddJournalItemAsync(AddJournalItemModel model)
         {
             return Task.Run(() =>
             {
-                if (Owner.Id != userId)
-                {
-                    throw new PermissionException("This is an illegal action! It is only possible for gamemasters to add journal items.");
-                }
-
                 var journalItem = JournalItemFactory.Create(model, Id);
-                var parent = GetParentFolder(model);
 
-                if (parent != null)
-                {
-                    parent.AddJournalItem(journalItem);
-                }
-                else
-                {
-                    JournalItems.Add(journalItem);
-                }
+                JournalItems.Add(journalItem);
 
                 return journalItem;
             });
-        }
-
-        private JournalFolder GetParentFolder(AddJournalItemModel model)
-        {
-            var items = JournalItems.Where(w => w.Type == JournalItemType.Folder).Select(s => s as JournalFolder).ToList();
-            return GetParentsFolderRecursion(items, model.ParentFolderId);
-        }
-
-        private JournalFolder GetParentsFolderRecursion(ICollection<JournalFolder> folders, Guid parentId)
-        {
-            if (folders == null || parentId == Guid.Empty)
-            {
-                return null;
-            }
-
-            var folder = folders.FirstOrDefault(f => f.Id == parentId);
-
-            if (folder != null)
-                return folder;
-
-            foreach (var item in folders)
-            {
-                var items = GetJournalFoldersFromJournalItems(item.JournalItems);
-
-                return GetParentsFolderRecursion(items, parentId);
-            }
-
-            return null;
-        }
-
-        private List<JournalFolder> GetJournalFoldersFromJournalItems(ICollection<JournalItem> journalItems)
-        {
-            return journalItems.Where(j => j.Type == JournalItemType.Folder).Select(s => s as JournalFolder).ToList();
         }
 
         private void CheckParameters(string name, User owner)

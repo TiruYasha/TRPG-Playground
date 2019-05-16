@@ -14,6 +14,8 @@ namespace Domain.Domain.JournalItems
         public DateTime LastEditedOn { get; set; }
         public virtual Game Game { get; set; }
         public Guid GameId { get; }
+        public virtual JournalFolder ParentFolder { get; set; }
+        public Guid? ParentFolderId { get; set; }
         public virtual ICollection<JournalItemPemission> Permissions { get; set; }
 
         public JournalItem() { }

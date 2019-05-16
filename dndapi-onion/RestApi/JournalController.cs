@@ -52,12 +52,12 @@ namespace RestApi
             var userId = jwtReader.GetUserId();
             var gameId = jwtReader.GetGameId();
 
-            var journalFolder = await journalService.AddJournalItemToGameAsync(model, gameId, userId);
+            var journalFolder = await journalService.AddJournalItemToGameAsync(model, gameId);
 
-            var message = mapper.Map<JournalItem, AddedJournalItemModel>(journalFolder);
-            message.ParentId = model.ParentFolderId;
+            //var message = mapper.Map<JournalItem, AddedJournalItemModel>(journalFolder);
+            //message.ParentId = model.ParentFolderId;
 
-            await hubContext.Clients.User(userId.ToString()).SendAsync("JournalItemAdded", message);
+           // await hubContext.Clients.User(userId.ToString()).SendAsync("JournalItemAdded", message);
 
             return Ok();
         }

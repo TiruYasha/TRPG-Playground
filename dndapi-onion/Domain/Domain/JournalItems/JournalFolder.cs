@@ -1,6 +1,7 @@
 ﻿using Domain.RequestModels.Journal;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Domain.Domain.JournalItems
 {
@@ -19,12 +20,24 @@ namespace Domain.Domain.JournalItems
      
         public void AddJournalItem(JournalItem item)
         {
-            if(item == null)
-            {
-                throw new ArgumentNullException("item");
-            }
-
             JournalItems.Add(item);
+        }
+
+        public Task<JournalItem> AddJournalItemAsync(AddJournalItemModel model)
+        {
+            return Task.Run(() =>
+            {
+                if (model?.JournalItem == null)
+                {
+                    throw new ArgumentNullException("item");
+                }
+
+                var journalItem = JournalItemFactory.Create(model, Id);
+
+                JournalItems.Add(journalItem);
+
+                return journalItem;
+            });
         }
     }
 }

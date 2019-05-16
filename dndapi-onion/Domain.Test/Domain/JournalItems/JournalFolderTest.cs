@@ -1,7 +1,10 @@
 ﻿using Domain.Domain.JournalItems;
+using Domain.RequestModels.Journal;
+using Domain.RequestModels.Journal.JournalItems;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using System;
+using System.Threading.Tasks;
 
 namespace Domain.Test.Domain.JournalItems
 {
@@ -27,22 +30,35 @@ namespace Domain.Test.Domain.JournalItems
         [TestMethod]
         public void AddJournalItemAddsTheJournalItem()
         {
-            var journalItem = new JournalFolder();
+            
+        }
+
+
+        [TestMethod]
+        public async Task AddJournalItemAsync()
+        {
+            var journalItem = new AddJournalItemModel()
+            {
+                JournalItem = new JournalFolderModel() { Name = "test" },
+                ParentFolderId = Guid.Empty
+            };
 
             var sut = new JournalFolder();
 
-            sut.AddJournalItem(journalItem);
+            var result = await sut.AddJournalItemAsync(journalItem);
 
             sut.JournalItems.Count.ShouldBe(1);
+            result.Name.ShouldBe(journalItem.JournalItem.Name);
         }
+
 
         [TestMethod]
         public void AddJournalItemOnNullThrowArgumentNullException()
         {
             var sut = new JournalFolder();
 
-            var result = Should.Throw<ArgumentNullException>(() => sut.AddJournalItem(null));
-
+            var result = Should.Throw<ArgumentNullException>(async () => await sut.AddJournalItemAsync(null));
+             
             result.ParamName.ShouldBe("item");
         }
     }
