@@ -6,7 +6,8 @@
           <span class="username">{{message.customUsername}}</span>
         </p>
         <trpg-plain-text *ngIf="message.commandResult.type === 0" [chatMessage]="message"></trpg-plain-text>
-        <trpg-normal-roll-result *ngIf="message.commandResult.type === 1" [chatMessage]="message"></trpg-normal-roll-result>
+        <trpg-normal-roll-result *ngIf="message.commandResult.type === 1" [chatMessage]="message">
+        </trpg-normal-roll-result>
         <trpg-error-message *ngIf="message.commandResult.type === 2" [chatMessage]="message"></trpg-error-message>
       </div>
     </mat-list>
@@ -14,7 +15,7 @@
   <mat-divider></mat-divider>
   <div id="message-sender">
     <div class="message-input">
-      <mat-form-field  floatLabel="never">
+      <mat-form-field floatLabel="never">
         <input matInput placeholder="Message" (keyup.enter)="sendMessage()" [(ngModel)]="chatMessage" value="">
         <mat-icon matSuffix>send</mat-icon>
       </mat-form-field>

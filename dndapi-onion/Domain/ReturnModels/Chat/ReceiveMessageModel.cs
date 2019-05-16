@@ -1,6 +1,6 @@
-﻿using RestApi.Models.Chat.CommandResults;
+﻿using Domain.ReturnModels.Chat.CommandResults;
 
-namespace RestApi.Models.Chat
+namespace Domain.ReturnModels.Chat
 {
     public class ReceiveMessageModel
     {

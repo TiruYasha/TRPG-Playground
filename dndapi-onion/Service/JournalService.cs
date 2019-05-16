@@ -1,7 +1,9 @@
-﻿using Domain.Domain.JournalItems;
-using Domain.RepositoryInterfaces;
+﻿using DataAccess;
+using Domain.Domain;
+using Domain.Domain.JournalItems;
 using Domain.RequestModels.Journal;
 using Domain.ServiceInterfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,29 +11,26 @@ using System.Threading.Tasks;
 
 namespace Service
 {
-    public class JournalService : IJournalService
+    public class JournalService : Service, IJournalService
     {
-        private readonly IGameRepository gameRepository;
-
-        public JournalService(IGameRepository gameRepository)
+        public JournalService(DbContextOptions<DndContext> options) : base(options)
         {
-            this.gameRepository = gameRepository;
         }
 
         public async Task<JournalItem> AddJournalItemToGameAsync(AddJournalItemModel model, Guid gameId, Guid userId)
         {
-            var game = await gameRepository.GetGameByIdAsync(gameId);
+            var game = await GetGameByIdWithOwner(gameId);
 
             var result = await game.AddJournalItemAsync(model, userId);
 
-            await gameRepository.UpdateGameAsync(game);
+            await context.SaveChangesAsync();
 
             return result;
         }
 
         public async Task<ICollection<JournalItem>> GetAllJournalItemsAsync(Guid userId, Guid gameId)
         {
-            var game = await gameRepository.GetGameByIdAsync(gameId);
+            var game = await GetGameByIdWithOwner(gameId);
             var isOwner = game.IsOwner(userId);
 
             var journalItems = game.JournalItems.Where(j => j.Type == JournalItemType.Folder || j.Permissions.Any(p => p.UserId == userId && p.CanSee == true));
@@ -76,24 +75,9 @@ namespace Service
             }
         }
 
-        /*
-         *  private static findChildImpl<ID, ITEM>(id: ID, root: ITEM, getChildren: getChildren, compare: compare): ITEM {
-        const stack: ITEM[] = []
-        let node: ITEM, ii;
-        stack.push(root);
-
-        while (stack.length > 0) {
-            node = stack.pop();
-            const children = getChildren(node);
-            if (compare(id, node)) {
-                return node;
-            } else if (children && children.length) {
-                for (ii = 0; ii < children.length; ii += 1) {
-                    stack.push(children[ii]);
-                }
-            }
+        private async Task<Game> GetGameByIdWithOwner(Guid gameId)
+        {
+            return await context.Games.Include(g => g.Owner).FilterByGameId(gameId).FirstOrDefaultAsync();
         }
-
-         * */
     }
 }

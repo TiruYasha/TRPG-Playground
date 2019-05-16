@@ -2,11 +2,11 @@
 using Domain.Domain;
 using Domain.Domain.Commands;
 using Domain.Domain.JournalItems;
-using RestApi.Models.Chat;
-using RestApi.Models.Chat.CommandResults;
-using RestApi.Models.Game;
-using RestApi.Models.Journal;
-using RestApi.Models.Journal.JournalItems;
+using Domain.ReturnModels.Chat;
+using Domain.ReturnModels.Chat.CommandResults;
+using Domain.ReturnModels.Game;
+using Domain.ReturnModels.Journal;
+using Domain.ReturnModels.Journal.JournalItems;
 
 namespace DependencyResolver.MappingProfiles
 {

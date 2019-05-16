@@ -1,8 +1,8 @@
 ﻿using Domain.ServiceInterfaces;
 using Microsoft.AspNetCore.Mvc;
-using RestApi.Models.Account;
 using System;
 using System.Threading.Tasks;
+using Domain.RequestModels.Account;
 
 namespace RestApi
 {

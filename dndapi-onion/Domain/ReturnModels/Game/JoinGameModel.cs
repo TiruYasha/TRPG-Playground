@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RestApi.Models.Game
+namespace Domain.ReturnModels.Game
 {
     public class JoinGameModel
     {

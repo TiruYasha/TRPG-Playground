@@ -2,10 +2,10 @@ using Domain.ServiceInterfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using RestApi.Models.Account;
 using Shouldly;
 using System;
 using System.Threading.Tasks;
+using Domain.RequestModels.Account;
 
 namespace RestApi.Test
 {

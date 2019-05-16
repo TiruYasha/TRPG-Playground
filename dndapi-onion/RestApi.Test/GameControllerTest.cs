@@ -3,11 +3,12 @@ using Domain.ServiceInterfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using RestApi.Models.Game;
 using RestApi.Utilities;
 using Shouldly;
 using System;
 using System.Threading.Tasks;
+using Domain.RequestModels.Game;
+using Domain.ReturnModels.Game;
 
 namespace RestApi.Test
 {
@@ -18,16 +19,14 @@ namespace RestApi.Test
 
         private Mock<IGameService> gameService;
         private Mock<IJwtReader> jwtReader;
-        private Mock<IMapper> mapper;
 
         [TestInitialize]
         public void Initialize()
         {
             gameService = new Mock<IGameService>();
             jwtReader = new Mock<IJwtReader>();
-            mapper = new Mock<IMapper>();
 
-            sut = new GameController(gameService.Object, jwtReader.Object, mapper.Object);
+            sut = new GameController(gameService.Object, jwtReader.Object);
         }
 
         [TestMethod]
