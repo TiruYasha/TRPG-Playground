@@ -1,7 +1,8 @@
-﻿using Domain.Domain;
-using Domain.RepositoryInterfaces;
+﻿using DataAccess;
+using Domain.Domain;
 using Domain.RequestModels.Chat;
 using Domain.ServiceInterfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,22 +10,19 @@ using System.Threading.Tasks;
 
 namespace Service
 {
-    public class ChatService : IChatService
+    public class ChatService : Service, IChatService
     {
-        private IGameRepository gameRepository;
-
-        public ChatService(IGameRepository gameRepository)
+        public ChatService(DbContextOptions<DndContext> options) : base(options)
         {
-            this.gameRepository = gameRepository;
         }
 
         public async Task<ChatMessage> AddMessageToChatAsync(SendMessageModel model, Guid userId)
         {
-            var game = await gameRepository.GetGameByIdAsync(model.GameId);
+            var game = await context.Games.Include(g => g.Owner).Include(g => g.Players).FilterByGameId(model.GameId).FirstOrDefaultAsync();
 
             var chatMessage = await game.AddChatMessageAsync(model.Message, model.CustomUsername, userId);
 
-            await gameRepository.UpdateGameAsync(game);
+            await context.SaveChangesAsync();
 
             return chatMessage;
         }
@@ -32,7 +30,7 @@ namespace Service
         public async Task<IList<ChatMessage>> GetAllMessagesAsync(Guid gameId)
         {
             //TODO write good code for this with lazy loading
-            var game = await gameRepository.GetGameByIdAsync(gameId);
+            var game = await context.Games.Include(g => g.ChatMessages).ThenInclude(c => c.Command).FilterByGameId(gameId).FirstOrDefaultAsync();
 
             return game.ChatMessages.ToList();
         }

@@ -1,7 +1,6 @@
 ﻿using AutoMapper.QueryableExtensions;
 using DataAccess;
 using Domain.Domain;
-using Domain.RepositoryInterfaces;
 using Domain.ServiceInterfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -16,13 +15,11 @@ namespace Service
 {
     public class GameService : Service, IGameService
     {
-        private readonly IUserRepository userRepository;
         private readonly IMapper mapper;
         private readonly ILogger<GameService> logger;
 
-        public GameService(DbContextOptions<DndContext> options, IUserRepository userRepository, IMapper mapper, ILogger<GameService> logger) : base(options)
+        public GameService(DbContextOptions<DndContext> options, IMapper mapper, ILogger<GameService> logger) : base(options)
         {
-            this.userRepository = userRepository;
             this.mapper = mapper;
             this.logger = logger;
         }
@@ -50,7 +47,7 @@ namespace Service
 
         public async Task<bool> JoinGameAsync(Guid gameId, Guid userId)
         {
-            var game = await context.Games.FirstOrDefaultAsync(g => g.Id == gameId);
+            var game = await context.Games.Include(g =>g.Players).Include(g => g.Owner).FilterByGameId(gameId).FirstOrDefaultAsync();
 
             if (game.HasPlayerJoined(userId))
             {
@@ -62,7 +59,7 @@ namespace Service
                 return true;
             }
 
-            var user = await userRepository.GetUserByIdAsync(userId);
+            var user = await context.Users.FirstOrDefaultAsync(u => u.Id == userId);
 
             game.Join(user);
 

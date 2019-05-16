@@ -1,6 +1,5 @@
 ﻿using Domain.Domain;
 using Domain.Domain.JournalItems;
-using Domain.RepositoryInterfaces;
 using Domain.RequestModels.Journal;
 using Domain.RequestModels.Journal.JournalItems;
 using Domain.ServiceInterfaces;
@@ -15,44 +14,44 @@ namespace Service.Test
     [TestClass]
     public class JournalServiceTest
     {
-        private IJournalService sut;
+        //private IJournalService sut;
 
-        private Mock<IGameRepository> gameRepository;
+        //private Mock<IGameRepository> gameRepository;
 
-        [TestInitialize]
-        public void Initialize()
-        {
-            gameRepository = new Mock<IGameRepository>();
+        //[TestInitialize]
+        //public void Initialize()
+        //{
+        //    gameRepository = new Mock<IGameRepository>();
 
-            sut = new JournalService(gameRepository.Object);
-        }
+        //    sut = new JournalService(gameRepository.Object);
+        //}
 
-        [TestMethod]
-        public async Task AddFolderToGameJournal()
-        {
-            var model = new AddJournalItemModel
-            {
-                JournalItem = new JournalFolderModel
-                {
-                    Name = "folder"
-                },
-                ParentFolderId = Guid.NewGuid()
-            };
+        //[TestMethod]
+        //public async Task AddFolderToGameJournal()
+        //{
+        //    var model = new AddJournalItemModel
+        //    {
+        //        JournalItem = new JournalFolderModel
+        //        {
+        //            Name = "folder"
+        //        },
+        //        ParentFolderId = Guid.NewGuid()
+        //    };
 
-            var gameId = Guid.NewGuid();
+        //    var gameId = Guid.NewGuid();
 
-            var userId = Guid.NewGuid();
+        //    var userId = Guid.NewGuid();
 
-            var game = new Mock<Game>();
+        //    var game = new Mock<Game>();
 
-            var folder = new JournalFolder();
+        //    var folder = new JournalFolder();
 
-            gameRepository.Setup(g => g.GetGameByIdAsync(gameId)).ReturnsAsync(game.Object);
-            game.Setup(g => g.AddJournalItemAsync(model, userId)).ReturnsAsync(folder);
+        //    gameRepository.Setup(g => g.GetGameByIdAsync(gameId)).ReturnsAsync(game.Object);
+        //    game.Setup(g => g.AddJournalItemAsync(model, userId)).ReturnsAsync(folder);
 
-            var result = await sut.AddJournalItemToGameAsync(model, gameId, userId);
+        //    var result = await sut.AddJournalItemToGameAsync(model, gameId, userId);
 
-            result.ShouldBe(folder);
-        }
+        //    result.ShouldBe(folder);
+        //}
     }
 }

@@ -2,7 +2,6 @@
 using DataAccess;
 using Domain.Config;
 using Domain.Domain;
-using Domain.RepositoryInterfaces;
 using Domain.ServiceInterfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -150,8 +149,6 @@ namespace DependencyResolver
             services.AddTransient<IAccountService, AccountService>();
             services.AddTransient<IGameService, GameService>();
             services.AddTransient<IJwtReader, JwtReader>();
-            services.AddTransient<IGameRepository, GameRepository>();
-            services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IChatService, ChatService>();
             services.AddTransient<IJournalService, JournalService>();
 
