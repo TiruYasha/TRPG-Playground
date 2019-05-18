@@ -64,7 +64,7 @@ namespace Service.Test
             mockGame1.SetupGet(g => g.Id).Returns(gameId);
             mockGame1.Setup(g => g.AddJournalItemAsync(addJournalItemModel)).ReturnsAsync(journalItem);
 
-            var gameQueryable = new List<Game> {mockGame1.Object};
+            var gameQueryable = new List<Game> { mockGame1.Object };
 
             var mock = gameQueryable.AsQueryable().BuildMock();
 
@@ -110,13 +110,10 @@ namespace Service.Test
             mockJournalItem.SetupGet(s => s.Id).Returns(addJournalItemModel.ParentFolderId.Value);
             mockJournalItem.Setup(s => s.AddJournalItem(addJournalItemModel, gameId)).ReturnsAsync(journalItem);
 
-            var journalItemList = new List<JournalFolder> {mockJournalItem.Object};
+            var journalItemList = new List<JournalFolder> { mockJournalItem.Object };
             var journalFolderQueryable = journalItemList.AsQueryable().BuildMock();
 
             repository.SetupGet(r => r.JournalFolders).Returns(journalFolderQueryable.Object);
-            
-
-      
 
             // Others
             repository.Setup(r => r.Commit()).Returns(Task.CompletedTask).Verifiable();
@@ -152,7 +149,7 @@ namespace Service.Test
                 ImageId = Guid.Empty
             };
 
-            var journalItemList = new List<JournalFolder> {journalItem};
+            var journalItemList = new List<JournalFolder> { journalItem };
             var journalFolderQueryable = journalItemList.AsQueryable().BuildMock();
 
             repository.SetupGet(r => r.JournalItems).Returns(journalFolderQueryable.Object);
@@ -215,7 +212,7 @@ namespace Service.Test
             var mockGame1 = new Mock<Game>();
             mockGame1.SetupGet(g => g.Id).Returns(gameId);
             mockGame1.SetupGet(g => g.Owner.Id).Returns(userId);
-            
+
 
             var gameQueryable = new List<Game> { mockGame1.Object };
 
@@ -234,6 +231,83 @@ namespace Service.Test
             resultObject.ImageId.ShouldBe(journalItem.ImageId);
             resultObject.ParentFolderId.ShouldBe(journalItem.ParentFolderId);
             resultObject.Type.ShouldBe(journalItem.Type);
+        }
+
+        [TestMethod]
+        public async Task GetJournalItemsForParentFolderIdReturnsOnlyFilledFoldersAndNotFolders()
+        {
+            // arrange
+            var gameId = Guid.NewGuid();
+            var userId = Guid.NewGuid();
+
+            //Journal mock
+            var journalFolderWithNestedItem = new JournalFolder
+            {
+                Id = Guid.NewGuid(),
+                Name = "test",
+                Type = JournalItemType.Folder,
+                ImageId = Guid.Empty,
+                GameId = gameId,
+                ParentFolderId = Guid.NewGuid(),
+                Level = 1,
+                JournalItems = new List<JournalItem> {new JournalHandout{Level = 2}}
+            };
+
+            var journalFolderWithoutNestedItems = new JournalFolder
+            {
+                Id = Guid.NewGuid(),
+                Name = "test",
+                Type = JournalItemType.Folder,
+                ImageId = Guid.Empty,
+                GameId = gameId,
+                Level = 1,
+                JournalItems = new List<JournalItem>()
+            };
+
+            var journalHandout = new JournalHandout
+            {
+                Level = 1,
+                ParentFolderId = journalFolderWithNestedItem.ParentFolderId
+            };
+
+            var journalItem2 = new JournalFolder
+            {
+                Id = journalFolderWithNestedItem.ParentFolderId.Value,
+                Name = "test2",
+                Type = JournalItemType.Folder,
+                ImageId = Guid.Empty,
+                GameId = Guid.Empty,
+                Level = 0,
+                JournalItems = new List<JournalItem> {journalFolderWithNestedItem, journalFolderWithoutNestedItems}
+            };
+
+            var journalItemList = new List<JournalItem> {journalFolderWithNestedItem, journalItem2, journalHandout };
+            var journalItemListQueryable = journalItemList.AsQueryable().BuildMock();
+
+            var journalFolderList = new List<JournalFolder> { journalFolderWithNestedItem, journalItem2 };
+            var journalFolderQueryable = journalFolderList.AsQueryable().BuildMock();
+
+
+            repository.SetupGet(r => r.JournalItems).Returns(journalItemListQueryable.Object);
+            repository.SetupGet(r => r.JournalFolders).Returns(journalFolderQueryable.Object);
+
+            // Game mock
+            var mockGame1 = new Mock<Game>();
+            mockGame1.SetupGet(g => g.Id).Returns(gameId);
+            mockGame1.SetupGet(g => g.Owner.Id).Returns(Guid.Empty);
+
+
+            var gameQueryable = new List<Game> {mockGame1.Object};
+
+            var mock = gameQueryable.AsQueryable().BuildMock();
+
+            repository.SetupGet(r => r.Games).Returns(mock.Object);
+
+            // act
+            var result = await sut.GetJournalItemsForParentFolderId(userId, gameId, journalItem2.Id);
+
+            // assert
+            result.Count().ShouldBe(2);
         }
     }
 }

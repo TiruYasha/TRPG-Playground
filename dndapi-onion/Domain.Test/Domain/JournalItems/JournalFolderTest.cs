@@ -45,7 +45,6 @@ namespace Domain.Test.Domain.JournalItems
             result.Name.ShouldBe(journalItem.JournalItem.Name);
         }
 
-
         [TestMethod]
         public void AddJournalItemOnNullThrowArgumentNullException()
         {

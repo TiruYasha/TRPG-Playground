@@ -48,47 +48,86 @@ namespace Service
             return mapper.Map<JournalItem, JournalItemTreeItemDto>(result); ;
         }
 
-        public async Task<ICollection<JournalItem>> GetAllJournalItemsAsync(Guid userId, Guid gameId)
-        {
-            //var game = await context.Games.Include(g => g.Owner).Include(g => g.JournalItems).FilterById(gameId).FirstOrDefaultAsync();
-            //var isOwner = game.FilterOnOwnerById(userId);
-
-            ////var journalItems = game.JournalItems.Where(j => j.Type == JournalItemType.Folder || j.Permissions.Any(p => p.UserId == userId && p.CanSee == true));
-
-            ////if (!isOwner)
-            ////{
-            ////    FilterEmptyFolders(journalItems);
-            ////}
-
-            //return game.JournalItems;
-            return null;
-        }
-
         public async Task<IEnumerable<JournalItemTreeItemDto>> GetJournalItemsForParentFolderId(Guid userId, Guid gameId, Guid? parentFolderId)
         {
             var isOwner = await repository.Games.FilterOnOwnerById(userId).AnyAsync();
             if (isOwner)
             {
-                var query = repository.JournalItems.FilterByParentFolderId(parentFolderId);
-
-                if (!parentFolderId.HasValue)
-                {
-                    query = query.FilterByGameId(gameId);
-                }
-
-                var result = await query.Select(j => new JournalItemTreeItemDto
-                    {
-                        Id = j.Id,
-                        ParentFolderId = j.ParentFolderId,
-                        Name = j.Name,
-                        ImageId = j.ImageId,
-                        Type = j.Type
-                    }).ToListAsync();
-
-                return result;
+                return await GetJournalItemsForParentFolderIdWithEmptyFolders(gameId, parentFolderId);
             }
 
-            return null;
+            var maxDepth = await repository.JournalItems.FilterByGameId(gameId).MaxAsync(g => g.Level);
+           // var query = repository.JournalItems.FilterByParentFolderId(parentFolderId);
+            var folderQuery = repository.JournalFolders.Include(j => j.JournalItems).FilterByParentFolderId(parentFolderId);
+
+            //for (int q = 0; q < maxDepth; q++)
+            //{
+            //    //query = query.Where(j => j.Type != JournalItemType.Folder);
+            //    query = query
+            //        .Where(j => j.Type == JournalItemType.Folder && ((JournalFolder)j).JournalItems.Any(i =>
+            //                       (i.Type == JournalItemType.Folder &&
+            //                        ((JournalFolder)i).JournalItems.Any(d => d.Type != JournalItemType.Folder)) ||
+            //                       i.Type != JournalItemType.Folder));
+
+            //}
+
+
+            //var test = repository.JournalFolders.Include(j => j.JournalItems).FilterByGameId(gameId).FilterByParentFolderId(parentFolderId);
+
+
+            for (int q = 0; q < maxDepth; q++)
+            {
+                folderQuery = folderQuery.Where(j => j.Type == JournalItemType.Folder).Select(s => s).Where(ji => ji.JournalItems.Any(di => di.Type != JournalItemType.Folder));
+
+                //folderQuery = folderQuery.Where(j => j.JournalItems.Where(ji => ji.Type == JournalItemType.Folder).Select(a => a).Any(i =>
+                //    i.Type == JournalItemType.Folder && (i as JournalFolder).JournalItems.Any()
+                //    ));
+            }
+
+            var otherone = repository.JournalItems.FilterByParentFolderId(parentFolderId).Where(j => j.Type != JournalItemType.Folder);
+
+            var folders = await folderQuery.Select(j => new JournalItemTreeItemDto
+            {
+                Id = j.Id,
+                ParentFolderId = j.ParentFolderId,
+                Name = j.Name,
+                ImageId = j.ImageId,
+                Type = j.Type
+            }).ToListAsync();
+
+            var items = await  otherone.Select(j => new JournalItemTreeItemDto
+            {
+                Id = j.Id,
+                ParentFolderId = j.ParentFolderId,
+                Name = j.Name,
+                ImageId = j.ImageId,
+                Type = j.Type
+            }).ToListAsync();
+
+            folders.AddRange(items);
+
+            return folders;
+        }
+
+        private async Task<IEnumerable<JournalItemTreeItemDto>> GetJournalItemsForParentFolderIdWithEmptyFolders(Guid gameId, Guid? parentFolderId)
+        {
+            var query = repository.JournalItems.FilterByParentFolderId(parentFolderId);
+
+            if (!parentFolderId.HasValue)
+            {
+                query = query.FilterByGameId(gameId);
+            }
+
+            var result = await query.Select(j => new JournalItemTreeItemDto
+            {
+                Id = j.Id,
+                ParentFolderId = j.ParentFolderId,
+                Name = j.Name,
+                ImageId = j.ImageId,
+                Type = j.Type
+            }).ToListAsync();
+
+            return result;
         }
 
         private void FilterEmptyFolders(IEnumerable<JournalItem> journalItems)
