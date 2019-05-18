@@ -8,12 +8,12 @@ namespace Domain.Domain.Commands
         public CommandType Type { get; private set; }
         public string CommandText { get; protected set; }
 
-        public Command()
+        protected Command()
         {
 
         }
 
-        public Command(CommandType type, string commandText)
+        protected Command(CommandType type, string commandText)
         {
             Id = Guid.NewGuid();
             Type = type;

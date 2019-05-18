@@ -202,12 +202,12 @@ namespace Domain.Test.Domain
             // Arrange
             var game = new Game();
 
-            var folder = new JournalFolderModel
+            var folder = new JournalFolderDto
             {
                 Name = "folder"
             };
 
-            var model = new AddJournalItemModel()
+            var model = new AddJournalItemDto()
             {
                 JournalItem = folder,
                 ParentFolderId = Guid.Empty

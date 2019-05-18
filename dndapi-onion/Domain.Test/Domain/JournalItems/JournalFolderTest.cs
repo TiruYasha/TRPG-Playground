@@ -27,25 +27,19 @@ namespace Domain.Test.Domain.JournalItems
             result.JournalItems.ShouldNotBeNull();
         }
 
-        [TestMethod]
-        public void AddJournalItemAddsTheJournalItem()
-        {
-            
-        }
-
 
         [TestMethod]
         public async Task AddJournalItemAsync()
         {
-            var journalItem = new AddJournalItemModel()
+            var journalItem = new AddJournalItemDto()
             {
-                JournalItem = new JournalFolderModel() { Name = "test" },
+                JournalItem = new JournalFolderDto() { Name = "test" },
                 ParentFolderId = Guid.Empty
             };
 
             var sut = new JournalFolder();
 
-            var result = await sut.AddJournalItemAsync(journalItem);
+            var result = await sut.AddJournalItem(journalItem);
 
             sut.JournalItems.Count.ShouldBe(1);
             result.Name.ShouldBe(journalItem.JournalItem.Name);
@@ -57,9 +51,9 @@ namespace Domain.Test.Domain.JournalItems
         {
             var sut = new JournalFolder();
 
-            var result = Should.Throw<ArgumentNullException>(async () => await sut.AddJournalItemAsync(null));
+            var result = Should.Throw<ArgumentNullException>(async () => await sut.AddJournalItem(null));
              
-            result.ParamName.ShouldBe("item");
+            result.ParamName.ShouldBe("dto");
         }
     }
 }

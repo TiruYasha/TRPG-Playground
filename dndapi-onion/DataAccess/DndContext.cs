@@ -19,6 +19,7 @@ namespace DataAccess
         public DbSet<JournalFolder> JournalFolders { get; set; }
         public DbSet<JournalHandout> JournalHandouts { get; set; }
 
+
         public DndContext(DbContextOptions<DndContext> options) : base(options)
         {
 

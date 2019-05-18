@@ -10,8 +10,8 @@ namespace Domain.Domain
 {
     public class Game
     {
-        public Guid Id { get; private set; }
-        public string Name { get; private set; }
+        public virtual Guid Id { get; private set; }
+        public virtual string Name { get; private set; }
         public virtual User Owner { get; private set; }
         public virtual ICollection<GamePlayer> Players { get; private set; }
         public virtual ICollection<ChatMessage> ChatMessages { get; private set; }
@@ -83,11 +83,11 @@ namespace Domain.Domain
             });
         }
 
-        public virtual Task<JournalItem> AddJournalItemAsync(AddJournalItemModel model)
+        public virtual Task<JournalItem> AddJournalItemAsync(AddJournalItemDto dto)
         {
             return Task.Run(() =>
             {
-                var journalItem = JournalItemFactory.Create(model, Id);
+                var journalItem = JournalItemFactory.Create(dto, Id);
 
                 JournalItems.Add(journalItem);
 

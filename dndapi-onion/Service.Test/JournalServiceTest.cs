@@ -1,57 +1,135 @@
-﻿using Domain.Domain;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper;
+using DataAccess;
+using Domain;
+using Domain.Domain;
 using Domain.Domain.JournalItems;
+using Domain.MappingProfiles;
+using Domain.Mocks;
 using Domain.RequestModels.Journal;
 using Domain.RequestModels.Journal.JournalItems;
+using Domain.ReturnModels.Journal;
 using Domain.ServiceInterfaces;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MockQueryable.Moq;
 using Moq;
+using Service.Test.Mocks;
 using Shouldly;
-using System;
-using System.Threading.Tasks;
 
 namespace Service.Test
 {
     [TestClass]
     public class JournalServiceTest
     {
-        //private IJournalService sut;
+        private IJournalService sut;
 
-        //private Mock<IGameRepository> gameRepository;
+        private Mock<IRepository> repository;
+        private static IMapper _mapper;
 
-        //[TestInitialize]
-        //public void Initialize()
-        //{
-        //    gameRepository = new Mock<IGameRepository>();
+        [ClassInitialize]
+        public static void InitializeClass(TestContext context)
+        {
+            IConfigurationProvider config = new MapperConfiguration(d => d.AddProfile<MyProfile>());
+            _mapper = new Mapper(config);
+        }
 
-        //    sut = new JournalService(gameRepository.Object);
-        //}
+        [TestInitialize]
+        public void Initialize()
+        {
+            repository = new Mock<IRepository>(MockBehavior.Strict);
 
-        //[TestMethod]
-        //public async Task AddFolderToGameJournal()
-        //{
-        //    var model = new AddJournalItemModel
-        //    {
-        //        JournalItem = new JournalFolderModel
-        //        {
-        //            Name = "folder"
-        //        },
-        //        ParentFolderId = Guid.NewGuid()
-        //    };
+            sut = new JournalService(repository.Object, _mapper);
+        }
 
-        //    var gameId = Guid.NewGuid();
+        [TestMethod]
+        public async Task AddJournalItemToGameAddsTheJournalItemToTheGame()
+        {
+            // arrange
+            var gameId = Guid.NewGuid();
+            var addJournalItemModel = new AddJournalItemDto
+            {
+                JournalItem = new JournalItemDto()
+            };
 
-        //    var userId = Guid.NewGuid();
+            var journalItem = new JournalItemMock
+            {
+                Id =  Guid.Empty,
+                Name = "test",
+                ParentFolderId = Guid.Empty,
+                Type = JournalItemType.Folder,
+                ImageId = Guid.Empty
+            };
 
-        //    var game = new Mock<Game>();
+            var mockGame1 = new Mock<Game>();
+            mockGame1.SetupGet(g => g.Id).Returns(gameId);
+            mockGame1.Setup(g => g.AddJournalItemAsync(addJournalItemModel)).ReturnsAsync(journalItem);
 
-        //    var folder = new JournalFolder();
+            var gameQueryable = new List<Game> { mockGame1.Object };
 
-        //    gameRepository.Setup(g => g.GetGameByIdAsync(gameId)).ReturnsAsync(game.Object);
-        //    game.Setup(g => g.AddJournalItemAsync(model, userId)).ReturnsAsync(folder);
+            var mock = gameQueryable.AsQueryable().BuildMock();
 
-        //    var result = await sut.AddJournalItemToGameAsync(model, gameId, userId);
+            repository.SetupGet(r => r.Games).Returns(mock.Object);
+            repository.Setup(r => r.Commit()).Returns(Task.CompletedTask).Verifiable();
 
-        //    result.ShouldBe(folder);
-        //}
+            // act
+            var result = await sut.AddJournalItemToGame(addJournalItemModel, gameId);
+
+            // assert
+            result.Name.ShouldBe(journalItem.Name);
+            result.Id.ShouldBe(journalItem.Id);
+            result.ImageId.ShouldBe(journalItem.ImageId);
+            result.ParentFolderId.ShouldBe(journalItem.ParentFolderId);
+            result.Type.ShouldBe(journalItem.Type);
+
+            repository.VerifyAll();
+        }
+
+        [TestMethod]
+        public async Task AddJournalItemToGameAddsJournalItemToParent()
+        {
+            // arrange
+            var gameId = Guid.NewGuid();
+            var addJournalItemModel = new AddJournalItemDto
+            {
+                JournalItem = new JournalItemDto(),
+                ParentFolderId = Guid.NewGuid()
+            };
+
+            var journalItem = new JournalItemMock
+            {
+                Id = Guid.Empty,
+                Name = "test",
+                ParentFolderId = Guid.NewGuid(),
+                Type = JournalItemType.Folder,
+                ImageId = Guid.Empty
+            };
+
+            var mockJournalItem = new Mock<JournalFolder>();
+            mockJournalItem.SetupGet(s => s.Id).Returns(addJournalItemModel.ParentFolderId.Value);
+            mockJournalItem.Setup(s => s.AddJournalItem(addJournalItemModel)).ReturnsAsync(journalItem);
+
+            var journalItemList = new List<JournalFolder> {mockJournalItem.Object};
+            var journalFolderQueryable = journalItemList.AsQueryable().BuildMock();
+
+            repository.SetupGet(r => r.JournalFolders).Returns(journalFolderQueryable.Object);
+            repository.Setup(r => r.Commit()).Returns(Task.CompletedTask).Verifiable();
+
+            // act
+            var result = await sut.AddJournalItemToGame(addJournalItemModel, gameId);
+
+            // assert
+            result.Name.ShouldBe(journalItem.Name);
+            result.Id.ShouldBe(journalItem.Id);
+            result.ImageId.ShouldBe(journalItem.ImageId);
+            result.ParentFolderId.ShouldBe(journalItem.ParentFolderId);
+            result.Type.ShouldBe(journalItem.Type);
+
+            repository.VerifyAll();
+        }
     }
 }

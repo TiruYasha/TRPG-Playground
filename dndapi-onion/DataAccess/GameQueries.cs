@@ -6,7 +6,7 @@ namespace DataAccess
 {
     public static class GameQueries
     {
-        public static IQueryable<Game> FilterByGameId(
+        public static IQueryable<Game> FilterById(
             this IQueryable<Game> queryable,
             Guid gameId)
         {

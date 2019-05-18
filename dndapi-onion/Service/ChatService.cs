@@ -18,7 +18,7 @@ namespace Service
 
         public async Task<ChatMessage> AddMessageToChatAsync(SendMessageModel model, Guid userId)
         {
-            var game = await context.Games.Include(g => g.Owner).Include(g => g.Players).FilterByGameId(model.GameId).FirstOrDefaultAsync();
+            var game = await context.Games.Include(g => g.Owner).Include(g => g.Players).FilterById(model.GameId).FirstOrDefaultAsync();
 
             var chatMessage = await game.AddChatMessageAsync(model.Message, model.CustomUsername, userId);
 
@@ -30,7 +30,7 @@ namespace Service
         public async Task<IList<ChatMessage>> GetAllMessagesAsync(Guid gameId)
         {
             //TODO write good code for this with lazy loading
-            var game = await context.Games.Include(g => g.ChatMessages).ThenInclude(c => c.Command).FilterByGameId(gameId).FirstOrDefaultAsync();
+            var game = await context.Games.Include(g => g.ChatMessages).ThenInclude(c => c.Command).FilterById(gameId).FirstOrDefaultAsync();
 
             return game.ChatMessages.ToList();
         }

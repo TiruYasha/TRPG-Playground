@@ -9,53 +9,61 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using Domain;
 
 namespace Service
 {
-    public class JournalService : Service, IJournalService
+    public class JournalService : IJournalService
     {
-        public JournalService(DbContextOptions<DndContext> options) : base(options)
+        private readonly IRepository repository;
+        private readonly IMapper mapper;
+
+        public JournalService(IRepository repository, IMapper mapper)
         {
+            this.repository = repository;
+            this.mapper = mapper;
         }
 
-        public async Task<JournalItem> AddJournalItemToGameAsync(AddJournalItemModel model, Guid gameId)
+        public async Task<JournalItemTreeItemDto> AddJournalItemToGame(AddJournalItemDto dto, Guid gameId)
         {
-            // TODO change to projectto with automapper
-
-            JournalItem result = null;
-
-            if(model.ParentFolderId == null)
+            if (dto.ParentFolderId == null)
             {
-                var game = await context.Games.FilterByGameId(gameId).FirstOrDefaultAsync();
+                var game = await repository.Games.FilterById(gameId).FirstOrDefaultAsync();
 
-                result = await game.AddJournalItemAsync(model);
+                var journalItem = await game.AddJournalItemAsync(dto);
+
+                await repository.Commit();
+
+                return mapper.Map<JournalItem, JournalItemTreeItemDto>(journalItem);
             }
 
-            var parent = await context.JournalFolders.FirstOrDefaultAsync(f => f.Id == model.ParentFolderId);
+            var parent = await repository.JournalFolders.FilterById(dto.ParentFolderId.Value).FirstOrDefaultAsync();
 
-            result = await parent.AddJournalItemAsync(model);
+            var result = await parent.AddJournalItem(dto);
 
-            await context.SaveChangesAsync();
+            await repository.Commit();
 
-            return result;
+            return mapper.Map<JournalItem, JournalItemTreeItemDto>(result); ;
         }
 
         public async Task<ICollection<JournalItem>> GetAllJournalItemsAsync(Guid userId, Guid gameId)
         {
-            var game = await context.Games.Include(g => g.Owner).Include(g => g.JournalItems).FilterByGameId(gameId).FirstOrDefaultAsync();
-            var isOwner = game.IsOwner(userId);
+            //var game = await context.Games.Include(g => g.Owner).Include(g => g.JournalItems).FilterById(gameId).FirstOrDefaultAsync();
+            //var isOwner = game.IsOwner(userId);
 
-            //var journalItems = game.JournalItems.Where(j => j.Type == JournalItemType.Folder || j.Permissions.Any(p => p.UserId == userId && p.CanSee == true));
+            ////var journalItems = game.JournalItems.Where(j => j.Type == JournalItemType.Folder || j.Permissions.Any(p => p.UserId == userId && p.CanSee == true));
 
-            //if (!isOwner)
-            //{
-            //    FilterEmptyFolders(journalItems);
-            //}
+            ////if (!isOwner)
+            ////{
+            ////    FilterEmptyFolders(journalItems);
+            ////}
 
-            return game.JournalItems;
+            //return game.JournalItems;
+            return null;
         }
 
-        public Task<IEnumerable<AddedJournalItemModel>> GetJournalItemsForParentFolderId(Guid userId, Guid gameId, Guid parentFolderId)
+        public Task<IEnumerable<JournalItemTreeItemDto>> GetJournalItemsForParentFolderId(Guid userId, Guid gameId, Guid parentFolderId)
         {
             //context.JournalItems.Where(j => j.)
 

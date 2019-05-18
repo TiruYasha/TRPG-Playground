@@ -1,11 +1,11 @@
 ﻿using Domain.Domain.JournalItems;
 using Domain.Exceptions;
-using Domain.Test.Domain.Mocks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Domain.Mocks;
 
 namespace Domain.Test.Domain.JournalItems
 {
@@ -21,7 +21,7 @@ namespace Domain.Test.Domain.JournalItems
             var itemType = JournalItemType.Handout;
             var name = "test";
             var gameId = Guid.NewGuid();
-            var imageId = "path";
+            var imageId = Guid.NewGuid();
             var canSee = new List<Guid>() { user1Guid, user2Guid };
             var canEdit = new List<Guid>() { user1Guid };
 

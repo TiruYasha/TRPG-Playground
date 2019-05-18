@@ -8,31 +8,26 @@ namespace Domain.Domain.JournalItems
     public class JournalFolder : JournalItem
     {
         public virtual ICollection<JournalItem> JournalItems { get; set; }
-        public JournalFolder() : base()
+        public JournalFolder()
         {
             JournalItems = new List<JournalItem>();
         }
 
-        public JournalFolder(AddJournalItemModel model, Guid gameId) : base(JournalItemType.Folder, model.JournalItem.Name, gameId, null, null, null)
+        public JournalFolder(AddJournalItemDto dto, Guid gameId) : base(JournalItemType.Folder, dto.JournalItem.Name, gameId, null, null, null)
         {
             JournalItems = new List<JournalItem>();
         }
-     
-        public void AddJournalItem(JournalItem item)
-        {
-            JournalItems.Add(item);
-        }
 
-        public Task<JournalItem> AddJournalItemAsync(AddJournalItemModel model)
+        public virtual Task<JournalItem> AddJournalItem(AddJournalItemDto dto)
         {
             return Task.Run(() =>
             {
-                if (model?.JournalItem == null)
+                if (dto?.JournalItem == null)
                 {
-                    throw new ArgumentNullException("item");
+                    throw new ArgumentNullException(nameof(dto));
                 }
 
-                var journalItem = JournalItemFactory.Create(model, Id);
+                var journalItem = JournalItemFactory.Create(dto, Id);
 
                 JournalItems.Add(journalItem);
 
