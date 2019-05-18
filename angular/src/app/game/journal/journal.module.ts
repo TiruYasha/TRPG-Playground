@@ -12,6 +12,7 @@ import {
   MatMenuModule,
   MatAutocompleteModule,
   MatSelectModule,
+  MatProgressBarModule,
 } from '@angular/material';
 import { CreateFolderDialogComponent } from './create-folder-dialog/create-folder-dialog.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -35,7 +36,8 @@ import { ParentDialogComponent } from './parent-dialog/parent-dialog.component';
     MatAutocompleteModule,
     DragDropModule,
     ReactiveFormsModule,
-    MatSelectModule
+    MatSelectModule,
+    MatProgressBarModule
   ],
   exports: [
     JournalComponent

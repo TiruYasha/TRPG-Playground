@@ -2,6 +2,7 @@
 using Domain.Domain;
 using Domain.Domain.Commands;
 using Domain.Domain.JournalItems;
+using Domain.RequestModels.Journal.JournalItems;
 using Domain.ReturnModels.Chat;
 using Domain.ReturnModels.Chat.CommandResults;
 using Domain.ReturnModels.Game;
@@ -24,11 +25,13 @@ namespace Domain.MappingProfiles
             CreateMap<DefaultCommand, DefaultCommandResult>();
             CreateMap<NormalDiceRollCommand, NormalDiceRollCommandResult>();
 
-            CreateMap<JournalFolder, JournalItemTreeItemDto>();
-            CreateMap<JournalHandout, JournalItemTreeItemDto>();
 
             CreateMap<JournalItem, JournalItemModel>()
                 .Include<JournalFolder, JournalFolderModel>();
+
+            CreateMap<JournalItem, JournalItemTreeItemDto>();
+            CreateMap<JournalFolder, JournalItemTreeItemDto>();
+            CreateMap<JournalHandout, JournalItemTreeItemDto>();
 
             CreateMap<JournalFolder, JournalFolderModel>();
 

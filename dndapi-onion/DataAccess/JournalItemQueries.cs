@@ -10,5 +10,15 @@ namespace DataAccess
         {
             return journalFolder.Where(j => j.Id == id);
         }
+
+        public static IQueryable<JournalItem> FilterByParentFolderId(this IQueryable<JournalItem> queryable, Guid? id)
+        {
+            return queryable.Where(j => j.ParentFolderId == id);
+        }
+
+        public static IQueryable<JournalItem> FilterByGameId(this IQueryable<JournalItem> queryable, Guid? id)
+        {
+            return queryable.Where(j => j.GameId == id);
+        }
     }
 }

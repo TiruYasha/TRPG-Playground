@@ -24,6 +24,7 @@ using System;
 using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
+using Domain;
 
 namespace DependencyResolver
 {
@@ -151,6 +152,7 @@ namespace DependencyResolver
             services.AddTransient<IJwtReader, JwtReader>();
             services.AddTransient<IChatService, ChatService>();
             services.AddTransient<IJournalService, JournalService>();
+            services.AddTransient<IRepository, Repository>();
 
             services.AddScoped<IAuthorizationHandler, IsOwnerRequirementHandler>();
             services.AddScoped<IAuthorizationHandler, IsPlayerRequirementHandler>();

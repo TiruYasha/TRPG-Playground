@@ -6,5 +6,5 @@ export class ParentDialogModel {
     players: Player[];
     data?: JournalItem;
     isOwner: boolean;
-    parentFolderId?: string = Guid.getEmptyGuid();
+    parentFolderId?: string;
 }

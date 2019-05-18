@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using Domain.Domain.JournalItems;
 using Domain.RequestModels.Journal;
 using Domain.ServiceInterfaces;
@@ -45,6 +46,31 @@ namespace RestApi
             return Ok(mappedResult);
         }
 
+        [HttpGet]
+        [Route("folder/{parentFolderId}/item")]
+        public async Task<IActionResult> GetJournalItemsForParentFolder(Guid? parentFolderId)
+        {
+            var gameId = jwtReader.GetGameId();
+            var userId = jwtReader.GetUserId();
+
+            var result = await journalService.GetJournalItemsForParentFolderId(userId, gameId, parentFolderId);
+
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("item")]
+        public async Task<IActionResult> GetRootJournalItems()
+        {
+            var gameId = jwtReader.GetGameId();
+            var userId = jwtReader.GetUserId();
+
+            var result = await journalService.GetJournalItemsForParentFolderId(userId, gameId, null);
+
+            return Ok(result);
+        }
+
+
         [HttpPost]
         [Route("AddJournalItem")]
         public async Task<IActionResult> AddJournalItemAsync([FromBody] AddJournalItemDto dto)
@@ -52,14 +78,11 @@ namespace RestApi
             var userId = jwtReader.GetUserId();
             var gameId = jwtReader.GetGameId();
 
-            var journalFolder = await journalService.AddJournalItemToGame(dto, gameId);
+            var journalItem = await journalService.AddJournalItemToGame(dto, gameId);
 
-            //var message = mapper.Map<JournalItem, JournalItemTreeItemDto>(journalFolder);
-            //message.ParentFolderId = dto.ParentFolderId;
+            await hubContext.Clients.User(userId.ToString()).SendAsync("JournalItemAdded", journalItem);
 
-           // await hubContext.Clients.User(userId.ToString()).SendAsync("JournalItemAdded", message);
-
-            return Ok();
+            return Ok(journalItem);
         }
     }
 }

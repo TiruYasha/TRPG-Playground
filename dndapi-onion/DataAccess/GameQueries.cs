@@ -13,6 +13,11 @@ namespace DataAccess
             return queryable.Where(g => g.Id == gameId);
         }
 
+        public static IQueryable<Game> FilterOnOwnerById(this IQueryable<Game> queryable, Guid id)
+        {
+            return queryable.Where(g => g.Owner.Id == id);
+        }
+
         //public async Task CreateGameAsync(Game game)
         //{
         //    context.Entry(game.Owner).State = EntityState.Unchanged;

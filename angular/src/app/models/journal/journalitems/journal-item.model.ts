@@ -7,6 +7,7 @@ export class JournalItem {
     imageId?: string;
     canSee?: string[];
     canEdit?: string[];
+    parentFolderId?: string;
 
     constructor(type: JournalItemType){
         this.type = type;

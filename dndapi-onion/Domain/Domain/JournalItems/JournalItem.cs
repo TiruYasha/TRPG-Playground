@@ -13,7 +13,7 @@ namespace Domain.Domain.JournalItems
         public virtual DateTime CreatedOn { get; set; }
         public virtual DateTime LastEditedOn { get; set; }
         public virtual Game Game { get; set; }
-        public virtual Guid GameId { get; }
+        public virtual Guid GameId { get; set; }
         public virtual JournalFolder ParentFolder { get; set; }
         public virtual Guid? ParentFolderId { get; set; }
         public virtual ICollection<JournalItemPemission> Permissions { get; set; }

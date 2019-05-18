@@ -18,7 +18,7 @@ namespace Domain.Domain.JournalItems
             JournalItems = new List<JournalItem>();
         }
 
-        public virtual Task<JournalItem> AddJournalItem(AddJournalItemDto dto)
+        public virtual Task<JournalItem> AddJournalItem(AddJournalItemDto dto, Guid gameId)
         {
             return Task.Run(() =>
             {
@@ -27,7 +27,7 @@ namespace Domain.Domain.JournalItems
                     throw new ArgumentNullException(nameof(dto));
                 }
 
-                var journalItem = JournalItemFactory.Create(dto, Id);
+                var journalItem = JournalItemFactory.Create(dto, gameId);
 
                 JournalItems.Add(journalItem);
 

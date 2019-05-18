@@ -1,13 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { NestedTreeControl } from '@angular/cdk/tree';
-import { MatTreeNestedDataSource } from '@angular/material/tree';
+import { FlatTreeControl } from '@angular/cdk/tree';
 import { JournalItem } from 'src/app/models/journal/journalitems/journal-item.model';
 import { JournalService } from './journal.service';
 import { MatDialog } from '@angular/material';
-import { Guid } from 'src/app/utilities/guid.util';
 import { AddedJournalItemModel } from 'src/app/models/journal/receives/added-journal-folder.model';
 import { JournalFolder } from 'src/app/models/journal/journalitems/journal-folder.model';
-import { TreeTraversal } from 'src/app/utilities/tree-traversal.util';
 import { ActiveGameService } from '../services/active-game.service';
 import { Player } from 'src/app/models/game/player.model';
 import { ParentDialogComponent } from './parent-dialog/parent-dialog.component';
@@ -15,6 +12,8 @@ import { ParentDialogModel } from './parent-dialog/parent-dialog.model';
 import { JournalHandout } from 'src/app/models/journal/journalitems/journal-handout.model';
 import { JournalItemType } from 'src/app/models/journal/journalitems/journal-item-type.enum';
 import { JournalNodeContextMenuClick } from './journal-node/journal-node-context-menu-click.model';
+import { DynamicFlatNode } from 'src/app/models/journal/dynamic-flat-node';
+import { JournalDynamicDataSource } from './dynamic-data-source';
 
 @Component({
   selector: 'trpg-journal',
@@ -25,17 +24,22 @@ export class JournalComponent implements OnInit {
   isOwner: boolean;
   players: Player[] = [];
 
-  journalItems: JournalItem[] = [];
+  journalItemsNodes: DynamicFlatNode<JournalItem>[] = [];
 
   subIcons = ['create_new_folder', 'person_add', 'note_add'];
 
-  treeControl = new NestedTreeControl<JournalItem>((node: JournalFolder) => node.journalItems);
-  dataSource = new MatTreeNestedDataSource<JournalItem>();
+  treeControl: FlatTreeControl<DynamicFlatNode<JournalItem>>;
+  dataSource: JournalDynamicDataSource;
 
-  hasChild = (_: number, node: JournalItem) => node.type === JournalItemType.Folder;
+  getLevel = (node: DynamicFlatNode<JournalItem>) => node.level;
+  IsExpandable = (node: DynamicFlatNode<JournalItem>) => node.item.type === JournalItemType.Folder;
+
+  hasChild = (_: number, node: DynamicFlatNode<JournalItem>) => this.IsExpandable(node);
 
   constructor(private journalService: JournalService, private activeGameService: ActiveGameService, public dialog: MatDialog) {
-    this.dataSource.data = this.journalItems;
+    this.treeControl = new FlatTreeControl<DynamicFlatNode<JournalItem>>(this.getLevel, this.IsExpandable);
+    this.dataSource = new JournalDynamicDataSource(this.treeControl, journalService);
+    this.dataSource.data = this.journalItemsNodes;
   }
 
   ngOnInit() {
@@ -43,9 +47,9 @@ export class JournalComponent implements OnInit {
     this.journalService.journalItemAdded.subscribe((model: AddedJournalItemModel) => {
       this.addJournalItem(model);
     });
-    this.journalService.getAllJournalItems().subscribe(data => {
-      this.journalItems = data;
-      this.refreshDataSource();
+    this.journalService.getRootJournalItems().subscribe(data => {
+      const nodes = data.map(item => new DynamicFlatNode<JournalItem>(item, 0));
+      this.dataSource.data = nodes;
     });
 
     this.activeGameService.isOwnerObservable.subscribe((isOwner) => {
@@ -74,13 +78,19 @@ export class JournalComponent implements OnInit {
     journalItem.id = model.id;
     journalItem.imageId = model.imageId;
 
-    if (model.parentId !== Guid.getEmptyGuid()) {
-      const child = this.findChild(model);
-      child.journalItems.push(journalItem);
-    } else {
-      this.journalItems.push(journalItem);
-    }
+    let node = new DynamicFlatNode<JournalItem>(journalItem, 0);
 
+    if (model.parentFolderId) {
+      const parentFolder = this.dataSource.data.filter(d => d.item.id === model.parentFolderId)[0];
+
+      if (parentFolder) {
+        node = new DynamicFlatNode<JournalItem>(journalItem, parentFolder.level + 1);
+        const index = this.dataSource.data.indexOf(parentFolder);
+        this.dataSource.data.splice(index + 1, 0, node);
+      }
+    } else {
+      this.dataSource.data.push(node);
+    }
     this.refreshDataSource();
   }
 
@@ -88,21 +98,11 @@ export class JournalComponent implements OnInit {
     this.openDialog(click.item, click.id);
   }
 
-  clickFolder(node: JournalItem) {
+  clickFolder(node: DynamicFlatNode<JournalItem>) {
     this.treeControl.toggle(node);
   }
 
-  private findChild(model: AddedJournalItemModel) {
-    return TreeTraversal.findChild(model.parentId, this.journalItems,
-      (item: JournalItem) => (item as JournalFolder).journalItems, (id: string, item: JournalItem) => id === item.id) as JournalFolder;
-  }
-
-  private refreshDataSource() {
-    this.dataSource.data = null;
-    this.dataSource.data = this.journalItems;
-  }
-
-  private openDialog(journalItem: JournalItem, parentFolderId: string = Guid.getEmptyGuid()) {
+  private openDialog(journalItem: JournalItem, parentFolderId: string = null) {
     const data: ParentDialogModel = {
       players: this.players,
       isOwner: this.isOwner,
@@ -114,5 +114,11 @@ export class JournalComponent implements OnInit {
       data: data,
       hasBackdrop: false
     });
+  }
+
+  private refreshDataSource() {
+    const source = this.dataSource.data;
+    this.dataSource.data = null;
+    this.dataSource.data = source;
   }
 }

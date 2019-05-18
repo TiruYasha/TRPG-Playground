@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Domain;
 
 namespace Service
@@ -40,7 +41,7 @@ namespace Service
 
             var parent = await repository.JournalFolders.FilterById(dto.ParentFolderId.Value).FirstOrDefaultAsync();
 
-            var result = await parent.AddJournalItem(dto);
+            var result = await parent.AddJournalItem(dto, gameId);
 
             await repository.Commit();
 
@@ -50,7 +51,7 @@ namespace Service
         public async Task<ICollection<JournalItem>> GetAllJournalItemsAsync(Guid userId, Guid gameId)
         {
             //var game = await context.Games.Include(g => g.Owner).Include(g => g.JournalItems).FilterById(gameId).FirstOrDefaultAsync();
-            //var isOwner = game.IsOwner(userId);
+            //var isOwner = game.FilterOnOwnerById(userId);
 
             ////var journalItems = game.JournalItems.Where(j => j.Type == JournalItemType.Folder || j.Permissions.Any(p => p.UserId == userId && p.CanSee == true));
 
@@ -63,9 +64,29 @@ namespace Service
             return null;
         }
 
-        public Task<IEnumerable<JournalItemTreeItemDto>> GetJournalItemsForParentFolderId(Guid userId, Guid gameId, Guid parentFolderId)
+        public async Task<IEnumerable<JournalItemTreeItemDto>> GetJournalItemsForParentFolderId(Guid userId, Guid gameId, Guid? parentFolderId)
         {
-            //context.JournalItems.Where(j => j.)
+            var isOwner = await repository.Games.FilterOnOwnerById(userId).AnyAsync();
+            if (isOwner)
+            {
+                var query = repository.JournalItems.FilterByParentFolderId(parentFolderId);
+
+                if (!parentFolderId.HasValue)
+                {
+                    query = query.FilterByGameId(gameId);
+                }
+
+                var result = await query.Select(j => new JournalItemTreeItemDto
+                    {
+                        Id = j.Id,
+                        ParentFolderId = j.ParentFolderId,
+                        Name = j.Name,
+                        ImageId = j.ImageId,
+                        Type = j.Type
+                    }).ToListAsync();
+
+                return result;
+            }
 
             return null;
         }

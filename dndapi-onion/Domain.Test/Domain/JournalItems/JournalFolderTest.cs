@@ -39,7 +39,7 @@ namespace Domain.Test.Domain.JournalItems
 
             var sut = new JournalFolder();
 
-            var result = await sut.AddJournalItem(journalItem);
+            var result = await sut.AddJournalItem(journalItem, Guid.Empty);
 
             sut.JournalItems.Count.ShouldBe(1);
             result.Name.ShouldBe(journalItem.JournalItem.Name);
@@ -51,7 +51,7 @@ namespace Domain.Test.Domain.JournalItems
         {
             var sut = new JournalFolder();
 
-            var result = Should.Throw<ArgumentNullException>(async () => await sut.AddJournalItem(null));
+            var result = Should.Throw<ArgumentNullException>(async () => await sut.AddJournalItem(null, Guid.Empty));
              
             result.ParamName.ShouldBe("dto");
         }
