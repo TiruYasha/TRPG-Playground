@@ -12,7 +12,6 @@ namespace Domain.Domain.JournalItems
         public virtual JournalItemType Type { get; set; }
         public virtual DateTime CreatedOn { get; set; }
         public virtual DateTime LastEditedOn { get; set; }
-        public virtual int Level { get; set; }
         public virtual Game Game { get; set; }
         public virtual Guid GameId { get; set; }
         public virtual JournalFolder ParentFolder { get; set; }

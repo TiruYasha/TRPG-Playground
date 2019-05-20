@@ -7,7 +7,7 @@ namespace Domain.Domain.JournalItems
 {
     public class JournalFolder : JournalItem
     {
-        public virtual ICollection<JournalItem> JournalItems { get; set; }
+        public virtual IList<JournalItem> JournalItems { get; set; }
         public JournalFolder()
         {
             JournalItems = new List<JournalItem>();
@@ -30,7 +30,6 @@ namespace Domain.Domain.JournalItems
                 var journalItem = JournalItemFactory.Create(dto, gameId);
 
                 JournalItems.Add(journalItem);
-
                 return journalItem;
             });
         }

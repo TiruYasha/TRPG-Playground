@@ -10,12 +10,12 @@ namespace Domain.Domain
 {
     public class Game
     {
-        public virtual Guid Id { get; private set; }
-        public virtual string Name { get; private set; }
-        public virtual User Owner { get; private set; }
-        public virtual ICollection<GamePlayer> Players { get; private set; }
-        public virtual ICollection<ChatMessage> ChatMessages { get; private set; }
-        public virtual ICollection<JournalItem> JournalItems { get; private set; }
+        public virtual Guid Id { get; set; }
+        public virtual string Name { get; set; }
+        public virtual User Owner { get; set; }
+        public virtual ICollection<GamePlayer> Players { get; set; }
+        public virtual ICollection<ChatMessage> ChatMessages { get; set; }
+        public virtual ICollection<JournalItem> JournalItems { get; set; }
 
         public Game()
         {

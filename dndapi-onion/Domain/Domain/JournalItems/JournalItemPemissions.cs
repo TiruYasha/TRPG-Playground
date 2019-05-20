@@ -14,6 +14,8 @@ namespace Domain.Domain.JournalItems
         public bool CanSee { get; set; }
         public bool CanEdit { get; set; }
 
+        public JournalItemPemission() { }
+
         public JournalItemPemission(Guid journalItemId, Guid userId, Guid gameId, bool canSee, bool canEdit = false)
         {
             //TODO argument handling

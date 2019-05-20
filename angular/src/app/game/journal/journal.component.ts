@@ -83,7 +83,7 @@ export class JournalComponent implements OnInit {
     if (model.parentFolderId) {
       const parentFolder = this.dataSource.data.filter(d => d.item.id === model.parentFolderId)[0];
 
-      if (parentFolder) {
+      if (parentFolder && this.treeControl.isExpanded(parentFolder)) {
         node = new DynamicFlatNode<JournalItem>(journalItem, parentFolder.level + 1);
         const index = this.dataSource.data.indexOf(parentFolder);
         this.dataSource.data.splice(index + 1, 0, node);

@@ -213,7 +213,6 @@ namespace Service.Test
             mockGame1.SetupGet(g => g.Id).Returns(gameId);
             mockGame1.SetupGet(g => g.Owner.Id).Returns(userId);
 
-
             var gameQueryable = new List<Game> { mockGame1.Object };
 
             var mock = gameQueryable.AsQueryable().BuildMock();
@@ -240,74 +239,48 @@ namespace Service.Test
             var gameId = Guid.NewGuid();
             var userId = Guid.NewGuid();
 
-            //Journal mock
-            var journalFolderWithNestedItem = new JournalFolder
+            var permission = new JournalItemPemission
+            {
+                UserId = userId,
+                GameId = gameId,
+                CanEdit = true,
+                CanSee = true
+            };
+
+            var handout = new JournalHandout
             {
                 Id = Guid.NewGuid(),
-                Name = "test",
-                Type = JournalItemType.Folder,
-                ImageId = Guid.Empty,
-                GameId = gameId,
-                ParentFolderId = Guid.NewGuid(),
-                Level = 1,
-                JournalItems = new List<JournalItem> {new JournalHandout{Level = 2}}
-            };
-
-            var journalFolderWithoutNestedItems = new JournalFolder
-            {
-                Id = Guid.NewGuid(),
-                Name = "test",
-                Type = JournalItemType.Folder,
-                ImageId = Guid.Empty,
-                GameId = gameId,
-                Level = 1,
-                JournalItems = new List<JournalItem>()
-            };
-
-            var journalHandout = new JournalHandout
-            {
-                Level = 1,
-                ParentFolderId = journalFolderWithNestedItem.ParentFolderId
-            };
-
-            var journalItem2 = new JournalFolder
-            {
-                Id = journalFolderWithNestedItem.ParentFolderId.Value,
                 Name = "test2",
                 Type = JournalItemType.Folder,
                 ImageId = Guid.Empty,
                 GameId = Guid.Empty,
-                Level = 0,
-                JournalItems = new List<JournalItem> {journalFolderWithNestedItem, journalFolderWithoutNestedItems}
+                Permissions = new List<JournalItemPemission> { permission }
             };
 
-            var journalItemList = new List<JournalItem> {journalFolderWithNestedItem, journalItem2, journalHandout };
-            var journalItemListQueryable = journalItemList.AsQueryable().BuildMock();
+            var game = new Game
+            {
+                Id = gameId,
+                JournalItems = new List<JournalItem> { handout },
+                Owner = new User()
+            };
 
-            var journalFolderList = new List<JournalFolder> { journalFolderWithNestedItem, journalItem2 };
-            var journalFolderQueryable = journalFolderList.AsQueryable().BuildMock();
+            var journalItemList = new List<JournalItem> { handout };
+            var journalItemQueryable = journalItemList.AsQueryable().BuildMock();
 
+            var gameQueryable = new List<Game> { game }.AsQueryable().BuildMock();
 
-            repository.SetupGet(r => r.JournalItems).Returns(journalItemListQueryable.Object);
-            repository.SetupGet(r => r.JournalFolders).Returns(journalFolderQueryable.Object);
-
-            // Game mock
-            var mockGame1 = new Mock<Game>();
-            mockGame1.SetupGet(g => g.Id).Returns(gameId);
-            mockGame1.SetupGet(g => g.Owner.Id).Returns(Guid.Empty);
-
-
-            var gameQueryable = new List<Game> {mockGame1.Object};
-
-            var mock = gameQueryable.AsQueryable().BuildMock();
-
-            repository.SetupGet(r => r.Games).Returns(mock.Object);
+            repository.SetupGet(r => r.JournalItems).Returns(journalItemQueryable.Object);
+            repository.SetupGet(r => r.Games).Returns(gameQueryable.Object);
 
             // act
-            var result = await sut.GetJournalItemsForParentFolderId(userId, gameId, journalItem2.Id);
+            var result = await sut.GetJournalItemsForParentFolderId(userId, gameId, null);
 
-            // assert
-            result.Count().ShouldBe(2);
+            // Assert
+            result.Count().ShouldBe(1);
+            result.First().Id.ShouldBe(handout.Id);
+            result.First().ImageId.ShouldBe(handout.ImageId);
+            result.First().Name.ShouldBe(handout.Name);
+            result.First().ParentFolderId.ShouldBe(handout.ParentFolderId);
         }
     }
 }

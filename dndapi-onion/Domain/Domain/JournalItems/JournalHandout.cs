@@ -11,7 +11,7 @@ namespace Domain.Domain.JournalItems
 
         public JournalHandout() : base()
         {
-
+            Type = JournalItemType.Handout;
         }
 
         public JournalHandout(AddJournalItemDto dto, Guid gameId) : base(JournalItemType.Handout, dto.JournalItem.Name, gameId, null, dto.JournalItem.CanSee, dto.JournalItem.CanEdit)
