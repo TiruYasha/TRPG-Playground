@@ -6,19 +6,21 @@ namespace Domain.Domain.JournalItems
 {
     public abstract class JournalItem
     {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string ImageId { get; set; }
-        public JournalItemType Type { get; set; }
-        public DateTime CreatedOn { get; set; }
-        public DateTime LastEditedOn { get; set; }
+        public virtual Guid Id { get; set; }
+        public virtual string Name { get; set; }
+        public virtual Guid? ImageId { get; set; }
+        public virtual JournalItemType Type { get; set; }
+        public virtual DateTime CreatedOn { get; set; }
+        public virtual DateTime LastEditedOn { get; set; }
         public virtual Game Game { get; set; }
-        public Guid GameId { get; }
+        public virtual Guid GameId { get; set; }
+        public virtual JournalFolder ParentFolder { get; set; }
+        public virtual Guid? ParentFolderId { get; set; }
         public virtual ICollection<JournalItemPemission> Permissions { get; set; }
 
-        public JournalItem() { }
+        protected JournalItem() { }
 
-        public JournalItem(JournalItemType type, string name, Guid gameId, string imageId, ICollection<Guid> canSee, ICollection<Guid> canEdit)
+        protected JournalItem(JournalItemType type, string name, Guid gameId, Guid? imageId, ICollection<Guid> canSee, ICollection<Guid> canEdit)
         {
             Permissions = new List<JournalItemPemission>();
             CheckArguments(name);
@@ -35,21 +37,16 @@ namespace Domain.Domain.JournalItems
 
         private void SetPermissions(ICollection<Guid> canSee, ICollection<Guid> canEdit)
         {
-            if(canSee == null) { return; }
+            if (canSee == null) { return; }
             foreach (var s in canSee)
             {
-                if (canEdit.Contains(s))
-                {
-                    Permissions.Add(new JournalItemPemission(Id, s, GameId, true, true));
-                }
-                else
-                {
-                    Permissions.Add(new JournalItemPemission(Id, s, GameId, true));
-                }
+                Permissions.Add(canEdit.Contains(s)
+                    ? new JournalItemPemission(Id, s, GameId, true, true)
+                    : new JournalItemPemission(Id, s, GameId, true));
             }
         }
 
-        private void CheckArguments(string name)
+        private static void CheckArguments(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
             {

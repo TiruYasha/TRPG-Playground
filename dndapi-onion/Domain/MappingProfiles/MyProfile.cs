@@ -2,13 +2,14 @@
 using Domain.Domain;
 using Domain.Domain.Commands;
 using Domain.Domain.JournalItems;
+using Domain.RequestModels.Journal.JournalItems;
 using Domain.ReturnModels.Chat;
 using Domain.ReturnModels.Chat.CommandResults;
 using Domain.ReturnModels.Game;
 using Domain.ReturnModels.Journal;
 using Domain.ReturnModels.Journal.JournalItems;
 
-namespace DependencyResolver.MappingProfiles
+namespace Domain.MappingProfiles
 {
     public class MyProfile : Profile
     {
@@ -24,11 +25,13 @@ namespace DependencyResolver.MappingProfiles
             CreateMap<DefaultCommand, DefaultCommandResult>();
             CreateMap<NormalDiceRollCommand, NormalDiceRollCommandResult>();
 
-            CreateMap<JournalFolder, AddedJournalItemModel>();
-            CreateMap<JournalHandout, AddedJournalItemModel>();
 
             CreateMap<JournalItem, JournalItemModel>()
                 .Include<JournalFolder, JournalFolderModel>();
+
+            CreateMap<JournalItem, JournalItemTreeItemDto>();
+            CreateMap<JournalFolder, JournalItemTreeItemDto>();
+            CreateMap<JournalHandout, JournalItemTreeItemDto>();
 
             CreateMap<JournalFolder, JournalFolderModel>();
 

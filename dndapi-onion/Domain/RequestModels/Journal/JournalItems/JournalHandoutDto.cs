@@ -1,10 +1,10 @@
 ﻿namespace Domain.RequestModels.Journal.JournalItems
 {
-    public class JournalHandoutModel : JournalItemModel
+    public class JournalHandoutDto : JournalItemDto
     {
         public string Description { get; set; }
         public string OwnerNotes { get; set; }
-        public JournalHandoutModel()
+        public JournalHandoutDto()
         {
             Type = Domain.JournalItems.JournalItemType.Handout;
         }

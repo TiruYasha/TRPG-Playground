@@ -5,14 +5,14 @@ namespace Domain.Domain.JournalItems
 {
     public static class JournalItemFactory
     {
-        public static JournalItem Create(AddJournalItemModel model, Guid gameId)
+        public static JournalItem Create(AddJournalItemDto dto, Guid gameId)
         {
-            switch (model.JournalItem.Type)
+            switch (dto.JournalItem.Type)
             {
                 case JournalItemType.Folder:
-                    return new JournalFolder(model, gameId);
+                    return new JournalFolder(dto, gameId);
                 case JournalItemType.Handout:
-                    return new JournalHandout(model, gameId);
+                    return new JournalHandout(dto, gameId);
                 default:
                     throw new NotImplementedException();
             }

@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
+import { Component, Input, ViewChild, ElementRef, Output, EventEmitter, OnInit } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material';
 import { JournalFolder } from 'src/app/models/journal/journalitems/journal-folder.model';
 import { JournalItem } from 'src/app/models/journal/journalitems/journal-item.model';

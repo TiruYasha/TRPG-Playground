@@ -15,14 +15,14 @@ namespace Service.Test
     {
         //private IGameService sut;
 
-        //private Mock<IGameRepository> gameRepository;
+        //private Mock<IRepository> gameRepository;
         //private Mock<ILogger<GameService>> logger;
         //private Mock<IUserRepository> userRepository;
 
         //[TestInitialize]
         //public void Initialize()
         //{
-        //    gameRepository = new Mock<IGameRepository>();
+        //    gameRepository = new Mock<IRepository>();
         //    logger = new Mock<ILogger<GameService>>();
         //    userRepository = new Mock<IUserRepository>();
 

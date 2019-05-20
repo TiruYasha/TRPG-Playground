@@ -13,14 +13,14 @@ namespace Domain.Test.Domain.JournalItems
         [TestMethod]
         public void ConstructorSetsTheHandoutData()
         {
-            var handoutModel = new JournalHandoutModel
+            var handoutModel = new JournalHandoutDto
             {
                 Name = "handout",
                 Description = "description",
                 OwnerNotes = "ownerNotes"
             };
 
-            var model = new AddJournalItemModel
+            var model = new AddJournalItemDto
             {
                JournalItem = handoutModel
             };

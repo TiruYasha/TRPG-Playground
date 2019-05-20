@@ -11,12 +11,12 @@ namespace Domain.Domain.JournalItems
 
         public JournalHandout() : base()
         {
-
+            Type = JournalItemType.Handout;
         }
 
-        public JournalHandout(AddJournalItemModel model, Guid gameId) : base(JournalItemType.Handout, model.JournalItem.Name, gameId, null, model.JournalItem.CanSee, model.JournalItem.CanEdit)
+        public JournalHandout(AddJournalItemDto dto, Guid gameId) : base(JournalItemType.Handout, dto.JournalItem.Name, gameId, null, dto.JournalItem.CanSee, dto.JournalItem.CanEdit)
         {
-            var handoutModel = model.JournalItem as JournalHandoutModel;
+            var handoutModel = dto.JournalItem as JournalHandoutDto;
             Description = handoutModel.Description;
             OwnerNotes = handoutModel.OwnerNotes;
         }

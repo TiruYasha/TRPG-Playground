@@ -5,9 +5,9 @@ using System;
 
 namespace Domain.JsonConverter
 {
-    public class JournalItemModelConverter : JsonCreationConverter<JournalItemModel>
+    public class JournalItemModelConverter : JsonCreationConverter<JournalItemDto>
     {
-        protected override JournalItemModel Create(Type objectType, JObject jObject)
+        protected override JournalItemDto Create(Type objectType, JObject jObject)
         {
             if (jObject == null) throw new ArgumentNullException("jObject");
 
@@ -15,15 +15,15 @@ namespace Domain.JsonConverter
 
             if (journalItemType != JournalItemType.Folder)
             {
-                return new JournalFolderModel();
+                return new JournalFolderDto();
             }
             else if (journalItemType != JournalItemType.Handout)
             {
-                return new JournalHandoutModel();
+                return new JournalHandoutDto();
             }
             else
             {
-                return new JournalItemModel();
+                return new JournalItemDto();
             }
         }
     }

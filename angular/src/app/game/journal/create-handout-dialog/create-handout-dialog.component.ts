@@ -41,7 +41,6 @@ export class CreateHandoutDialogComponent {
     const canEdit = (this.canEdit.value as Player[]).map(m => m.userId);
 
     const handout = new JournalHandout();
-    handout.id = Guid.getEmptyGuid();
     handout.name = this.name.value;
     handout.description = this.description.value;
     handout.ownerNotes = this.ownerNotes.value;

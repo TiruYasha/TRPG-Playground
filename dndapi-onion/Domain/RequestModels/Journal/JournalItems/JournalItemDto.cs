@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace Domain.RequestModels.Journal.JournalItems
 {
     [JsonConverter(typeof(JournalItemModelConverter))]
-    public class JournalItemModel
+    public class JournalItemDto
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
@@ -18,6 +18,6 @@ namespace Domain.RequestModels.Journal.JournalItems
         public ICollection<Guid> CanSee {get;set;}
         public ICollection<Guid> CanEdit { get; set; }
 
-        public JournalItemModel() { }
+        public JournalItemDto() { }
     }
 }

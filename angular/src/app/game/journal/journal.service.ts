@@ -11,6 +11,7 @@ import { ActiveGameService } from '../services/active-game.service';
     providedIn: 'root'
 })
 export class JournalService {
+
     private journalItemAddedSubject = new Subject<AddedJournalItemModel>();
     journalItemAdded = this.journalItemAddedSubject.asObservable();
 
@@ -26,6 +27,14 @@ export class JournalService {
 
     getAllJournalItems(): Observable<JournalItem[]> {
         return this.http.get<JournalItem[]>(environment.apiUrl + '/journal/all');
+    }
+
+    getJournalItemsByParentFolderId(parentFolderId: string) {
+        return this.http.get<JournalItem[]>(environment.apiUrl + `/journal/folder/${parentFolderId}/item`);
+    }
+
+    getRootJournalItems() {
+        return this.http.get<JournalItem[]>(environment.apiUrl + `/journal/item`);
     }
 
     private registerOnServerEvents(): void {

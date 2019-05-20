@@ -47,7 +47,7 @@ namespace Service
 
         public async Task<bool> JoinGameAsync(Guid gameId, Guid userId)
         {
-            var game = await context.Games.Include(g =>g.Players).Include(g => g.Owner).FilterByGameId(gameId).FirstOrDefaultAsync();
+            var game = await context.Games.Include(g =>g.Players).Include(g => g.Owner).FilterById(gameId).FirstOrDefaultAsync();
 
             if (game.HasPlayerJoined(userId))
             {

@@ -1,30 +1,37 @@
 ﻿using Domain.RequestModels.Journal;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Domain.Domain.JournalItems
 {
     public class JournalFolder : JournalItem
     {
-        public virtual ICollection<JournalItem> JournalItems { get; set; }
-        public JournalFolder() : base()
+        public virtual IList<JournalItem> JournalItems { get; set; }
+        public JournalFolder()
         {
             JournalItems = new List<JournalItem>();
         }
 
-        public JournalFolder(AddJournalItemModel model, Guid gameId) : base(JournalItemType.Folder, model.JournalItem.Name, gameId, null, null, null)
+        public JournalFolder(AddJournalItemDto dto, Guid gameId) : base(JournalItemType.Folder, dto.JournalItem.Name, gameId, null, null, null)
         {
             JournalItems = new List<JournalItem>();
         }
-     
-        public void AddJournalItem(JournalItem item)
+
+        public virtual Task<JournalItem> AddJournalItem(AddJournalItemDto dto, Guid gameId)
         {
-            if(item == null)
+            return Task.Run(() =>
             {
-                throw new ArgumentNullException("item");
-            }
+                if (dto?.JournalItem == null)
+                {
+                    throw new ArgumentNullException(nameof(dto));
+                }
 
-            JournalItems.Add(item);
+                var journalItem = JournalItemFactory.Create(dto, gameId);
+
+                JournalItems.Add(journalItem);
+                return journalItem;
+            });
         }
     }
 }

@@ -2,11 +2,11 @@
 
 namespace Domain.RequestModels.Journal.JournalItems
 {
-    public class JournalFolderModel: JournalItemModel
+    public class JournalFolderDto: JournalItemDto
     {
-        public virtual ICollection<JournalItemModel> JournalItems { get; set; }
+        public virtual ICollection<JournalItemDto> JournalItems { get; set; }
 
-        public JournalFolderModel()
+        public JournalFolderDto()
         {
             Type = Domain.JournalItems.JournalItemType.Folder;
         }

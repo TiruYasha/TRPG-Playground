@@ -14,12 +14,12 @@ namespace Service.Test
     {
         //private IChatService sut;
 
-        //private Mock<IGameRepository> gameRepository;
+        //private Mock<IRepository> gameRepository;
 
         //[TestInitialize]
         //public void Initialize()
         //{
-        //    gameRepository = new Mock<IGameRepository>();
+        //    gameRepository = new Mock<IRepository>();
 
         //    sut = new ChatService(gameRepository.Object);
         //}
