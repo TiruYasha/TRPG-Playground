@@ -72,7 +72,7 @@ namespace Service.Test
             repository.Setup(r => r.Commit()).Returns(Task.CompletedTask).Verifiable();
 
             // act
-            var result = await sut.AddJournalItemToGame(addJournalItemModel, gameId);
+            var (result, _) = await sut.AddJournalItemToGame(addJournalItemModel, gameId);
 
             // assert
             result.Name.ShouldBe(journalItem.Name);
@@ -119,7 +119,7 @@ namespace Service.Test
             repository.Setup(r => r.Commit()).Returns(Task.CompletedTask).Verifiable();
 
             // act
-            var result = await sut.AddJournalItemToGame(addJournalItemModel, gameId);
+            var (result, _) = await sut.AddJournalItemToGame(addJournalItemModel, gameId);
 
             // assert
             result.Name.ShouldBe(journalItem.Name);

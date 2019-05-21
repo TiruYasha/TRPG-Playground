@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Domain.Domain.JournalItems;
 using Domain.RequestModels.Journal;
+using Domain.ReturnModels.Journal;
 using Domain.ServiceInterfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -58,11 +61,28 @@ namespace RestApi
             var userId = jwtReader.GetUserId();
             var gameId = jwtReader.GetGameId();
 
-            var journalItem = await journalService.AddJournalItemToGame(dto, gameId);
+            var (journalItem, canSee)= await journalService.AddJournalItemToGame(dto, gameId);
 
-            await hubContext.Clients.User(userId.ToString()).SendAsync("JournalItemAdded", journalItem);
+            if (journalItem.Type == JournalItemType.Folder)
+            {
+                await hubContext.Clients.Group(gameId.ToString()).SendAsync("JournalItemAdded", journalItem);
+            }
+            else
+            {
+                await hubContext.Clients.User(userId.ToString()).SendAsync("JournalItemAdded", journalItem);
+
+                await SendMessageToPlayers(canSee, journalItem);
+            }
 
             return Ok(journalItem);
+        }
+
+        private async Task SendMessageToPlayers(IEnumerable<Guid> canSee, JournalItemTreeItemDto journalItem)
+        {
+            foreach (var playerId in canSee)
+            {
+                await hubContext.Clients.User(playerId.ToString()).SendAsync("JournalItemAdded", journalItem);
+            }
         }
     }
 }

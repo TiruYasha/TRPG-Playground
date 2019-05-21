@@ -26,7 +26,7 @@ namespace Service
             this.mapper = mapper;
         }
 
-        public async Task<JournalItemTreeItemDto> AddJournalItemToGame(AddJournalItemDto dto, Guid gameId)
+        public async Task<(JournalItemTreeItemDto, List<Guid>)> AddJournalItemToGame(AddJournalItemDto dto, Guid gameId)
         {
             if (dto.ParentFolderId == null)
             {
@@ -36,7 +36,7 @@ namespace Service
 
                 await repository.Commit();
 
-                return mapper.Map<JournalItem, JournalItemTreeItemDto>(journalItem);
+                return GetJournalItemTreeItemWithCanSeePermissions(journalItem);
             }
 
             var parent = await repository.JournalFolders.FilterById(dto.ParentFolderId.Value).FirstOrDefaultAsync();
@@ -45,8 +45,10 @@ namespace Service
 
             await repository.Commit();
 
-            return mapper.Map<JournalItem, JournalItemTreeItemDto>(result); ;
+            return GetJournalItemTreeItemWithCanSeePermissions(result);
         }
+
+     
 
         public async Task<IEnumerable<JournalItemTreeItemDto>> GetJournalItemsForParentFolderId(Guid userId, Guid gameId, Guid? parentFolderId)
         {
@@ -66,6 +68,11 @@ namespace Service
                 ImageId = j.ImageId,
                 Type = j.Type
             }).ToListAsync();
+        }
+
+        private (JournalItemTreeItemDto, List<Guid>) GetJournalItemTreeItemWithCanSeePermissions(JournalItem journalItem)
+        {
+            return (mapper.Map<JournalItem, JournalItemTreeItemDto>(journalItem), journalItem.Permissions.Where(w => w.CanSee == true).Select(s => s.UserId).ToList());
         }
 
         private async Task<IEnumerable<JournalItemTreeItemDto>> GetJournalItemsForParentFolderIdWithEmptyFolders(Guid gameId, Guid? parentFolderId)
