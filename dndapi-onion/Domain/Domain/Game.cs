@@ -13,6 +13,7 @@ namespace Domain.Domain
         public virtual Guid Id { get; set; }
         public virtual string Name { get; set; }
         public virtual User Owner { get; set; }
+        public virtual Guid OwnerId { get; set; }
         public virtual ICollection<GamePlayer> Players { get; set; }
         public virtual ICollection<ChatMessage> ChatMessages { get; set; }
         public virtual ICollection<JournalItem> JournalItems { get; set; }
@@ -24,17 +25,19 @@ namespace Domain.Domain
             JournalItems = new List<JournalItem>();
         }
 
-        public Game(string name, Guid id)
-        {
-            Name = name;
-            Id = id;
-        }
-
         public Game(string name, User owner) : this()
         {
             CheckParameters(name, owner);
             Name = name;
             Owner = owner;
+            Id = Guid.NewGuid();
+        }
+
+        public Game(string name, Guid ownerId) : this()
+        {
+            
+            Name = name;
+            OwnerId = ownerId;
             Id = Guid.NewGuid();
         }
 

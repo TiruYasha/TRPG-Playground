@@ -7,22 +7,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Domain;
 
 namespace Service
 {
-    public class ChatService : Service, IChatService
+    public class ChatService : IChatService
     {
-        public ChatService(DbContextOptions<DndContext> options) : base(options)
+        private readonly IRepository repository;
+
+        public ChatService(IRepository repository)
         {
+            this.repository = repository;
         }
 
         public async Task<ChatMessage> AddMessageToChatAsync(SendMessageModel model, Guid userId)
         {
-            var game = await context.Games.Include(g => g.Owner).Include(g => g.Players).FilterById(model.GameId).FirstOrDefaultAsync();
+            var game = await repository.Games.Include(g => g.Owner).Include(g => g.Players).FilterById(model.GameId).FirstOrDefaultAsync();
 
             var chatMessage = await game.AddChatMessageAsync(model.Message, model.CustomUsername, userId);
 
-            await context.SaveChangesAsync();
+            await repository.Commit();
 
             return chatMessage;
         }
@@ -30,7 +34,7 @@ namespace Service
         public async Task<IList<ChatMessage>> GetAllMessagesAsync(Guid gameId)
         {
             //TODO write good code for this with lazy loading
-            var game = await context.Games.Include(g => g.ChatMessages).ThenInclude(c => c.Command).FilterById(gameId).FirstOrDefaultAsync();
+            var game = await repository.Games.Include(g => g.ChatMessages).ThenInclude(c => c.Command).FilterById(gameId).FirstOrDefaultAsync();
 
             return game.ChatMessages.ToList();
         }

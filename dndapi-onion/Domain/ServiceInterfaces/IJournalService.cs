@@ -12,5 +12,7 @@ namespace Domain.ServiceInterfaces
         Task<(JournalItemTreeItemDto, List<Guid>)> AddJournalItemToGame(AddJournalItemDto dto, Guid gameId);
 
         Task<IEnumerable<JournalItemTreeItemDto>> GetJournalItemsForParentFolderId(Guid userId, Guid gameId, Guid? parentFolderId);
+
+        Task<Guid> UploadImage(Guid gameId, Guid journalItemId);
     }
 }

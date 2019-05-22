@@ -19,12 +19,18 @@ namespace DataAccess
         }
 
         public IQueryable<Game> Games => context.Games;
+        public IQueryable<User> Users => context.Users;
 
         public IQueryable<GamePlayer> GamePlayers => context.GamePlayers;
 
         public IQueryable<ChatMessage> ChatMessages => context.ChatMessages;
         public IQueryable<JournalItem> JournalItems => context.JournalItems;
         public IQueryable<JournalFolder> JournalFolders => context.JournalFolders;
+        public async Task Add<T>(T entity) where T : class
+        {
+            await context.AddAsync(entity);
+        }
+
         public Task Commit()
         {
             return context.SaveChangesAsync();

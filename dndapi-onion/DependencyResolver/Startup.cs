@@ -45,6 +45,7 @@ namespace DependencyResolver
 
             services.AddOptions();
             services.Configure<TokenConfig>(Configuration.GetSection("TokenConfig"));
+            services.Configure<FileStorageConfig>(Configuration.GetSection("FileStorage"));
 
 
             services.AddSwaggerGen(c =>
@@ -67,7 +68,6 @@ namespace DependencyResolver
                 var connection = Configuration.GetSection("ConnectionStrings").GetSection("ConnectionString").Value;
                 services.AddEntityFrameworkSqlServer().AddDbContext<DndContext>
                     (options => options.UseSqlServer(connection));
-
             }
             else
             {
@@ -105,7 +105,6 @@ namespace DependencyResolver
                      OnMessageReceived = context =>
                      {
                          var accessToken = context.Request.Query["access_token"];
-
 
                          // If the request is for our hub...
                          var path = context.HttpContext.Request.Path;
