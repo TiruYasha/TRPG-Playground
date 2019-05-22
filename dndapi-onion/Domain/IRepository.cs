@@ -16,6 +16,7 @@ namespace Domain
         IQueryable<ChatMessage> ChatMessages { get; }
         IQueryable<JournalItem> JournalItems { get; }
         IQueryable<JournalFolder> JournalFolders { get; }
+        IQueryable<Image> Images { get; }
         Task Add<T>(T entity) where T : class;
         Task Commit();
     }

@@ -10,6 +10,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Domain;
+using Domain.Config;
+using Domain.Domain;
+using Domain.Utilities;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 
 namespace Service
 {
@@ -17,11 +22,15 @@ namespace Service
     {
         private readonly IRepository repository;
         private readonly IMapper mapper;
+        private readonly FileStorageConfig fileStorageConfig;
+        private readonly ImageProcesser processer;
 
-        public JournalService(IRepository repository, IMapper mapper)
+        public JournalService(IRepository repository, IMapper mapper, IOptions<FileStorageConfig> fileStorageConfig, ImageProcesser processer)
         {
             this.repository = repository;
             this.mapper = mapper;
+            this.fileStorageConfig = fileStorageConfig.Value;
+            this.processer = processer;
         }
 
         public async Task<(JournalItemTreeItemDto, List<Guid>)> AddJournalItemToGame(AddJournalItemDto dto, Guid gameId)
@@ -66,9 +75,21 @@ namespace Service
             }).ToListAsync();
         }
 
-        public Task<Guid> UploadImage(Guid gameId, Guid journalItemId)
+        public async Task<Guid> UploadImage(IFormFile file, Guid gameId, Guid journalItemId)
         {
-            throw new NotImplementedException();
+            var originalName = file.FileName;
+
+            var image = new Image(originalName);
+            var extension = System.IO.Path.GetExtension(originalName);
+
+            await processer.SaveImage(file, fileStorageConfig.BigImageLocation + gameId, $"{image.Id}.{extension}");
+
+            var journalItem = repository.JournalItems.FirstOrDefault(j => j.Id == journalItemId && j.GameId == gameId);
+            journalItem.ImageId = image.Id;
+
+            await repository.Commit();
+
+            return image.Id;
         }
 
         private (JournalItemTreeItemDto, List<Guid>) GetJournalItemTreeItemWithCanSeePermissions(JournalItem journalItem)

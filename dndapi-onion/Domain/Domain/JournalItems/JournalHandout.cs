@@ -14,7 +14,7 @@ namespace Domain.Domain.JournalItems
             Type = JournalItemType.Handout;
         }
 
-        public JournalHandout(AddJournalItemDto dto, Guid gameId) : base(JournalItemType.Handout, dto.JournalItem.Name, gameId, null, dto.JournalItem.CanSee, dto.JournalItem.CanEdit)
+        public JournalHandout(AddJournalItemDto dto, Guid gameId) : base(JournalItemType.Handout, dto.JournalItem.Name, gameId, dto.JournalItem.CanSee, dto.JournalItem.CanEdit)
         {
             var handoutModel = dto.JournalItem as JournalHandoutDto;
             Description = handoutModel.Description;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Domain.Domain.JournalItems;
 using Domain.RequestModels.Journal;
@@ -58,8 +59,7 @@ namespace RestApi
         [Route("AddJournalItem")]
         public async Task<IActionResult> AddJournalItemAsync([FromBody] AddJournalItemDto dto)
         {
-            var userId = jwtReader.GetUserId();
-            var gameId = jwtReader.GetGameId();
+            var (userId, gameId) = GetUserIdAndGameId();
 
             var (journalItem, canSee)= await journalService.AddJournalItemToGame(dto, gameId);
 
@@ -75,6 +75,26 @@ namespace RestApi
             }
 
             return Ok(journalItem);
+        }
+
+        [HttpPost]
+        [Route("{journalItemId}/image")]
+        public async Task<IActionResult> UploadImageForJournalItem(Guid journalItemId)
+        {
+            // TODO validation
+            var gameId = jwtReader.GetGameId();
+            var file = Request.Form.Files.FirstOrDefault();
+
+            var result = await journalService.UploadImage(file, gameId, journalItemId);
+
+            return Ok(result);
+        }
+
+        private (Guid userId, Guid gameId) GetUserIdAndGameId()
+        {
+            var userId = jwtReader.GetUserId();
+            var gameId = jwtReader.GetGameId();
+            return (userId, gameId);
         }
 
         private async Task SendMessageToPlayers(IEnumerable<Guid> canSee, JournalItemTreeItemDto journalItem)

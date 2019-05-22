@@ -6,6 +6,7 @@ namespace Domain.Config
 {
     public class FileStorageConfig
     {
-        public virtual string Location { get; set; }
+        public virtual string BigImageLocation { get; set; }
+        public virtual string ThumbnailLocation { get; set; }
     }
 }

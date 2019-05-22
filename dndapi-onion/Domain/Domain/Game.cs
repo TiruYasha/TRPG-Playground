@@ -35,7 +35,6 @@ namespace Domain.Domain
 
         public Game(string name, Guid ownerId) : this()
         {
-            
             Name = name;
             OwnerId = ownerId;
             Id = Guid.NewGuid();

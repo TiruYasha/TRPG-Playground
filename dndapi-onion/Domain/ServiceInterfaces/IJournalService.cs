@@ -4,6 +4,7 @@ using Domain.ReturnModels.Journal;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace Domain.ServiceInterfaces
 {
@@ -13,6 +14,6 @@ namespace Domain.ServiceInterfaces
 
         Task<IEnumerable<JournalItemTreeItemDto>> GetJournalItemsForParentFolderId(Guid userId, Guid gameId, Guid? parentFolderId);
 
-        Task<Guid> UploadImage(Guid gameId, Guid journalItemId);
+        Task<Guid> UploadImage(IFormFile file, Guid gameId, Guid journalItemId);
     }
 }

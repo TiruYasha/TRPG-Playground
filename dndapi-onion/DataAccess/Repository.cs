@@ -26,6 +26,8 @@ namespace DataAccess
         public IQueryable<ChatMessage> ChatMessages => context.ChatMessages;
         public IQueryable<JournalItem> JournalItems => context.JournalItems;
         public IQueryable<JournalFolder> JournalFolders => context.JournalFolders;
+        public IQueryable<Image> Images => context.Images;
+
         public async Task Add<T>(T entity) where T : class
         {
             await context.AddAsync(entity);

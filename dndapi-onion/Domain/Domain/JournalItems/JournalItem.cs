@@ -8,10 +8,12 @@ namespace Domain.Domain.JournalItems
     {
         public virtual Guid Id { get; set; }
         public virtual string Name { get; set; }
-        public virtual Guid? ImageId { get; set; }
+
         public virtual JournalItemType Type { get; set; }
         public virtual DateTime CreatedOn { get; set; }
         public virtual DateTime LastEditedOn { get; set; }
+        public virtual Guid? ImageId { get; set; }
+        public virtual Image Image { get; set; }
         public virtual Game Game { get; set; }
         public virtual Guid GameId { get; set; }
         public virtual JournalFolder ParentFolder { get; set; }
@@ -20,7 +22,7 @@ namespace Domain.Domain.JournalItems
 
         protected JournalItem() { }
 
-        protected JournalItem(JournalItemType type, string name, Guid gameId, Guid? imageId, ICollection<Guid> canSee, ICollection<Guid> canEdit)
+        protected JournalItem(JournalItemType type, string name, Guid gameId, ICollection<Guid> canSee, ICollection<Guid> canEdit)
         {
             Permissions = new List<JournalItemPemission>();
             CheckArguments(name);
@@ -28,7 +30,6 @@ namespace Domain.Domain.JournalItems
             Type = type;
             Name = name;
             GameId = gameId;
-            ImageId = imageId;
             CreatedOn = DateTime.UtcNow;
             LastEditedOn = DateTime.UtcNow;
 

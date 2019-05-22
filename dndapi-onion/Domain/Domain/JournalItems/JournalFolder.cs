@@ -13,7 +13,7 @@ namespace Domain.Domain.JournalItems
             JournalItems = new List<JournalItem>();
         }
 
-        public JournalFolder(AddJournalItemDto dto, Guid gameId) : base(JournalItemType.Folder, dto.JournalItem.Name, gameId, null, null, null)
+        public JournalFolder(AddJournalItemDto dto, Guid gameId) : base(JournalItemType.Folder, dto.JournalItem.Name, gameId, null, null)
         {
             JournalItems = new List<JournalItem>();
         }
