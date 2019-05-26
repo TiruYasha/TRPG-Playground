@@ -50,7 +50,7 @@ namespace Domain.Domain.Commands
 
         private (int amountOfDice, int totalDieValue, char @operator, int number) ParseCommandText()
         {
-            var splittedCommandText = CommandText.Split(new char[] { 'd', 'D' }, StringSplitOptions.RemoveEmptyEntries);
+            var splittedCommandText = CommandText.Split(new[] { 'd', 'D' }, StringSplitOptions.RemoveEmptyEntries);
 
             int.TryParse(splittedCommandText[0], out int amountOfDice);
             
@@ -90,7 +90,7 @@ namespace Domain.Domain.Commands
             for (int i = 0; i < amountOfDice; i++)
             {
                 var random = new Random();
-                roll = roll + random.Next(1, totalDieValue + 1);
+                roll += random.Next(1, totalDieValue + 1);
             }
 
             return roll;

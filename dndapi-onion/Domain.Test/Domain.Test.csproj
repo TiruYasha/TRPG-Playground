@@ -20,10 +20,10 @@
 
   <ItemGroup>
     <Reference Include="Microsoft.AspNetCore.Http">
-      <HintPath>..\..\..\..\..\.nuget\packages\microsoft.aspnetcore.http\2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Http.dll</HintPath>
+      <HintPath>C:\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.aspnetcore.http\2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Http.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNetCore.Http.Features">
-      <HintPath>..\..\..\..\..\.nuget\packages\microsoft.aspnetcore.http.features\2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Http.Features.dll</HintPath>
+      <HintPath>C:\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.aspnetcore.http.features\2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Http.Features.dll</HintPath>
     </Reference>
     <Reference Include="Moq">
       <HintPath>..\..\..\..\..\.nuget\packages\moq\4.10.1\lib\netstandard1.3\Moq.dll</HintPath>

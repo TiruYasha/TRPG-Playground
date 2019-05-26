@@ -20,7 +20,6 @@ namespace DataAccess
         public DbSet<JournalHandout> JournalHandouts { get; set; }
         public DbSet<Image> Images { get; set; }
 
-
         public DndContext(DbContextOptions<DndContext> options) : base(options)
         {
 
@@ -46,14 +45,14 @@ namespace DataAccess
                 .WithMany(g => g.JoinedGames)
                 .HasForeignKey(gp => gp.UserId);
 
-            modelBuilder.Entity<JournalItemPemission>()
+            modelBuilder.Entity<JournalItemPermission>()
                .HasKey(j => new { j.JournalItemId, j.UserId, j.GameId });
 
-            modelBuilder.Entity<JournalItemPemission>()
+            modelBuilder.Entity<JournalItemPermission>()
                 .HasOne(j => j.JournalItem)
                 .WithMany(j => j.Permissions)
                 .HasForeignKey(j => j.JournalItemId);
-            modelBuilder.Entity<JournalItemPemission>()
+            modelBuilder.Entity<JournalItemPermission>()
                 .HasOne(j => j.GamePlayer)
                 .WithMany(j => j.JournalItemPermissions)
                 .HasForeignKey(j => new { j.GameId, j.UserId});

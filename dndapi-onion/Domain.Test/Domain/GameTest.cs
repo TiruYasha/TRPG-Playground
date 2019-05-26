@@ -8,6 +8,7 @@ using Shouldly;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Domain.Utilities;
 
 namespace Domain.Test.Domain
 {
@@ -34,7 +35,6 @@ namespace Domain.Test.Domain
             game.Name.ShouldBe(name);
             game.Owner.ShouldBe(owner);
             game.Id.ToString().ShouldNotBe("00000000-0000-0000-0000-000000000000");
-
         }
 
         [TestMethod]
@@ -80,7 +80,7 @@ namespace Domain.Test.Domain
         }
 
         [TestMethod]
-        public void JoinGameAddsAGamePlayer()
+        public async Task JoinGameAddsAGamePlayer()
         {
             // Arrange
             var game = new Game("testing", new User());
@@ -90,14 +90,14 @@ namespace Domain.Test.Domain
             };
 
             // Action
-            game.Join(user);
+            await game.Join(user);
 
             // Assert
             game.Players.Count.ShouldBe(1);
         }
 
         [TestMethod]
-        public void JoinGameThrowsExceptionWhenPlayerAlreadyExists()
+        public async Task JoinGameThrowsExceptionWhenPlayerAlreadyExists()
         {
             // Arrange
             var game = new Game("testing", new User());
@@ -106,7 +106,7 @@ namespace Domain.Test.Domain
                 Id = new Guid("65a5b497-75b8-4729-9ca7-69152e319380")
             };
 
-            game.Join(user);
+            await game.Join(user);
 
             // Action
             var ex = Should.Throw<ArgumentException>(() => game.Join(user));
@@ -166,8 +166,8 @@ namespace Domain.Test.Domain
             var game = new Game("testing", user);
             var message = "this is a message";
 
-            game.Join(player);
-            game.Join(player2);
+            await game.Join(player);
+            await game.Join(player2);
 
             // Action
             await game.AddChatMessageAsync(message, "sdfs", player2.Id);
@@ -200,7 +200,7 @@ namespace Domain.Test.Domain
         public async Task AddAddJournalItemAsyncAddsTheFolder()
         {
             // Arrange
-            var game = new Game();
+            var game = new Game("name", new User());
 
             var folder = new JournalFolderDto
             {

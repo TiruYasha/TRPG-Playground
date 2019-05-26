@@ -90,6 +90,18 @@ namespace RestApi
             return Ok(result);
         }
 
+        [HttpGet]
+        [Route("{journalItemId}/image")]
+        public async Task<IActionResult> GetThumbnailForJournalItem(Guid journalItemId)
+        {
+            // TODO validation
+            var (userId, gameId) = GetUserIdAndGameId();
+
+            var imageInBytes = await journalService.GetImage(userId, gameId, journalItemId, true);
+
+            return File(imageInBytes, "image/jpeg");
+        }
+
         private (Guid userId, Guid gameId) GetUserIdAndGameId()
         {
             var userId = jwtReader.GetUserId();

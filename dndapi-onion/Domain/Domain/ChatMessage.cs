@@ -31,14 +31,9 @@ namespace Domain.Domain
             Command.Execute();
         }
 
-        private string ParseCustomUsername(string customUsername, User user)
+        private static string ParseCustomUsername(string customUsername, User user)
         {
-            if (string.IsNullOrEmpty(customUsername))
-            {
-                return user.UserName;
-            }
-
-            return customUsername;
+            return string.IsNullOrEmpty(customUsername) ? user.UserName : customUsername;
         }
     }
 }

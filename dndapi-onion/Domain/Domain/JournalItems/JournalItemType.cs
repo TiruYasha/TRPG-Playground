@@ -4,7 +4,5 @@
     {
         Folder,
         Handout,
-        CharacterSheet,
-        Creature
     }
 }

@@ -3,6 +3,7 @@ using Domain.RequestModels.Journal;
 using Domain.ReturnModels.Journal;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
@@ -15,5 +16,6 @@ namespace Domain.ServiceInterfaces
         Task<IEnumerable<JournalItemTreeItemDto>> GetJournalItemsForParentFolderId(Guid userId, Guid gameId, Guid? parentFolderId);
 
         Task<Guid> UploadImage(IFormFile file, Guid gameId, Guid journalItemId);
+        Task<byte[]> GetImage(Guid userId, Guid gameId, Guid journalItemId, bool isThumbnail);
     }
 }

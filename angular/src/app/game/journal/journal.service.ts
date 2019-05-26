@@ -22,7 +22,7 @@ export class JournalService {
     }
 
     addJournalItemToGame(model: AddJournalItemRequestModel) {
-        return this.http.post(environment.apiUrl + '/journal/AddJournalItem', model);
+        return this.http.post<AddedJournalItemModel>(environment.apiUrl + '/journal/AddJournalItem', model);
     }
 
     getAllJournalItems(): Observable<JournalItem[]> {
@@ -35,6 +35,12 @@ export class JournalService {
 
     getRootJournalItems() {
         return this.http.get<JournalItem[]>(environment.apiUrl + `/journal/item`);
+    }
+
+    uploadImage(journalItemId: string, image: File) {
+        const formData = new FormData();
+        formData.append('file', image);
+        return this.http.post(environment.apiUrl + `/journal/${journalItemId}/image`, formData);
     }
 
     private registerOnServerEvents(): void {

@@ -8,7 +8,7 @@ namespace Domain.Mocks
     {
         public JournalItemMock()
         {
-            Permissions = new List<JournalItemPemission>();
+            Permissions = new List<JournalItemPermission>();
         }
 
         public JournalItemMock(JournalItemType type, string name, Guid gameId, ICollection<Guid> canSee, ICollection<Guid> canEdit) : base(type, name, gameId, canSee, canEdit)

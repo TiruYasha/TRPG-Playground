@@ -10,7 +10,7 @@ namespace Domain.Domain.Commands
 
         protected Command()
         {
-
+            // Needed for ef
         }
 
         protected Command(CommandType type, string commandText)

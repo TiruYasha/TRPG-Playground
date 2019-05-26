@@ -10,7 +10,7 @@ namespace Domain.Domain
         public virtual User User { get; set; }
         public Guid GameId { get; set; }
         public virtual Game Game { get; set; }
-        public virtual ICollection<JournalItemPemission> JournalItemPermissions { get; set; }
+        public virtual ICollection<JournalItemPermission> JournalItemPermissions { get; set; }
         public GamePlayer() { }
 
         public GamePlayer(Game game, User user)

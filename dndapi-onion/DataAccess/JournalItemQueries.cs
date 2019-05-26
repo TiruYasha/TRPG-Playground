@@ -6,6 +6,10 @@ namespace DataAccess
 {
     public static class JournalItemQueries
     {
+        public static IQueryable<JournalItem> FilterById(this IQueryable<JournalItem> journalFolder, Guid id)
+        {
+            return journalFolder.Where(j => j.Id == id);
+        }
         public static IQueryable<JournalFolder> FilterById(this IQueryable<JournalFolder> journalFolder, Guid id)
         {
             return journalFolder.Where(j => j.Id == id);

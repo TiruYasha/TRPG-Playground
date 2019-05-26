@@ -10,16 +10,17 @@ namespace Domain.Domain
 {
     public class Game
     {
-        public virtual Guid Id { get; set; }
-        public virtual string Name { get; set; }
-        public virtual User Owner { get; set; }
-        public virtual Guid OwnerId { get; set; }
-        public virtual ICollection<GamePlayer> Players { get; set; }
-        public virtual ICollection<ChatMessage> ChatMessages { get; set; }
-        public virtual ICollection<JournalItem> JournalItems { get; set; }
+        public Guid Id { get; private set; }
+        public string Name { get; private set; }
+        public virtual User Owner { get; private set; }
+        public Guid OwnerId { get; private set; }
+        public virtual ICollection<GamePlayer> Players { get; private set; }
+        public virtual ICollection<ChatMessage> ChatMessages { get; private set; }
+        public virtual ICollection<JournalItem> JournalItems { get; private set; }
 
-        public Game()
+        private Game()
         {
+            Id = Guid.NewGuid();
             Players = new List<GamePlayer>();
             ChatMessages = new List<ChatMessage>();
             JournalItems = new List<JournalItem>();
@@ -30,19 +31,19 @@ namespace Domain.Domain
             CheckParameters(name, owner);
             Name = name;
             Owner = owner;
-            Id = Guid.NewGuid();
         }
 
         public Game(string name, Guid ownerId) : this()
         {
             Name = name;
             OwnerId = ownerId;
-            Id = Guid.NewGuid();
+            
         }
 
-        public void Join(User user)
+        public async Task Join(User user)
         {
-            if (HasPlayerJoined(user.Id) || IsOwner(user.Id))
+
+            if (await HasPlayerJoined(user.Id) || await IsOwner(user.Id))
             {
                 throw new ArgumentException("The player cannot be added again");
             }
@@ -51,17 +52,17 @@ namespace Domain.Domain
             Players.Add(newPlayer);
         }
 
-        public bool HasPlayerJoined(Guid userId)
+        public Task<bool> HasPlayerJoined(Guid userId)
         {
-            return Players.Any(u => u.UserId == userId);
+            return Task.Run(() => Players.Any(u => u.UserId == userId));
         }
 
-        public bool IsOwner(Guid ownerId)
+        public Task<bool> IsOwner(Guid ownerId)
         {
-            return Owner.Id == ownerId;
+            return Task.Run(() => Owner.Id == ownerId);
         }
 
-        public virtual Task<ChatMessage> AddChatMessageAsync(string message, string customUsername, Guid userId)
+        public Task<ChatMessage> AddChatMessageAsync(string message, string customUsername, Guid userId)
         {
             return Task.Run(() =>
             {
@@ -85,7 +86,7 @@ namespace Domain.Domain
             });
         }
 
-        public virtual Task<JournalItem> AddJournalItemAsync(AddJournalItemDto dto)
+        public Task<JournalItem> AddJournalItemAsync(AddJournalItemDto dto)
         {
             return Task.Run(() =>
             {

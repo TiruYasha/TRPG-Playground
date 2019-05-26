@@ -49,12 +49,12 @@ namespace Service
         {
             var game = await repository.Games.Include(g =>g.Players).Include(g => g.Owner).FilterById(gameId).FirstOrDefaultAsync();
 
-            if (game.HasPlayerJoined(userId))
+            if (await game.HasPlayerJoined(userId))
             {
                 return false;
             }
 
-            if (game.IsOwner(userId))
+            if (await game.IsOwner(userId))
             {
                 return true;
             }

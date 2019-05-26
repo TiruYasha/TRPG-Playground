@@ -6,7 +6,9 @@ using Domain.ServiceInterfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using Domain;
@@ -77,19 +79,29 @@ namespace Service
 
         public async Task<Guid> UploadImage(IFormFile file, Guid gameId, Guid journalItemId)
         {
+            //TODO: validation so that players can't just upload stuff.
             var originalName = file.FileName;
-
-            var image = new Image(originalName);
             var extension = System.IO.Path.GetExtension(originalName);
 
-            await processer.SaveImage(file, fileStorageConfig.BigImageLocation + gameId, $"{image.Id}.{extension}");
-
             var journalItem = repository.JournalItems.FirstOrDefault(j => j.Id == journalItemId && j.GameId == gameId);
-            journalItem.ImageId = image.Id;
+            var image = await journalItem.SetImage(extension, originalName);
+
+            await processer.SaveImage(file, fileStorageConfig.BigImageLocation + gameId, $"{image.Id}.{extension}");
 
             await repository.Commit();
 
             return image.Id;
+        }
+
+        public async Task<byte[]> GetImage(Guid userId, Guid gameId, Guid journalItemId, bool isThumbnail)
+        {
+            var location = isThumbnail ? fileStorageConfig.ThumbnailLocation : fileStorageConfig.BigImageLocation;
+            var image = await repository.JournalItems.Include(j => j.Image).FilterById(journalItemId).Select(j => new { j.ImageId, j.Image.Extension}).FirstOrDefaultAsync();
+            var fullPath = $"{location}{gameId}/{image.ImageId}{image.Extension}";
+
+            var binary = await File.ReadAllBytesAsync(fullPath);
+
+            return binary;
         }
 
         private (JournalItemTreeItemDto, List<Guid>) GetJournalItemTreeItemWithCanSeePermissions(JournalItem journalItem)

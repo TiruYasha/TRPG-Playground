@@ -21,16 +21,14 @@ namespace Domain.Test.Domain.JournalItems
             var itemType = JournalItemType.Handout;
             var name = "test";
             var gameId = Guid.NewGuid();
-            var imageId = Guid.NewGuid();
-            var canSee = new List<Guid>() { user1Guid, user2Guid };
-            var canEdit = new List<Guid>() { user1Guid };
+            var canSee = new List<Guid> { user1Guid, user2Guid };
+            var canEdit = new List<Guid> { user1Guid };
 
-            var result = new JournalItemMock(itemType, name, gameId, imageId, canSee, canEdit);
+            var result = new JournalItemMock(itemType, name, gameId, canSee, canEdit);
 
             result.Type.ShouldBe(itemType);
             result.Name.ShouldBe(name);
             result.GameId.ShouldBe(gameId);
-            result.ImageId.ShouldBe(imageId);
 
             result.Permissions.Count.ShouldBe(2);
             result.Permissions.FirstOrDefault().CanSee.ShouldBe(true);
@@ -42,7 +40,7 @@ namespace Domain.Test.Domain.JournalItems
         [TestMethod]
         public void ConstructorThrowsJournalItemExceptionOnEmptyName()
         {
-            var result = Should.Throw<JournalItemException>(() => new JournalItemMock(JournalItemType.Folder, "", Guid.NewGuid(), null, null, null));
+            var result = Should.Throw<JournalItemException>(() => new JournalItemMock(JournalItemType.Folder, "", Guid.NewGuid(), null, null));
 
             result.Message.ShouldBe("The name is empty");
         }

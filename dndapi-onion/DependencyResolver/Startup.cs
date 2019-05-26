@@ -25,6 +25,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 using Domain;
+using Domain.Utilities;
 
 namespace DependencyResolver
 {
@@ -152,6 +153,7 @@ namespace DependencyResolver
             services.AddTransient<IChatService, ChatService>();
             services.AddTransient<IJournalService, JournalService>();
             services.AddTransient<IRepository, Repository>();
+            services.AddTransient<ImageProcesser>();
 
             services.AddScoped<IAuthorizationHandler, IsOwnerRequirementHandler>();
             services.AddScoped<IAuthorizationHandler, IsPlayerRequirementHandler>();
@@ -171,7 +173,7 @@ namespace DependencyResolver
                 app.UseHsts();
             }
 
-            context.Database.EnsureDeleted();
+            //context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
             app.UseSwagger();
