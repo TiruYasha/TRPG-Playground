@@ -14,6 +14,8 @@ import { JournalItemType } from 'src/app/models/journal/journalitems/journal-ite
 import { JournalNodeContextMenuClick } from './journal-node/journal-node-context-menu-click.model';
 import { DynamicFlatNode } from 'src/app/models/journal/dynamic-flat-node';
 import { JournalDynamicDataSource } from './dynamic-data-source';
+import { read } from 'fs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'trpg-journal',

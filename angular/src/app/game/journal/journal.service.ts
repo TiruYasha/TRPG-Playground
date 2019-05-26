@@ -1,5 +1,5 @@
 import { Subject, Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Injectable } from '@angular/core';
 import { AddJournalItemRequestModel } from 'src/app/models/journal/requests/add-journal-folder-request.model';
@@ -11,7 +11,6 @@ import { ActiveGameService } from '../services/active-game.service';
     providedIn: 'root'
 })
 export class JournalService {
-
     private journalItemAddedSubject = new Subject<AddedJournalItemModel>();
     journalItemAdded = this.journalItemAddedSubject.asObservable();
 

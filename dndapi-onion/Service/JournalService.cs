@@ -86,14 +86,14 @@ namespace Service
             var journalItem = repository.JournalItems.FirstOrDefault(j => j.Id == journalItemId && j.GameId == gameId);
             var image = await journalItem.SetImage(extension, originalName);
 
-            await processer.SaveImage(file, fileStorageConfig.BigImageLocation + gameId, $"{image.Id}.{extension}");
+            await processer.SaveImage(file, fileStorageConfig.BigImageLocation + gameId, $"{image.Id}{extension}");
 
             await repository.Commit();
 
             return image.Id;
         }
 
-        public async Task<byte[]> GetImage(Guid userId, Guid gameId, Guid journalItemId, bool isThumbnail)
+        public async Task<byte[]> GetImage(Guid gameId, Guid journalItemId, bool isThumbnail)
         {
             var location = isThumbnail ? fileStorageConfig.ThumbnailLocation : fileStorageConfig.BigImageLocation;
             var image = await repository.JournalItems.Include(j => j.Image).FilterById(journalItemId).Select(j => new { j.ImageId, j.Image.Extension}).FirstOrDefaultAsync();

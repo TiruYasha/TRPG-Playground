@@ -63,8 +63,6 @@ export class ParentDialogComponent implements OnInit {
 
     this.journalService.addJournalItemToGame(request)
       .subscribe(i => {
-        // TODO integrate with newer backend
-        // TODO upload image
         this.journalService.uploadImage(i.id, journalItem.image)
           .subscribe(e => this.exitDialog());
       });

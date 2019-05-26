@@ -91,13 +91,12 @@ namespace RestApi
         }
 
         [HttpGet]
-        [Route("{journalItemId}/image")]
-        public async Task<IActionResult> GetThumbnailForJournalItem(Guid journalItemId)
+        [Route("/game/{gameId}/{journalItemId}/image")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetThumbnailForJournalItem(Guid gameId, Guid journalItemId)
         {
             // TODO validation
-            var (userId, gameId) = GetUserIdAndGameId();
-
-            var imageInBytes = await journalService.GetImage(userId, gameId, journalItemId, true);
+            var imageInBytes = await journalService.GetImage(gameId, journalItemId, true);
 
             return File(imageInBytes, "image/jpeg");
         }
