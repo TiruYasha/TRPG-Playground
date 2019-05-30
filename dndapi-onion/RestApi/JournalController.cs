@@ -94,7 +94,6 @@ namespace RestApi
         [AllowAnonymous]
         public async Task<IActionResult> GetThumbnailForJournalItem(Guid journalItemId)
         {
-            // TODO validation
             var imageInBytes = await journalService.GetImage(journalItemId, true);
 
             return File(imageInBytes, "image/jpeg");

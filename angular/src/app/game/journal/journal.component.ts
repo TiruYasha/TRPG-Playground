@@ -142,6 +142,5 @@ export class JournalComponent extends DestroySubscription implements OnInit {
     const source = this.dataSource.data;
     this.dataSource.data = null;
     this.dataSource.data = source;
-    console.log(this.dataSource);
   }
 }
