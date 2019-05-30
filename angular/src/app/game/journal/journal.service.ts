@@ -6,6 +6,7 @@ import { AddJournalItemRequestModel } from 'src/app/models/journal/requests/add-
 import { AddedJournalItemModel } from 'src/app/models/journal/receives/added-journal-folder.model';
 import { JournalItem } from 'src/app/models/journal/journalitems/journal-item.model';
 import { ActiveGameService } from '../services/active-game.service';
+import { UploadedImage as UploadedJournalItemImage } from 'src/app/models/journal/receives/uploaded-image.model';
 
 @Injectable({
     providedIn: 'root'
@@ -13,6 +14,9 @@ import { ActiveGameService } from '../services/active-game.service';
 export class JournalService {
     private journalItemAddedSubject = new Subject<AddedJournalItemModel>();
     journalItemAdded = this.journalItemAddedSubject.asObservable();
+
+    private journalItemImageUploadedSubject = new Subject<UploadedJournalItemImage>();
+    journalItemImageUploaded = this.journalItemImageUploadedSubject.asObservable();
 
     constructor(private http: HttpClient, private activeGameService: ActiveGameService) { }
 
@@ -45,6 +49,10 @@ export class JournalService {
     private registerOnServerEvents(): void {
         this.activeGameService.hubConnection.on('JournalItemAdded', (data: AddedJournalItemModel) => {
             this.journalItemAddedSubject.next(data);
+        });
+
+        this.activeGameService.hubConnection.on('JournalItemImageUploaded', (data: UploadedJournalItemImage) => {
+            this.journalItemImageUploadedSubject.next(data);
         });
     }
 }

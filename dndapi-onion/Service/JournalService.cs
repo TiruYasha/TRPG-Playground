@@ -17,6 +17,7 @@ using Domain.Domain;
 using Domain.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using Service.Utilities;
 
 namespace Service
 {
@@ -25,14 +26,14 @@ namespace Service
         private readonly IRepository repository;
         private readonly IMapper mapper;
         private readonly FileStorageConfig fileStorageConfig;
-        private readonly ImageProcesser processer;
+        private readonly ImageProcesser imageProcessor;
 
-        public JournalService(IRepository repository, IMapper mapper, IOptions<FileStorageConfig> fileStorageConfig, ImageProcesser processer)
+        public JournalService(IRepository repository, IMapper mapper, IOptions<FileStorageConfig> fileStorageConfig, ImageProcesser imageProcessor)
         {
             this.repository = repository;
             this.mapper = mapper;
             this.fileStorageConfig = fileStorageConfig.Value;
-            this.processer = processer;
+            this.imageProcessor = imageProcessor;
         }
 
         public async Task<(JournalItemTreeItemDto, List<Guid>)> AddJournalItemToGame(AddJournalItemDto dto, Guid gameId)
@@ -79,25 +80,33 @@ namespace Service
 
         public async Task<Guid> UploadImage(IFormFile file, Guid gameId, Guid journalItemId)
         {
-            //TODO: validation so that players can't just upload stuff.
+            //TODO: In future updates also limit size of images.
             var originalName = file.FileName;
-            var extension = System.IO.Path.GetExtension(originalName);
+            var extension = Path.GetExtension(originalName);
 
-            var journalItem = repository.JournalItems.FirstOrDefault(j => j.Id == journalItemId && j.GameId == gameId);
+            if (!FileExtensionValidator.ValidateImageExtension(extension))
+            {
+                throw new BadImageFormatException($"The format {extension} is not supported");
+            }
+
+            var journalItem = repository.JournalItems.FirstOrDefault(j => j.Id == journalItemId);
             var image = await journalItem.SetImage(extension, originalName);
 
-            await processer.SaveImage(file, fileStorageConfig.BigImageLocation + gameId, $"{image.Id}{extension}");
+            await imageProcessor.SaveImage(file, fileStorageConfig.BigImageLocation + gameId, $"{image.Id}{extension}");
 
             await repository.Commit();
 
             return image.Id;
         }
 
-        public async Task<byte[]> GetImage(Guid gameId, Guid journalItemId, bool isThumbnail)
+        public async Task<byte[]> GetImage(Guid journalItemId, bool isThumbnail)
         {
             var location = isThumbnail ? fileStorageConfig.ThumbnailLocation : fileStorageConfig.BigImageLocation;
-            var image = await repository.JournalItems.Include(j => j.Image).FilterById(journalItemId).Select(j => new { j.ImageId, j.Image.Extension}).FirstOrDefaultAsync();
-            var fullPath = $"{location}{gameId}/{image.ImageId}{image.Extension}";
+            var image = await repository.JournalItems.Include(j => j.Image).FilterById(journalItemId).Select(j => new { j.GameId, j.ImageId, j.Image.Extension }).FirstOrDefaultAsync();
+
+            if (image.ImageId == null) return new byte[0];
+
+            var fullPath = $"{location}{image.GameId}/{image.ImageId}{image.Extension}";
 
             var binary = await File.ReadAllBytesAsync(fullPath);
 

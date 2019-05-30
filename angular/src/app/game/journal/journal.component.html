@@ -3,7 +3,9 @@
     <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
       <li class="mat-tree-node">
         <!-- <button mat-icon-button disabled></button> -->
-        <img [src]="'/test/' + node.item.id" />
+        <div class="thumbnail-container">
+          <img class="thumbnail" mat-icon-button [src]="getThumbnailLink(node.item.id)">
+        </div>
         <trpg-journal-node class="node-container" [isOwner]="isOwner" [journalItem]="node.item"></trpg-journal-node>
       </li>
     </mat-tree-node>

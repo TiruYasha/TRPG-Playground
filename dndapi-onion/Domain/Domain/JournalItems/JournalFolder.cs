@@ -8,7 +8,8 @@ namespace Domain.Domain.JournalItems
     public class JournalFolder : JournalItem
     {
         public virtual IList<JournalItem> JournalItems { get; set; }
-        public JournalFolder()
+
+        private JournalFolder()
         {
             JournalItems = new List<JournalItem>();
         }

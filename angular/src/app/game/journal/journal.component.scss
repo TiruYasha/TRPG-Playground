@@ -1,18 +1,18 @@
 @import "~src/styles/variables.scss";
 
-.journalbutton{
-    position: absolute;
-    bottom: 16px;
-    right: 16px;
+.journalbutton {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
 }
 
-.journal-containter{
-    overflow: auto;
-    height: 100%;
+.journal-containter {
+  overflow: auto;
+  height: 100%;
 }
 
 .node-container {
-    width: 100%;
+  width: 100%;
 }
 
 .tree ul,
@@ -23,9 +23,22 @@
 }
 
 .invisible {
-    display: none;
+  display: none;
 }
 
-.mat-tree-node :hover{
-    cursor: pointer;
+.mat-tree-node :hover {
+  cursor: pointer;
+}
+
+.thumbnail-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  min-height: 40px;
+
+  .thumbnail {
+    width: 24px;
+    height: 24px;
+  }
 }

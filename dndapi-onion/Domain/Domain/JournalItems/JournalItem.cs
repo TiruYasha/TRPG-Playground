@@ -7,19 +7,19 @@ namespace Domain.Domain.JournalItems
 {
     public abstract class JournalItem
     {
-        public virtual Guid Id { get; set; }
-        public virtual string Name { get; set; }
+        public Guid Id { get; private set; }
+        public string Name { get; private set; }
 
-        public virtual JournalItemType Type { get; set; }
-        public virtual DateTime CreatedOn { get; set; }
-        public virtual DateTime LastEditedOn { get; set; }
-        public virtual Guid? ImageId { get; private set; }
-        public virtual Image Image { get; set; }
-        public virtual Game Game { get; set; }
-        public virtual Guid GameId { get; set; }
-        public virtual JournalFolder ParentFolder { get; set; }
-        public virtual Guid? ParentFolderId { get; set; }
-        public virtual ICollection<JournalItemPermission> Permissions { get; set; }
+        public JournalItemType Type { get; private set; }
+        public DateTime CreatedOn { get; private set; }
+        public DateTime LastEditedOn { get; private set; }
+        public Guid? ImageId { get; private set; }
+        public virtual Image Image { get; private set; }
+        public virtual Game Game { get; private set; }
+        public Guid GameId { get; private set; }
+        public virtual JournalFolder ParentFolder { get; private set; }
+        public Guid? ParentFolderId { get; private set; }
+        public virtual ICollection<JournalItemPermission> Permissions { get; private set; }
 
         protected JournalItem() { }
 

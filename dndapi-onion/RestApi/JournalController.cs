@@ -61,7 +61,7 @@ namespace RestApi
         {
             var (userId, gameId) = GetUserIdAndGameId();
 
-            var (journalItem, canSee)= await journalService.AddJournalItemToGame(dto, gameId);
+            var (journalItem, canSee) = await journalService.AddJournalItemToGame(dto, gameId);
 
             if (journalItem.Type == JournalItemType.Folder)
             {
@@ -81,22 +81,21 @@ namespace RestApi
         [Route("{journalItemId}/image")]
         public async Task<IActionResult> UploadImageForJournalItem(Guid journalItemId)
         {
-            // TODO validation
             var gameId = jwtReader.GetGameId();
             var file = Request.Form.Files.FirstOrDefault();
 
             var result = await journalService.UploadImage(file, gameId, journalItemId);
-
+            await hubContext.Clients.Group(gameId.ToString()).SendAsync("JournalItemImageUploaded", new UploadedImageDto { ImageId = result, JournalItemId = journalItemId });
             return Ok(result);
         }
 
         [HttpGet]
-        [Route("/game/{gameId}/{journalItemId}/image")]
+        [Route("{journalItemId}/image")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetThumbnailForJournalItem(Guid gameId, Guid journalItemId)
+        public async Task<IActionResult> GetThumbnailForJournalItem(Guid journalItemId)
         {
             // TODO validation
-            var imageInBytes = await journalService.GetImage(gameId, journalItemId, true);
+            var imageInBytes = await journalService.GetImage(journalItemId, true);
 
             return File(imageInBytes, "image/jpeg");
         }

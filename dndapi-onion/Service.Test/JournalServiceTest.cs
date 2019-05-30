@@ -14,6 +14,7 @@ using Domain.RequestModels.Journal;
 using Domain.RequestModels.Journal.JournalItems;
 using Domain.ServiceInterfaces;
 using Domain.Utilities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MockQueryable.Moq;
@@ -57,6 +58,56 @@ namespace Service.Test
             fileStorageConfigOptions.SetupGet(f => f.Value).Returns(fileStorageConfig);
 
             sut = new JournalService(repository.Object, _mapper, fileStorageConfigOptions.Object, processor.Object);
+        }
+
+        [TestMethod]
+        public async Task UploadImageWillSaveAndAddTheImageToTheJournalItem()
+        {
+            // arrange
+            var formFile = new Mock<IFormFile>(MockBehavior.Strict);
+            var gameId = Guid.NewGuid();
+
+            formFile.SetupGet(f => f.FileName).Returns("test.png");
+
+            var journalItem = new JournalItemMock(JournalItemType.Handout, "test", gameId, null, null);
+            var journalItemId = journalItem.Id;
+
+            var journalItemQueryable = new List<JournalItem> { journalItem }.AsQueryable().BuildMock();
+
+            repository.SetupGet(r => r.JournalItems).Returns(journalItemQueryable.Object);
+
+            var path = fileStorageConfig.BigImageLocation + gameId;
+
+            processor.Setup(p => p.SaveImage(formFile.Object, path, It.IsAny<string>())).Returns(Task.CompletedTask).Verifiable();
+            repository.Setup(r => r.Commit()).Returns(Task.CompletedTask).Verifiable();
+
+            // act
+            var result = await sut.UploadImage(formFile.Object, gameId, journalItemId);
+
+            // assert
+            repository.VerifyAll();
+            processor.VerifyAll();
+
+            result.ShouldNotBe(Guid.Empty);
+        }
+
+        [TestMethod]
+        public void UploadImageWillThrowBadImageFormatExceptionOnBadExtension()
+        {
+            // arrange
+            var formFile = new Mock<IFormFile>(MockBehavior.Strict);
+            var gameId = Guid.NewGuid();
+            var extension = ".wtf";
+
+            formFile.SetupGet(f => f.FileName).Returns("test" + extension);
+
+            // act
+
+            var result = Should.Throw<BadImageFormatException>(
+                async () => await sut.UploadImage(formFile.Object, gameId, Guid.Empty));
+
+            // assert
+            result.Message.ShouldBe($"The format {extension} is not supported");
         }
 
         //[TestMethod]
