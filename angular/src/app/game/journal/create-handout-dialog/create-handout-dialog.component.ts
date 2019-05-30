@@ -39,7 +39,6 @@ export class CreateHandoutDialogComponent {
   save() {
     const canSee = (this.canSee.value as Player[]).map(m => m.userId);
     const canEdit = (this.canEdit.value as Player[]).map(m => m.userId);
-
     const handout = new JournalHandout();
     handout.name = this.name.value;
     handout.description = this.description.value;
@@ -54,17 +53,9 @@ export class CreateHandoutDialogComponent {
   onImageChange(event: Event) {
     const target = event.target as HTMLInputElement;
 
-    const reader = new FileReader();
-
     if (target.files && target.files.length) {
       const file = target.files[0];
-      reader.readAsDataURL(file);
-
-      reader.onload = () => {
-        this.form.patchValue({
-          image: reader.result
-        });
-      };
+      this.image.setValue(file);
     }
   }
 }

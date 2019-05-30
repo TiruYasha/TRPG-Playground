@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Domain.Domain.JournalItems;
 using Domain.RequestModels.Journal;
+using Domain.ReturnModels.Journal;
 using Domain.ServiceInterfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -55,14 +59,59 @@ namespace RestApi
         [Route("AddJournalItem")]
         public async Task<IActionResult> AddJournalItemAsync([FromBody] AddJournalItemDto dto)
         {
-            var userId = jwtReader.GetUserId();
-            var gameId = jwtReader.GetGameId();
+            var (userId, gameId) = GetUserIdAndGameId();
 
-            var journalItem = await journalService.AddJournalItemToGame(dto, gameId);
+            var (journalItem, canSee) = await journalService.AddJournalItemToGame(dto, gameId);
 
-            await hubContext.Clients.User(userId.ToString()).SendAsync("JournalItemAdded", journalItem);
+            if (journalItem.Type == JournalItemType.Folder)
+            {
+                await hubContext.Clients.Group(gameId.ToString()).SendAsync("JournalItemAdded", journalItem);
+            }
+            else
+            {
+                await hubContext.Clients.User(userId.ToString()).SendAsync("JournalItemAdded", journalItem);
+
+                await SendMessageToPlayers(canSee, journalItem);
+            }
 
             return Ok(journalItem);
+        }
+
+        [HttpPost]
+        [Route("{journalItemId}/image")]
+        public async Task<IActionResult> UploadImageForJournalItem(Guid journalItemId)
+        {
+            var gameId = jwtReader.GetGameId();
+            var file = Request.Form.Files.FirstOrDefault();
+
+            var result = await journalService.UploadImage(file, gameId, journalItemId);
+            await hubContext.Clients.Group(gameId.ToString()).SendAsync("JournalItemImageUploaded", new UploadedImageDto { ImageId = result, JournalItemId = journalItemId });
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("{journalItemId}/image")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetThumbnailForJournalItem(Guid journalItemId)
+        {
+            var imageInBytes = await journalService.GetImage(journalItemId, true);
+
+            return File(imageInBytes, "image/jpeg");
+        }
+
+        private (Guid userId, Guid gameId) GetUserIdAndGameId()
+        {
+            var userId = jwtReader.GetUserId();
+            var gameId = jwtReader.GetGameId();
+            return (userId, gameId);
+        }
+
+        private async Task SendMessageToPlayers(IEnumerable<Guid> canSee, JournalItemTreeItemDto journalItem)
+        {
+            foreach (var playerId in canSee)
+            {
+                await hubContext.Clients.User(playerId.ToString()).SendAsync("JournalItemAdded", journalItem);
+            }
         }
     }
 }

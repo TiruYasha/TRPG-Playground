@@ -14,13 +14,16 @@ import { JournalItemType } from 'src/app/models/journal/journalitems/journal-ite
 import { JournalNodeContextMenuClick } from './journal-node/journal-node-context-menu-click.model';
 import { DynamicFlatNode } from 'src/app/models/journal/dynamic-flat-node';
 import { JournalDynamicDataSource } from './dynamic-data-source';
+import { environment } from 'src/environments/environment';
+import { DestroySubscription } from 'src/app/shared/components/destroy-subscription.extendable';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'trpg-journal',
   templateUrl: './journal.component.html',
   styleUrls: ['./journal.component.scss']
 })
-export class JournalComponent implements OnInit {
+export class JournalComponent extends DestroySubscription implements OnInit {
   isOwner: boolean;
   players: Player[] = [];
 
@@ -37,6 +40,7 @@ export class JournalComponent implements OnInit {
   hasChild = (_: number, node: DynamicFlatNode<JournalItem>) => this.IsExpandable(node);
 
   constructor(private journalService: JournalService, private activeGameService: ActiveGameService, public dialog: MatDialog) {
+    super();
     this.treeControl = new FlatTreeControl<DynamicFlatNode<JournalItem>>(this.getLevel, this.IsExpandable);
     this.dataSource = new JournalDynamicDataSource(this.treeControl, journalService);
     this.dataSource.data = this.journalItemsNodes;
@@ -44,21 +48,35 @@ export class JournalComponent implements OnInit {
 
   ngOnInit() {
     this.journalService.setup();
-    this.journalService.journalItemAdded.subscribe((model: AddedJournalItemModel) => {
-      this.addJournalItem(model);
-    });
-    this.journalService.getRootJournalItems().subscribe(data => {
-      const nodes = data.map(item => new DynamicFlatNode<JournalItem>(item, 0));
-      this.dataSource.data = nodes;
-    });
+    this.journalService.journalItemAdded
+      .pipe(takeUntil(this.destroy))
+      .subscribe((model: AddedJournalItemModel) => {
+        this.addJournalItem(model);
+      });
+    this.journalService.getRootJournalItems()
+      .pipe(takeUntil(this.destroy))
+      .subscribe(data => {
+        const nodes = data.map(item => new DynamicFlatNode<JournalItem>(item, 0));
+        this.dataSource.data = nodes;
+      });
 
-    this.activeGameService.isOwnerObservable.subscribe((isOwner) => {
-      this.isOwner = isOwner;
-    });
+    this.activeGameService.isOwnerObservable
+      .pipe(takeUntil(this.destroy))
+      .subscribe((isOwner) => {
+        this.isOwner = isOwner;
+      });
 
-    this.activeGameService.playersObservable.subscribe((players) => {
-      this.players = players;
-    });
+    this.activeGameService.playersObservable
+      .pipe(takeUntil(this.destroy))
+      .subscribe((players) => {
+        this.players = players;
+      });
+
+    this.journalService.journalItemImageUploaded
+      .pipe(takeUntil(this.destroy))
+      .subscribe((image) => {
+        this.refreshDataSource();
+      });
   }
 
   subIconClicked(icon: string) {
@@ -100,6 +118,10 @@ export class JournalComponent implements OnInit {
 
   clickFolder(node: DynamicFlatNode<JournalItem>) {
     this.treeControl.toggle(node);
+  }
+
+  getThumbnailLink(journalItemId: string) {
+    return `${environment.apiUrl}/journal/${journalItemId}/image`;
   }
 
   private openDialog(journalItem: JournalItem, parentFolderId: string = null) {

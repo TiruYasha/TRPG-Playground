@@ -19,7 +19,7 @@ namespace Domain.Test.Domain.JournalItems
             var canSee = true;
             var canEdit = true;
 
-            var result = new JournalItemPemission(journalItemId, userId, gameId, canSee, canEdit);
+            var result = new JournalItemPermission(journalItemId, userId, gameId, canSee, canEdit);
 
             result.JournalItemId.ShouldBe(journalItemId);
             result.UserId.ShouldBe(userId);
@@ -33,7 +33,7 @@ namespace Domain.Test.Domain.JournalItems
         {
             var canSee = true;
 
-            var result = new JournalItemPemission(journalItemId, userId, gameId, canSee);
+            var result = new JournalItemPermission(journalItemId, userId, gameId, canSee);
 
             result.CanEdit.ShouldBe(false);
         }
@@ -43,7 +43,7 @@ namespace Domain.Test.Domain.JournalItems
         {
             var canSee = false;
 
-            var result = new JournalItemPemission(journalItemId, userId, gameId, canSee, true);
+            var result = new JournalItemPermission(journalItemId, userId, gameId, canSee, true);
 
             result.CanSee.ShouldBe(true);
         }

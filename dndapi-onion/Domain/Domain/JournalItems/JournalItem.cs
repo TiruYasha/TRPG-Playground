@@ -1,38 +1,52 @@
 ﻿using Domain.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Domain.Domain.JournalItems
 {
     public abstract class JournalItem
     {
-        public virtual Guid Id { get; set; }
-        public virtual string Name { get; set; }
-        public virtual Guid? ImageId { get; set; }
-        public virtual JournalItemType Type { get; set; }
-        public virtual DateTime CreatedOn { get; set; }
-        public virtual DateTime LastEditedOn { get; set; }
-        public virtual Game Game { get; set; }
-        public virtual Guid GameId { get; set; }
-        public virtual JournalFolder ParentFolder { get; set; }
-        public virtual Guid? ParentFolderId { get; set; }
-        public virtual ICollection<JournalItemPemission> Permissions { get; set; }
+        public Guid Id { get; private set; }
+        public string Name { get; private set; }
+
+        public JournalItemType Type { get; private set; }
+        public DateTime CreatedOn { get; private set; }
+        public DateTime LastEditedOn { get; private set; }
+        public Guid? ImageId { get; private set; }
+        public virtual Image Image { get; private set; }
+        public virtual Game Game { get; private set; }
+        public Guid GameId { get; private set; }
+        public virtual JournalFolder ParentFolder { get; private set; }
+        public Guid? ParentFolderId { get; private set; }
+        public virtual ICollection<JournalItemPermission> Permissions { get; private set; }
 
         protected JournalItem() { }
 
-        protected JournalItem(JournalItemType type, string name, Guid gameId, Guid? imageId, ICollection<Guid> canSee, ICollection<Guid> canEdit)
+        protected JournalItem(JournalItemType type, string name, Guid gameId, ICollection<Guid> canSee, ICollection<Guid> canEdit)
         {
-            Permissions = new List<JournalItemPemission>();
+            Permissions = new List<JournalItemPermission>();
             CheckArguments(name);
             Id = Guid.NewGuid();
             Type = type;
             Name = name;
             GameId = gameId;
-            ImageId = imageId;
             CreatedOn = DateTime.UtcNow;
             LastEditedOn = DateTime.UtcNow;
 
             SetPermissions(canSee, canEdit);
+        }
+
+        public Task<Image> SetImage(string extension, string originalName)
+        {
+            return Task.Run(() =>
+            {
+                var image = new Image(extension, originalName);
+
+                Image = image;
+
+                return image;
+            });
         }
 
         private void SetPermissions(ICollection<Guid> canSee, ICollection<Guid> canEdit)
@@ -41,8 +55,8 @@ namespace Domain.Domain.JournalItems
             foreach (var s in canSee)
             {
                 Permissions.Add(canEdit.Contains(s)
-                    ? new JournalItemPemission(Id, s, GameId, true, true)
-                    : new JournalItemPemission(Id, s, GameId, true));
+                    ? new JournalItemPermission(Id, s, GameId, true, true)
+                    : new JournalItemPermission(Id, s, GameId, true));
             }
         }
 

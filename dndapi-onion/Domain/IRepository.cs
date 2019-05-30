@@ -11,10 +11,13 @@ namespace Domain
     public interface IRepository
     {
         IQueryable<Game> Games { get; }
+        IQueryable<User> Users { get; }
         IQueryable<GamePlayer> GamePlayers { get; }
         IQueryable<ChatMessage> ChatMessages { get; }
         IQueryable<JournalItem> JournalItems { get; }
         IQueryable<JournalFolder> JournalFolders { get; }
+        IQueryable<Image> Images { get; }
+        Task Add<T>(T entity) where T : class;
         Task Commit();
     }
 }

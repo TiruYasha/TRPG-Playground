@@ -56,12 +56,6 @@ export class ParentDialogComponent implements OnInit {
   }
 
   saveHandout(journalItem: JournalHandout) {
-    let image: Blob;
-    if (journalItem.image) {
-      image = journalItem.image.slice();
-    }
-    journalItem.image = null;
-
     const request: AddJournalItemRequestModel = {
       parentFolderId: this.data.parentFolderId,
       journalItem: journalItem
@@ -69,9 +63,8 @@ export class ParentDialogComponent implements OnInit {
 
     this.journalService.addJournalItemToGame(request)
       .subscribe(i => {
-        // TODO integrate with newer backend
-        // TODO upload image
-        this.exitDialog();
+        this.journalService.uploadImage(i.id, journalItem.image)
+          .subscribe(e => this.exitDialog());
       });
   }
 

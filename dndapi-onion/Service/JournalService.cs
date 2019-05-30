@@ -1,5 +1,4 @@
 ﻿using DataAccess;
-using Domain.Domain;
 using Domain.Domain.JournalItems;
 using Domain.RequestModels.Journal;
 using Domain.ReturnModels.Journal;
@@ -7,11 +6,18 @@ using Domain.ServiceInterfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Domain;
+using Domain.Config;
+using Domain.Domain;
+using Domain.Utilities;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
+using Service.Utilities;
 
 namespace Service
 {
@@ -19,14 +25,18 @@ namespace Service
     {
         private readonly IRepository repository;
         private readonly IMapper mapper;
+        private readonly FileStorageConfig fileStorageConfig;
+        private readonly ImageProcesser imageProcessor;
 
-        public JournalService(IRepository repository, IMapper mapper)
+        public JournalService(IRepository repository, IMapper mapper, IOptions<FileStorageConfig> fileStorageConfig, ImageProcesser imageProcessor)
         {
             this.repository = repository;
             this.mapper = mapper;
+            this.fileStorageConfig = fileStorageConfig.Value;
+            this.imageProcessor = imageProcessor;
         }
 
-        public async Task<JournalItemTreeItemDto> AddJournalItemToGame(AddJournalItemDto dto, Guid gameId)
+        public async Task<(JournalItemTreeItemDto, List<Guid>)> AddJournalItemToGame(AddJournalItemDto dto, Guid gameId)
         {
             if (dto.ParentFolderId == null)
             {
@@ -36,7 +46,7 @@ namespace Service
 
                 await repository.Commit();
 
-                return mapper.Map<JournalItem, JournalItemTreeItemDto>(journalItem);
+                return GetJournalItemTreeItemWithCanSeePermissions(journalItem);
             }
 
             var parent = await repository.JournalFolders.FilterById(dto.ParentFolderId.Value).FirstOrDefaultAsync();
@@ -45,7 +55,7 @@ namespace Service
 
             await repository.Commit();
 
-            return mapper.Map<JournalItem, JournalItemTreeItemDto>(result); ;
+            return GetJournalItemTreeItemWithCanSeePermissions(result);
         }
 
         public async Task<IEnumerable<JournalItemTreeItemDto>> GetJournalItemsForParentFolderId(Guid userId, Guid gameId, Guid? parentFolderId)
@@ -68,6 +78,46 @@ namespace Service
             }).ToListAsync();
         }
 
+        public async Task<Guid> UploadImage(IFormFile file, Guid gameId, Guid journalItemId)
+        {
+            //TODO: In future updates also limit size of images.
+            var originalName = file.FileName;
+            var extension = Path.GetExtension(originalName);
+
+            if (!FileExtensionValidator.ValidateImageExtension(extension))
+            {
+                throw new BadImageFormatException($"The format {extension} is not supported");
+            }
+
+            var journalItem = repository.JournalItems.FirstOrDefault(j => j.Id == journalItemId);
+            var image = await journalItem.SetImage(extension, originalName);
+
+            await imageProcessor.SaveImage(file, fileStorageConfig.BigImageLocation + gameId, $"{image.Id}{extension}");
+
+            await repository.Commit();
+
+            return image.Id;
+        }
+
+        public async Task<byte[]> GetImage(Guid journalItemId, bool isThumbnail)
+        {
+            var location = isThumbnail ? fileStorageConfig.ThumbnailLocation : fileStorageConfig.BigImageLocation;
+            var image = await repository.JournalItems.Include(j => j.Image).FilterById(journalItemId).Select(j => new { j.GameId, j.ImageId, j.Image.Extension }).FirstOrDefaultAsync();
+
+            if (image.ImageId == null) return new byte[0];
+
+            var fullPath = $"{location}{image.GameId}/{image.ImageId}{image.Extension}";
+
+            var binary = await File.ReadAllBytesAsync(fullPath);
+
+            return binary;
+        }
+
+        private (JournalItemTreeItemDto, List<Guid>) GetJournalItemTreeItemWithCanSeePermissions(JournalItem journalItem)
+        {
+            return (mapper.Map<JournalItem, JournalItemTreeItemDto>(journalItem), journalItem.Permissions.Where(w => w.CanSee == true).Select(s => s.UserId).ToList());
+        }
+
         private async Task<IEnumerable<JournalItemTreeItemDto>> GetJournalItemsForParentFolderIdWithEmptyFolders(Guid gameId, Guid? parentFolderId)
         {
             var query = repository.JournalItems.FilterByParentFolderId(parentFolderId);
@@ -88,38 +138,5 @@ namespace Service
 
             return result;
         }
-
-        //private void FilterEmptyFolders(IEnumerable<JournalItem> journalItems)
-        //{
-        //    var folders = journalItems.Where(j => j.Type == JournalItemType.Folder).Select(j => j as JournalFolder).ToList();
-
-        //    foreach (var folder in folders)
-        //    {
-        //        FilterEmptyFoldersImpl(journalItems.ToList(), folder);
-        //    }
-        //}
-
-        //private void FilterEmptyFoldersImpl(ICollection<JournalItem> root, JournalFolder folder, JournalFolder parent = null)
-        //{
-        //    var folders = folder.JournalItems.Where(j => j.Type == JournalItemType.Folder).Select(j => j as JournalFolder).ToList();
-
-        //    foreach (var child in folders)
-        //    {
-        //        FilterEmptyFoldersImpl(root, child, folder);
-        //    }
-
-        //    if (folder.JournalItems.Count() < 1)
-        //    {
-        //        if (parent == null)
-        //        {
-        //            root.Remove(folder);
-        //        }
-        //        else
-        //        {
-        //            parent.JournalItems.Remove(folder);
-        //        }
-        //    }
-        //}
-
     }
 }
