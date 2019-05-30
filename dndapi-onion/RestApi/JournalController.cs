@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Domain.Domain.JournalItems;
 using Domain.Dto.RequestDto.Journal;
 using Domain.Dto.ReturnDto.Journal;
+using Domain.Exceptions;
 using Domain.ServiceInterfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -103,7 +104,17 @@ namespace RestApi
         [Route("{journalItemId}")]
         public async Task<IActionResult> GetJournalItemDetails(Guid journalItemId)
         {
-            return Ok();
+            var userId = jwtReader.GetUserId();
+
+            try
+            {
+                var journalItem = await journalService.GetJournalItemById(userId, journalItemId);
+                return Ok(journalItem);
+            }
+            catch (PermissionException)
+            {
+                return Unauthorized();
+            }
         }
 
         private (Guid userId, Guid gameId) GetUserIdAndGameId()

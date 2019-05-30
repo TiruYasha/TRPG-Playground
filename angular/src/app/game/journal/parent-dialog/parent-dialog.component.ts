@@ -7,13 +7,16 @@ import { JournalItemType } from 'src/app/models/journal/journalitems/journal-ite
 import { JournalService } from '../journal.service';
 import { JournalHandout } from 'src/app/models/journal/journalitems/journal-handout.model';
 import { AddJournalItemRequestModel } from 'src/app/models/journal/requests/add-journal-folder-request.model';
+import { DestroySubscription } from 'src/app/shared/components/destroy-subscription.extendable';
+import { DialogState } from './dialog-state.enum';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'trpg-journal-parent-dialog',
   templateUrl: './parent-dialog.component.html',
   styleUrls: ['./parent-dialog.component.scss']
 })
-export class ParentDialogComponent implements OnInit {
+export class ParentDialogComponent extends DestroySubscription implements OnInit {
 
   @ViewChild('dialogContainer') dialogContainer: ElementRef;
 
@@ -27,13 +30,18 @@ export class ParentDialogComponent implements OnInit {
 
   handoutType = JournalItemType;
 
+  journalItem: Observable<JournalItem>;
+
   constructor(
     public dialogRef: MatDialogRef<ParentDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: ParentDialogModel,
     private journalService: JournalService
-  ) { }
+  ) { super(); }
 
   ngOnInit() {
+    if (this.data.state === DialogState.View) {
+      this.journalItem = this.journalService.getJournalItemById(this.data.journalItemId);
+    }
   }
 
   saveJournalItem(journalItem: JournalItem) {
@@ -89,6 +97,7 @@ export class ParentDialogComponent implements OnInit {
 
   resize(event: MouseEvent) {
     const element = this.dialogContainer.nativeElement as HTMLDivElement;
+    console.log(element);
     event.preventDefault();
     const minWidth = this.startPageX - event.pageX;
     const minHeigth = this.startPageY - event.pageY;

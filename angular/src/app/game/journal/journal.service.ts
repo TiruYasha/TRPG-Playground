@@ -28,6 +28,10 @@ export class JournalService {
         return this.http.post<AddedJournalItemModel>(environment.apiUrl + '/journal/AddJournalItem', model);
     }
 
+    getJournalItemById(journalItemId): Observable<JournalItem>{
+        return this.http.get<JournalItem>(environment.apiUrl + '/journal/' + journalItemId);
+    }
+
     getAllJournalItems(): Observable<JournalItem[]> {
         return this.http.get<JournalItem[]>(environment.apiUrl + '/journal/all');
     }

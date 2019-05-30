@@ -2,3 +2,12 @@
     display:flex;
     flex-flow: column;
 }
+
+.content {
+    overflow-y: auto;
+    height: calc(100% - 90px);
+
+    img {
+        width: 100%;
+    }
+}

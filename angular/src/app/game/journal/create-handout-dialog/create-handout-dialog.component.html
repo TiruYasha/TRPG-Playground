@@ -1,34 +1,51 @@
-<h1 mat-dialog-title cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle>Handout</h1>
-<div  mat-dialog-content>
-  <form class="dialogContent" [formGroup]="form">
-    <mat-form-field>
-      <input matInput placeholder="Handout name" formControlName="name" required cdkFocusInitial>
-      <mat-error *ngIf="name.invalid">The name is required</mat-error>
-    </mat-form-field>
+<ng-container *ngIf="dialogState === states.New">
+  <h1 mat-dialog-title cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle>Handout</h1>
+  <div mat-dialog-content>
+    <form class="dialogContent" [formGroup]="form">
+      <mat-form-field>
+        <input matInput placeholder="Handout name" formControlName="name" required cdkFocusInitial>
+        <mat-error *ngIf="name.invalid">The name is required</mat-error>
+      </mat-form-field>
       <input placeholder="Image" type="file" (change)="onImageChange($event)">
-    <mat-form-field>
-      <mat-label>Can see</mat-label>
-      <mat-select formControlName="canSee" multiple>
-        <mat-option *ngFor="let player of players" [value]="player">{{player.username}}</mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Can edit</mat-label>
-      <mat-select formControlName="canEdit" multiple>
-        <mat-option *ngFor="let player of players" [value]="player">{{player.username}}</mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Description</mat-label>
-      <textarea matInput formControlName="description" placeholder="Description"></textarea>
-    </mat-form-field>
-    <mat-form-field *ngIf="isOwner">
-      <mat-label>Owner notes</mat-label>
-      <textarea matInput formControlName="ownerNotes"  placeholder="Description"></textarea>
-    </mat-form-field>
-  </form>
-</div>
-<div mat-dialog-actions>
-  <button mat-button>Cancel</button>
-  <button mat-button cdkFocusInitial [disabled]="form.pristine" (click)="save()">Save</button>
-</div>
+      <mat-form-field>
+        <mat-label>Can see</mat-label>
+        <mat-select formControlName="canSee" multiple>
+          <mat-option *ngFor="let player of players" [value]="player">{{player.username}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Can edit</mat-label>
+        <mat-select formControlName="canEdit" multiple>
+          <mat-option *ngFor="let player of players" [value]="player">{{player.username}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description" placeholder="Description"></textarea>
+      </mat-form-field>
+      <mat-form-field *ngIf="isOwner">
+        <mat-label>Owner notes</mat-label>
+        <textarea matInput formControlName="ownerNotes" placeholder="Description"></textarea>
+      </mat-form-field>
+    </form>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button>Cancel</button>
+    <button mat-button [disabled]="form.pristine" (click)="save()">Save</button>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="dialogState === states.View && data">
+  <h1>{{data.name}}</h1>
+
+  <div class="content">
+    <img [src]="getImageLink(data.id)">
+    <div class="description">
+      {{data.description}}
+    </div>
+  </div>
+
+  <div>
+    <button mat-button>Close</button>
+  </div>
+</ng-container>
