@@ -1,6 +1,5 @@
 ﻿using DataAccess;
 using Domain.Domain;
-using Domain.RequestModels.Chat;
 using Domain.ServiceInterfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -8,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Domain;
+using Domain.Dto.RequestDto.Chat;
 
 namespace Service
 {

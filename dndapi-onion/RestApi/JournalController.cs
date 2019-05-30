@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Domain.Domain.JournalItems;
-using Domain.RequestModels.Journal;
-using Domain.ReturnModels.Journal;
+using Domain.Dto.RequestDto.Journal;
+using Domain.Dto.ReturnDto.Journal;
 using Domain.ServiceInterfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -97,6 +97,13 @@ namespace RestApi
             var imageInBytes = await journalService.GetImage(journalItemId, true);
 
             return File(imageInBytes, "image/jpeg");
+        }
+
+        [HttpGet]
+        [Route("{journalItemId}")]
+        public async Task<IActionResult> GetJournalItemDetails(Guid journalItemId)
+        {
+            return Ok();
         }
 
         private (Guid userId, Guid gameId) GetUserIdAndGameId()

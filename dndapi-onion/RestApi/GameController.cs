@@ -7,8 +7,7 @@ using RestApi.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Domain.RequestModels.Game;
-using Domain.ReturnModels.Game;
+using Domain.Dto.RequestDto.Game;
 
 namespace RestApi
 {

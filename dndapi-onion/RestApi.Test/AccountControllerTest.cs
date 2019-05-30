@@ -5,7 +5,7 @@ using Moq;
 using Shouldly;
 using System;
 using System.Threading.Tasks;
-using Domain.RequestModels.Account;
+using Domain.Dto.RequestDto.Account;
 
 namespace RestApi.Test
 {

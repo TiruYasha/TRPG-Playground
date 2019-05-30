@@ -1,7 +1,5 @@
 ﻿using DataAccess;
 using Domain.Domain.JournalItems;
-using Domain.RequestModels.Journal;
-using Domain.ReturnModels.Journal;
 using Domain.ServiceInterfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -11,9 +9,12 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Domain;
 using Domain.Config;
 using Domain.Domain;
+using Domain.Dto.RequestDto.Journal;
+using Domain.Dto.ReturnDto.Journal;
 using Domain.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
@@ -68,14 +69,7 @@ namespace Service
 
             var query = repository.JournalItems.FilterByParentFolderId(parentFolderId).Where(i => i.Type == JournalItemType.Folder || (i.Permissions.Any(p => p.UserId == userId && p.CanSee || p.CanEdit)));
 
-            return await query.Select(j => new JournalItemTreeItemDto
-            {
-                Id = j.Id,
-                ParentFolderId = j.ParentFolderId,
-                Name = j.Name,
-                ImageId = j.ImageId,
-                Type = j.Type
-            }).ToListAsync();
+            return await query.ProjectTo<JournalItemTreeItemDto>(mapper.ConfigurationProvider).ToListAsync();
         }
 
         public async Task<Guid> UploadImage(IFormFile file, Guid gameId, Guid journalItemId)
@@ -127,14 +121,7 @@ namespace Service
                 query = query.FilterByGameId(gameId);
             }
 
-            var result = await query.Select(j => new JournalItemTreeItemDto
-            {
-                Id = j.Id,
-                ParentFolderId = j.ParentFolderId,
-                Name = j.Name,
-                ImageId = j.ImageId,
-                Type = j.Type
-            }).ToListAsync();
+            var result = await query.ProjectTo<JournalItemTreeItemDto>(mapper.ConfigurationProvider).ToListAsync();
 
             return result;
         }

@@ -1,10 +1,10 @@
 ﻿using Domain.Domain.JournalItems;
-using Domain.RequestModels.Journal;
-using Domain.ReturnModels.Journal;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
+using Domain.Dto.RequestDto.Journal;
+using Domain.Dto.ReturnDto.Journal;
 using Microsoft.AspNetCore.Http;
 
 namespace Domain.ServiceInterfaces

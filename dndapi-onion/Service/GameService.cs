@@ -10,7 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Domain;
-using Domain.ReturnModels.Game;
+using Domain.Dto.ReturnDto.Game;
 
 namespace Service
 {

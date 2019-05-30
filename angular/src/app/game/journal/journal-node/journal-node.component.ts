@@ -15,7 +15,7 @@ export class JournalNodeComponent {
   @Input() journalItem: JournalItem;
   @Input() isOwner: boolean;
   @Output() addJournalItem = new EventEmitter<JournalNodeContextMenuClick>();
-  @Output() clickFolder = new EventEmitter<JournalItem>();
+  @Output() clickItem = new EventEmitter<JournalItem>();
 
   @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
   @ViewChild('menuButton') button: ElementRef;
@@ -43,7 +43,7 @@ export class JournalNodeComponent {
   }
 
   clickedFolder() {
-    this.clickFolder.emit(this.journalItem);
+    this.clickItem.emit(this.journalItem);
   }
 
   private sendContextMenuClick(item: JournalItem){

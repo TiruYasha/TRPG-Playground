@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Domain.Domain;
-using Domain.RequestModels.Chat;
 using Domain.ServiceInterfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,8 +9,9 @@ using RestApi.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Domain.ReturnModels.Chat;
-using Domain.ReturnModels.Chat.CommandResults;
+using Domain.Dto.RequestDto.Chat;
+using Domain.Dto.ReturnDto.Chat;
+using Domain.Dto.ReturnDto.Chat.CommandResults;
 
 namespace RestApi
 {

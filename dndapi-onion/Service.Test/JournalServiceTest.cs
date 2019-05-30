@@ -10,8 +10,6 @@ using Domain.Domain.JournalItems;
 using Domain.DomainInterfaces;
 using Domain.MappingProfiles;
 using Domain.Mocks;
-using Domain.RequestModels.Journal;
-using Domain.RequestModels.Journal.JournalItems;
 using Domain.ServiceInterfaces;
 using Domain.Utilities;
 using Microsoft.AspNetCore.Http;

@@ -1,10 +1,10 @@
 ﻿using Domain.Domain.JournalItems;
 using Domain.Exceptions;
-using Domain.RequestModels.Journal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Domain.Dto.RequestDto.Journal;
 
 namespace Domain.Domain
 {

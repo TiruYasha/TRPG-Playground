@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Domain.Domain;
 using Domain.Domain.JournalItems;
-using Domain.RequestModels.Journal;
+using Domain.Dto.RequestDto.Journal;
 
 namespace Domain.DomainInterfaces
 {

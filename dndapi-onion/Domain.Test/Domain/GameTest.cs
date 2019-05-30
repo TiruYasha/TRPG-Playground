@@ -1,13 +1,13 @@
 ﻿using Domain.Domain;
 using Domain.Domain.JournalItems;
 using Domain.Exceptions;
-using Domain.RequestModels.Journal;
-using Domain.RequestModels.Journal.JournalItems;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Domain.Dto.RequestDto.Journal;
+using Domain.Dto.Shared;
 using Domain.Utilities;
 
 namespace Domain.Test.Domain

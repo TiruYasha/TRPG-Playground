@@ -1,5 +1,4 @@
 ﻿using Domain.Domain;
-using Domain.RequestModels.Chat;
 using Domain.ServiceInterfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
