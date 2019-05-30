@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Domain.Dto.RequestDto.Journal;
 using Domain.Dto.ReturnDto.Journal;
+using Domain.Dto.Shared;
 using Microsoft.AspNetCore.Http;
 
 namespace Domain.ServiceInterfaces
@@ -17,5 +18,6 @@ namespace Domain.ServiceInterfaces
 
         Task<Guid> UploadImage(IFormFile file, Guid gameId, Guid journalItemId);
         Task<byte[]> GetImage(Guid journalItemId, bool isThumbnail);
+        Task<JournalItemDto> GetJournalItemById(Guid userId, Guid journalItemId);
     }
 }

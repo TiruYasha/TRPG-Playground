@@ -27,13 +27,14 @@ namespace Domain.MappingProfiles
 
 
             CreateMap<JournalItem, JournalItemDto>()
-                .Include<JournalFolder, JournalFolderDto>();
+                .Include<JournalFolder, JournalFolderDto>()
+                .Include<JournalHandout, JournalHandoutDto>();
+            CreateMap<JournalFolder, JournalFolderDto>();
+            CreateMap<JournalHandout, JournalHandoutDto>();
 
             CreateMap<JournalItem, JournalItemTreeItemDto>();
             CreateMap<JournalFolder, JournalItemTreeItemDto>();
             CreateMap<JournalHandout, JournalItemTreeItemDto>();
-
-            CreateMap<JournalFolder, JournalFolderDto>();
 
             CreateMap<GamePlayer, GetPlayersModel>().ForMember(dest => dest.Username, opt => opt.MapFrom(from => from.User.UserName));
             CreateMap<User, GetPlayersModel>().ForMember(dest => dest.UserId, opt => opt.MapFrom(from => from.Id));

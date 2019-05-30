@@ -15,6 +15,8 @@ using Domain.Config;
 using Domain.Domain;
 using Domain.Dto.RequestDto.Journal;
 using Domain.Dto.ReturnDto.Journal;
+using Domain.Dto.Shared;
+using Domain.Exceptions;
 using Domain.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
@@ -105,6 +107,18 @@ namespace Service
             var binary = await File.ReadAllBytesAsync(fullPath);
 
             return binary;
+        }
+
+        public async Task<JournalItemDto> GetJournalItemById(Guid userId, Guid journalItemId)
+        {
+            var journalItem = await repository.JournalItems.Include(j => j.Permissions).FilterById(journalItemId).FilterByCanSee(userId).FirstOrDefaultAsync();
+
+            if (journalItem == null)
+            {
+                throw new PermissionException("Access Denied");
+            }
+
+            return mapper.Map<JournalItem, JournalItemDto>(journalItem);
         }
 
         private (JournalItemTreeItemDto, List<Guid>) GetJournalItemTreeItemWithCanSeePermissions(JournalItem journalItem)

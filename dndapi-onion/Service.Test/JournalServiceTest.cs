@@ -8,6 +8,9 @@ using Domain.Config;
 using Domain.Domain;
 using Domain.Domain.JournalItems;
 using Domain.DomainInterfaces;
+using Domain.Dto.RequestDto.Journal;
+using Domain.Dto.Shared;
+using Domain.Exceptions;
 using Domain.MappingProfiles;
 using Domain.Mocks;
 using Domain.ServiceInterfaces;
@@ -100,12 +103,75 @@ namespace Service.Test
             formFile.SetupGet(f => f.FileName).Returns("test" + extension);
 
             // act
-
             var result = Should.Throw<BadImageFormatException>(
                 async () => await sut.UploadImage(formFile.Object, gameId, Guid.Empty));
 
             // assert
             result.Message.ShouldBe($"The format {extension} is not supported");
+        }
+
+        [TestMethod]
+        public async Task GetJournalItemByIdReturnsTheCorrectJournalItem()
+        {
+            // arrange
+            var userId = Guid.NewGuid();
+
+            var handoutModel = new JournalHandoutDto
+            {
+                Name = "handout",
+                Description = "description",
+                OwnerNotes = "ownerNotes",
+                CanSee =  new List<Guid> { userId }
+            };
+
+            var model = new AddJournalItemDto
+            {
+                JournalItem = handoutModel
+            };
+
+            var journalItem = new JournalHandout(model, Guid.NewGuid());
+            var journalItemId = journalItem.Id;
+
+            var journalItemQueryable = new List<JournalHandout> { journalItem }.AsQueryable().BuildMock();
+            repository.SetupGet(r => r.JournalItems).Returns(journalItemQueryable.Object);
+
+            // act
+            var result = await sut.GetJournalItemById(userId, journalItemId);
+
+            // assert
+            result.Name.ShouldBe(handoutModel.Name);
+            result.ShouldBeOfType<JournalHandoutDto>();
+        }
+
+        [TestMethod]
+        public async Task GetJournalItemByIdThrowsAnExceptionIfTheUserDoesNotHavePermissionToSeeJournalItem()
+        {
+            // arrange
+            var userId = Guid.NewGuid();
+
+            var handoutModel = new JournalHandoutDto
+            {
+                Name = "handout",
+                Description = "description",
+                OwnerNotes = "ownerNotes"
+            };
+
+            var model = new AddJournalItemDto
+            {
+                JournalItem = handoutModel
+            };
+
+            var journalItem = new JournalHandout(model, Guid.NewGuid());
+            var journalItemId = journalItem.Id;
+
+            var journalItemQueryable = new List<JournalHandout> { journalItem }.AsQueryable().BuildMock();
+            repository.SetupGet(r => r.JournalItems).Returns(journalItemQueryable.Object);
+
+            // act
+            var result = Should.Throw<PermissionException>(async() => await sut.GetJournalItemById(userId, journalItemId));
+
+            // assert
+            result.Message.ShouldBe("Access Denied");
         }
 
         //[TestMethod]
