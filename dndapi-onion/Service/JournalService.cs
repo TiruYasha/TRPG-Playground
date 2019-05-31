@@ -26,50 +26,50 @@ namespace Service
 {
     public class JournalService : IJournalService
     {
-        private readonly IRepository repository;
         private readonly IMapper mapper;
         private readonly FileStorageConfig fileStorageConfig;
         private readonly ImageProcesser imageProcessor;
+        private readonly DndContext context;
 
-        public JournalService(IRepository repository, IMapper mapper, IOptions<FileStorageConfig> fileStorageConfig, ImageProcesser imageProcessor)
+        public JournalService(DndContext context, IMapper mapper, IOptions<FileStorageConfig> fileStorageConfig, ImageProcesser imageProcessor)
         {
-            this.repository = repository;
             this.mapper = mapper;
             this.fileStorageConfig = fileStorageConfig.Value;
             this.imageProcessor = imageProcessor;
+            this.context = context;
         }
 
         public async Task<(JournalItemTreeItemDto, List<Guid>)> AddJournalItemToGame(AddJournalItemDto dto, Guid gameId)
         {
             if (dto.ParentFolderId == null)
             {
-                var game = await repository.Games.FilterById(gameId).FirstOrDefaultAsync();
+                var game = await context.Games.FilterById(gameId).FirstOrDefaultAsync();
 
                 var journalItem = await game.AddJournalItemAsync(dto);
 
-                await repository.Commit();
+                await context.SaveChangesAsync();
 
                 return GetJournalItemTreeItemWithCanSeePermissions(journalItem);
             }
 
-            var parent = await repository.JournalFolders.FilterById(dto.ParentFolderId.Value).FirstOrDefaultAsync();
+            var parent = await context.JournalFolders.FilterById(dto.ParentFolderId.Value).FirstOrDefaultAsync();
 
             var result = await parent.AddJournalItem(dto, gameId);
 
-            await repository.Commit();
+            await context.SaveChangesAsync();
 
             return GetJournalItemTreeItemWithCanSeePermissions(result);
         }
 
         public async Task<IEnumerable<JournalItemTreeItemDto>> GetJournalItemsForParentFolderId(Guid userId, Guid gameId, Guid? parentFolderId)
         {
-            var isOwner = await repository.Games.FilterOnOwnerById(userId).AnyAsync();
+            var isOwner = await context.Games.FilterOnOwnerById(userId).AnyAsync();
             if (isOwner)
             {
                 return await GetJournalItemsForParentFolderIdWithEmptyFolders(gameId, parentFolderId);
             }
 
-            var query = repository.JournalItems.FilterByParentFolderId(parentFolderId).Where(i => i.Type == JournalItemType.Folder || (i.Permissions.Any(p => p.UserId == userId && p.CanSee || p.CanEdit)));
+            var query = context.JournalItems.FilterByParentFolderId(parentFolderId).Where(i => i.Type == JournalItemType.Folder || (i.Permissions.Any(p => p.UserId == userId && p.CanSee || p.CanEdit)));
 
             return await query.ProjectTo<JournalItemTreeItemDto>(mapper.ConfigurationProvider).ToListAsync();
         }
@@ -85,12 +85,12 @@ namespace Service
                 throw new BadImageFormatException($"The format {extension} is not supported");
             }
 
-            var journalItem = repository.JournalItems.FirstOrDefault(j => j.Id == journalItemId);
+            var journalItem = context.JournalItems.FirstOrDefault(j => j.Id == journalItemId);
             var image = await journalItem.SetImage(extension, originalName);
 
             await imageProcessor.SaveImage(file, fileStorageConfig.BigImageLocation + gameId, $"{image.Id}{extension}");
 
-            await repository.Commit();
+            await context.SaveChangesAsync();
 
             return image.Id;
         }
@@ -98,7 +98,7 @@ namespace Service
         public async Task<byte[]> GetImage(Guid journalItemId, bool isThumbnail)
         {
             var location = isThumbnail ? fileStorageConfig.ThumbnailLocation : fileStorageConfig.BigImageLocation;
-            var image = await repository.JournalItems.Include(j => j.Image).FilterById(journalItemId).Select(j => new { j.GameId, j.ImageId, j.Image.Extension }).FirstOrDefaultAsync();
+            var image = await context.JournalItems.Include(j => j.Image).FilterById(journalItemId).Select(j => new { j.GameId, j.ImageId, j.Image.Extension }).FirstOrDefaultAsync();
 
             if (image.ImageId == null) return new byte[0];
 
@@ -111,7 +111,7 @@ namespace Service
 
         public async Task<JournalItemDto> GetJournalItemById(Guid userId, Guid journalItemId)
         {
-            var journalItem = await repository.JournalItems.Include(j => j.Permissions).FilterById(journalItemId).FilterByCanSee(userId).FirstOrDefaultAsync();
+            var journalItem = await context.JournalItems.Include(j => j.Permissions).FilterById(journalItemId).FilterByCanSee(userId).FirstOrDefaultAsync();
 
             if (journalItem == null)
             {
@@ -128,7 +128,7 @@ namespace Service
 
         private async Task<IEnumerable<JournalItemTreeItemDto>> GetJournalItemsForParentFolderIdWithEmptyFolders(Guid gameId, Guid? parentFolderId)
         {
-            var query = repository.JournalItems.FilterByParentFolderId(parentFolderId);
+            var query = context.JournalItems.FilterByParentFolderId(parentFolderId);
 
             if (!parentFolderId.HasValue)
             {
