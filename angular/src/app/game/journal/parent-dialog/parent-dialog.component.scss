@@ -3,15 +3,20 @@
 }
 
 .dialog-header {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    height: 24px;
-    padding: 4px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 24px;
+  padding: 4px;
 }
 
 .content {
+  width: 40vw;
+  max-height: 80vh;
+  max-width: calc(80vw - 48px);
   padding: 24px;
+  padding-top: 0;
+  height: 600px;
 }
 
 .dragger {
@@ -21,5 +26,5 @@
 }
 
 .clickPointer {
-    cursor: pointer;
+  cursor: pointer;
 }

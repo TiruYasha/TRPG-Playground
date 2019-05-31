@@ -1,7 +1,7 @@
 ﻿using Domain.Domain.JournalItems;
-using Domain.RequestModels.Journal.JournalItems;
 using Newtonsoft.Json.Linq;
 using System;
+using Domain.Dto.Shared;
 
 namespace Domain.JsonConverter
 {

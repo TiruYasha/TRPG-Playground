@@ -1,8 +1,8 @@
 ﻿using Domain.Domain;
-using Domain.RequestModels.Chat;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Domain.Dto.RequestDto.Chat;
 
 namespace Domain.ServiceInterfaces
 {

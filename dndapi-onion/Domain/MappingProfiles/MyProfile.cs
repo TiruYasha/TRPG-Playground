@@ -2,12 +2,12 @@
 using Domain.Domain;
 using Domain.Domain.Commands;
 using Domain.Domain.JournalItems;
-using Domain.RequestModels.Journal.JournalItems;
-using Domain.ReturnModels.Chat;
-using Domain.ReturnModels.Chat.CommandResults;
-using Domain.ReturnModels.Game;
-using Domain.ReturnModels.Journal;
-using Domain.ReturnModels.Journal.JournalItems;
+using Domain.Dto.ReturnDto.Chat;
+using Domain.Dto.ReturnDto.Chat.CommandResults;
+using Domain.Dto.ReturnDto.Game;
+using Domain.Dto.ReturnDto.Journal;
+using Domain.Dto.Shared;
+
 
 namespace Domain.MappingProfiles
 {
@@ -26,14 +26,15 @@ namespace Domain.MappingProfiles
             CreateMap<NormalDiceRollCommand, NormalDiceRollCommandResult>();
 
 
-            CreateMap<JournalItem, JournalItemModel>()
-                .Include<JournalFolder, JournalFolderModel>();
+            CreateMap<JournalItem, JournalItemDto>()
+                .Include<JournalFolder, JournalFolderDto>()
+                .Include<JournalHandout, JournalHandoutDto>();
+            CreateMap<JournalFolder, JournalFolderDto>();
+            CreateMap<JournalHandout, JournalHandoutDto>();
 
             CreateMap<JournalItem, JournalItemTreeItemDto>();
             CreateMap<JournalFolder, JournalItemTreeItemDto>();
             CreateMap<JournalHandout, JournalItemTreeItemDto>();
-
-            CreateMap<JournalFolder, JournalFolderModel>();
 
             CreateMap<GamePlayer, GetPlayersModel>().ForMember(dest => dest.Username, opt => opt.MapFrom(from => from.User.UserName));
             CreateMap<User, GetPlayersModel>().ForMember(dest => dest.UserId, opt => opt.MapFrom(from => from.Id));

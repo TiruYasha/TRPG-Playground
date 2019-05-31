@@ -3,18 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using DataAccess;
 using Domain;
 using Domain.Config;
 using Domain.Domain;
 using Domain.Domain.JournalItems;
 using Domain.DomainInterfaces;
+using Domain.Dto.RequestDto.Journal;
+using Domain.Dto.Shared;
+using Domain.Exceptions;
 using Domain.MappingProfiles;
 using Domain.Mocks;
-using Domain.RequestModels.Journal;
-using Domain.RequestModels.Journal.JournalItems;
 using Domain.ServiceInterfaces;
 using Domain.Utilities;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MockQueryable.Moq;
@@ -31,6 +34,8 @@ namespace Service.Test
         private Mock<IRepository> repository;
         private Mock<IOptions<FileStorageConfig>> fileStorageConfigOptions;
         private Mock<ImageProcesser> processor;
+
+        private DndContext context;
 
         private FileStorageConfig fileStorageConfig;
         private IJournalService sut;
@@ -57,7 +62,17 @@ namespace Service.Test
 
             fileStorageConfigOptions.SetupGet(f => f.Value).Returns(fileStorageConfig);
 
-            sut = new JournalService(repository.Object, _mapper, fileStorageConfigOptions.Object, processor.Object);
+            var options = new DbContextOptionsBuilder<DndContext>()
+                .UseInMemoryDatabase("inmemorydbdnd")
+                .Options;
+            context = new DndContext(options);
+            sut = new JournalService(context, _mapper, fileStorageConfigOptions.Object, processor.Object);
+        }
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+            context.Dispose();
         }
 
         [TestMethod]
@@ -65,28 +80,36 @@ namespace Service.Test
         {
             // arrange
             var formFile = new Mock<IFormFile>(MockBehavior.Strict);
-            var gameId = Guid.NewGuid();
+
+            var game = DataCreator.GetGame();
+            var addJournalItemDto = new AddJournalItemDto
+            {
+                JournalItem = new JournalHandoutDto
+                {
+                    Name = "test"
+                }
+            };
+
+            await game.AddJournalItemAsync(addJournalItemDto);
+            var journalItem = game.JournalItems.First();
+            await context.Games.AddAsync(game);
+            await context.SaveChangesAsync();
 
             formFile.SetupGet(f => f.FileName).Returns("test.png");
 
-            var journalItem = new JournalItemMock(JournalItemType.Handout, "test", gameId, null, null);
-            var journalItemId = journalItem.Id;
-
-            var journalItemQueryable = new List<JournalItem> { journalItem }.AsQueryable().BuildMock();
-
-            repository.SetupGet(r => r.JournalItems).Returns(journalItemQueryable.Object);
-
-            var path = fileStorageConfig.BigImageLocation + gameId;
+            var path = fileStorageConfig.BigImageLocation + game.Id;
 
             processor.Setup(p => p.SaveImage(formFile.Object, path, It.IsAny<string>())).Returns(Task.CompletedTask).Verifiable();
-            repository.Setup(r => r.Commit()).Returns(Task.CompletedTask).Verifiable();
 
             // act
-            var result = await sut.UploadImage(formFile.Object, gameId, journalItemId);
+            var result = await sut.UploadImage(formFile.Object, game.Id, journalItem.Id);
 
             // assert
-            repository.VerifyAll();
             processor.VerifyAll();
+
+            var journalItemResult = context.JournalItems.Include(j => j.Image).First(j => j.Id == journalItem.Id);
+            journalItemResult.Image.Extension.ShouldBe(".png");
+            journalItemResult.Image.OriginalName.ShouldBe("test.png");
 
             result.ShouldNotBe(Guid.Empty);
         }
@@ -102,12 +125,64 @@ namespace Service.Test
             formFile.SetupGet(f => f.FileName).Returns("test" + extension);
 
             // act
-
             var result = Should.Throw<BadImageFormatException>(
                 async () => await sut.UploadImage(formFile.Object, gameId, Guid.Empty));
 
             // assert
             result.Message.ShouldBe($"The format {extension} is not supported");
+        }
+
+        [TestMethod]
+        public async Task GetJournalItemByIdReturnsTheCorrectJournalItem()
+        {
+            // arrange
+            var game = DataCreator.GetGame();
+            var addJournalItemDto = new AddJournalItemDto
+            {
+                JournalItem = new JournalHandoutDto
+                {
+                    Name = "test"
+                }
+            };
+
+            await game.AddJournalItemAsync(addJournalItemDto);
+            var journalItem = game.JournalItems.First();
+            await context.Games.AddAsync(game);
+            await context.SaveChangesAsync();
+         
+            // act
+            var result = await sut.GetJournalItemById(game.Owner.Id, journalItem.Id);
+
+            // assert
+            result.Name.ShouldBe(journalItem.Name);
+            result.ShouldBeOfType<JournalHandoutDto>();
+        }
+
+        [TestMethod]
+        public async Task GetJournalItemByIdThrowsAnExceptionIfTheUserDoesNotHavePermissionToSeeJournalItem()
+        {
+            // arrange
+            var game = DataCreator.GetGame();
+            var addJournalItemDto = new AddJournalItemDto
+            {
+                JournalItem = new JournalHandoutDto
+                {
+                    Name = "test"
+                }
+            };
+
+            await game.AddJournalItemAsync(addJournalItemDto);
+            var journalItem = game.JournalItems.First();
+            await context.Games.AddAsync(game);
+            await context.SaveChangesAsync();
+
+            var userId = Guid.NewGuid();
+          
+            // act
+            var result = Should.Throw<PermissionException>(async () => await sut.GetJournalItemById(userId, journalItem.Id));
+
+            // assert
+            result.Message.ShouldBe("Access Denied");
         }
 
         //[TestMethod]

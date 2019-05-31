@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Domain.ReturnModels.Game;
+using Domain.Dto.ReturnDto.Game;
 
 namespace Domain.ServiceInterfaces
 {

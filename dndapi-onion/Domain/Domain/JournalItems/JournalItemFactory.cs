@@ -1,5 +1,5 @@
-﻿using Domain.RequestModels.Journal;
-using System;
+﻿using System;
+using Domain.Dto.RequestDto.Journal;
 
 namespace Domain.Domain.JournalItems
 {

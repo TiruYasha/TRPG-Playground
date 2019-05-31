@@ -51,7 +51,9 @@ namespace Domain.Domain.JournalItems
 
         private void SetPermissions(ICollection<Guid> canSee, ICollection<Guid> canEdit)
         {
-            if (canSee == null) { return; }
+            if (canSee == null) canSee = new List<Guid>();
+            if (canEdit == null) canEdit = new List<Guid>();
+
             foreach (var s in canSee)
             {
                 Permissions.Add(canEdit.Contains(s)

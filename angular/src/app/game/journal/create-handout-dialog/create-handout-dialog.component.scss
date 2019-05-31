@@ -1,4 +1,28 @@
+.handoutContainer {
+  displaY: flex;
+  flex-flow: column;
+  height: 100%;
+}
+
 .dialogContent {
-    display:flex;
-    flex-flow: column;
+  display: flex;
+  flex-flow: column;
+}
+
+.mat-dialog-content {
+  max-height: 100%;
+}
+
+.content {
+  overflow-y: auto;
+  padding: 0;
+  height: 100%;
+
+  img {
+    width: 100%;
+  }
+
+  .notes {
+    padding: 24px;
+  }
 }

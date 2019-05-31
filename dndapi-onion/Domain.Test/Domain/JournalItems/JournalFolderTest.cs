@@ -1,10 +1,10 @@
 ﻿using Domain.Domain.JournalItems;
-using Domain.RequestModels.Journal;
-using Domain.RequestModels.Journal.JournalItems;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using System;
 using System.Threading.Tasks;
+using Domain.Dto.RequestDto.Journal;
+using Domain.Dto.Shared;
 
 namespace Domain.Test.Domain.JournalItems
 {

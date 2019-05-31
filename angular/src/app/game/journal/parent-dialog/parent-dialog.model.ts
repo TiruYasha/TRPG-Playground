@@ -1,10 +1,13 @@
 import { Player } from 'src/app/models/game/player.model';
-import { JournalItem } from 'src/app/models/journal/journalitems/journal-item.model';
-import { Guid } from 'src/app/utilities/guid.util';
+import { DialogState } from './dialog-state.enum';
+import { JournalItemType } from 'src/app/models/journal/journalitems/journal-item-type.enum';
 
 export class ParentDialogModel {
     players: Player[];
-    data?: JournalItem;
     isOwner: boolean;
+    state: DialogState;
+    journalItemType: JournalItemType;
     parentFolderId?: string;
+    journalItemId?: string;
+
 }

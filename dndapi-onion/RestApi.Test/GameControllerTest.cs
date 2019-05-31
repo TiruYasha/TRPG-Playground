@@ -7,8 +7,8 @@ using RestApi.Utilities;
 using Shouldly;
 using System;
 using System.Threading.Tasks;
-using Domain.RequestModels.Game;
-using Domain.ReturnModels.Game;
+using Domain.Dto.RequestDto.Game;
+using Domain.Dto.ReturnDto.Game;
 
 namespace RestApi.Test
 {

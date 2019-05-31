@@ -1,6 +1,6 @@
-﻿using Domain.RequestModels.Journal;
-using Domain.RequestModels.Journal.JournalItems;
-using System;
+﻿using System;
+using Domain.Dto.RequestDto.Journal;
+using Domain.Dto.Shared;
 
 namespace Domain.Domain.JournalItems
 {

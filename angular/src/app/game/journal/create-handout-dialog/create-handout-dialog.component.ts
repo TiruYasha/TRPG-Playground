@@ -1,21 +1,26 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { Player } from 'src/app/models/game/player.model';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
 import { ValidatorFunctions } from 'src/app/utilities/validator-functions';
 import { JournalHandout } from 'src/app/models/journal/journalitems/journal-handout.model';
-import { Guid } from 'src/app/utilities/guid.util';
+import { DialogState } from '../parent-dialog/dialog-state.enum';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'trpg-create-handout-dialog',
   templateUrl: './create-handout-dialog.component.html',
   styleUrls: ['./create-handout-dialog.component.scss']
 })
-export class CreateHandoutDialogComponent {
+export class CreateHandoutDialogComponent{
+
   @Input() players: Player[];
   @Input() data: JournalHandout;
   @Input() isOwner: boolean;
+  @Input() dialogState: DialogState;
 
   @Output() journalItem = new EventEmitter<JournalHandout>();
+
+  states = DialogState;
 
   form = new FormGroup({
     name: new FormControl('', [Validators.required, ValidatorFunctions.noWhitespaceValidator]),
@@ -57,5 +62,9 @@ export class CreateHandoutDialogComponent {
       const file = target.files[0];
       this.image.setValue(file);
     }
+  }
+
+  getImageLink(journalItemId: string) {
+    return `${environment.apiUrl}/journal/${journalItemId}/image`;
   }
 }

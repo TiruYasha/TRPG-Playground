@@ -1,7 +1,7 @@
-﻿using Domain.RequestModels.Journal;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Domain.Dto.RequestDto.Journal;
 
 namespace Domain.Domain.JournalItems
 {

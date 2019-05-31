@@ -17,6 +17,7 @@ import { JournalDynamicDataSource } from './dynamic-data-source';
 import { environment } from 'src/environments/environment';
 import { DestroySubscription } from 'src/app/shared/components/destroy-subscription.extendable';
 import { takeUntil } from 'rxjs/operators';
+import { DialogState } from './parent-dialog/dialog-state.enum';
 
 @Component({
   selector: 'trpg-journal',
@@ -82,10 +83,10 @@ export class JournalComponent extends DestroySubscription implements OnInit {
   subIconClicked(icon: string) {
     switch (icon) {
       case this.subIcons[0]:
-        this.openDialog(new JournalFolder());
+        this.openDialog(JournalItemType.Folder, DialogState.New);
         break;
       case this.subIcons[2]:
-        this.openDialog(new JournalHandout());
+        this.openDialog(JournalItemType.Handout, DialogState.New);
         break;
     }
   }
@@ -113,23 +114,29 @@ export class JournalComponent extends DestroySubscription implements OnInit {
   }
 
   addJournalItemToParent(click: JournalNodeContextMenuClick) {
-    this.openDialog(click.item, click.id);
+    this.openDialog(click.item.type, DialogState.New, click.id);
   }
 
   clickFolder(node: DynamicFlatNode<JournalItem>) {
     this.treeControl.toggle(node);
   }
 
+  clickItem(node: DynamicFlatNode<JournalItem>) {
+    this.openDialog(node.item.type, DialogState.View, node.item.id);
+  }
+
   getThumbnailLink(journalItemId: string) {
     return `${environment.apiUrl}/journal/${journalItemId}/image`;
   }
 
-  private openDialog(journalItem: JournalItem, parentFolderId: string = null) {
+  private openDialog(journalItemType: JournalItemType, state: DialogState, journalItemId: string = null, parentFolderId: string = null) {
     const data: ParentDialogModel = {
       players: this.players,
       isOwner: this.isOwner,
       parentFolderId: parentFolderId,
-      data: journalItem
+      journalItemId: journalItemId,
+      state: state,
+      journalItemType: journalItemType
     };
     this.dialog.open(ParentDialogComponent, {
       width: 'auto',
