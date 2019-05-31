@@ -83,7 +83,6 @@ export class ParentDialogComponent extends DestroySubscription implements OnInit
   startResize(event: MouseEvent) {
     this.startPageX = event.pageX;
     this.startPageY = event.pageY;
-
     this.mouseMove = fromEvent(document, 'mousemove');
 
     this.mouseMoveSubscription = this.mouseMove
@@ -97,7 +96,7 @@ export class ParentDialogComponent extends DestroySubscription implements OnInit
 
   resize(event: MouseEvent) {
     const element = this.dialogContainer.nativeElement as HTMLDivElement;
-    console.log(element);
+
     event.preventDefault();
     const minWidth = this.startPageX - event.pageX;
     const minHeigth = this.startPageY - event.pageY;
@@ -105,7 +104,7 @@ export class ParentDialogComponent extends DestroySubscription implements OnInit
     this.startPageX = event.pageX;
     this.startPageY = event.pageY;
 
-    element.style.height = (element.clientHeight - minHeigth - 48) + 'px';
+    element.style.height = (element.clientHeight - minHeigth - 24) + 'px';
     element.style.width = (element.clientWidth - minWidth - 48) + 'px';
   }
 
