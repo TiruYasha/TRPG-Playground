@@ -7,6 +7,7 @@ import { AddedJournalItemModel } from 'src/app/models/journal/receives/added-jou
 import { JournalItem } from 'src/app/models/journal/journalitems/journal-item.model';
 import { ActiveGameService } from '../services/active-game.service';
 import { UploadedImage as UploadedJournalItemImage } from 'src/app/models/journal/receives/uploaded-image.model';
+import { JournalTreeItem } from 'src/app/models/journal/journal-tree-item.model';
 
 @Injectable({
     providedIn: 'root'
@@ -37,11 +38,11 @@ export class JournalService {
     }
 
     getJournalItemsByParentFolderId(parentFolderId: string) {
-        return this.http.get<JournalItem[]>(environment.apiUrl + `/journal/folder/${parentFolderId}/item`);
+        return this.http.get<JournalTreeItem[]>(environment.apiUrl + `/journal/folder/${parentFolderId}/item`);
     }
 
     getRootJournalItems() {
-        return this.http.get<JournalItem[]>(environment.apiUrl + `/journal/item`);
+        return this.http.get<JournalTreeItem[]>(environment.apiUrl + `/journal/item`);
     }
 
     uploadImage(journalItemId: string, image: File) {

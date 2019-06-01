@@ -69,7 +69,8 @@ namespace Service
                 return await GetJournalItemsForParentFolderIdWithEmptyFolders(gameId, parentFolderId);
             }
 
-            var query = context.JournalItems.FilterByParentFolderId(parentFolderId).Where(i => i.Type == JournalItemType.Folder || (i.Permissions.Any(p => p.UserId == userId && p.CanSee || p.CanEdit)));
+            var query = context.JournalItems.FilterByParentFolderId(parentFolderId).Where(i => i.Type == JournalItemType.Folder || (i.Permissions.Any(p => p.UserId == userId && p.CanSee || p.CanEdit)))
+                .Select(j => new {j.Type, j.Name, j.ParentFolderId, j.Id, j.ImageId, CanEdit = j.Permissions.Any(p => p.UserId == userId && p.CanEdit)});
 
             return await query.ProjectTo<JournalItemTreeItemDto>(mapper.ConfigurationProvider).ToListAsync();
         }

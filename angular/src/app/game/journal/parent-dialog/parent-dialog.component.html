@@ -6,6 +6,8 @@
   <div #dialogContainer class="content">
     <trpg-create-folder-dialog *ngIf="data.journalItemType === handoutType.Folder"
       (journalItem)="saveJournalItem($event)"
+      [data]="journalItem | async"
+      [state]="this.data.state"
       (close)="exitDialog()"></trpg-create-folder-dialog>
     <trpg-create-handout-dialog *ngIf="data.journalItemType === handoutType.Handout" 
       [players]="data.players"

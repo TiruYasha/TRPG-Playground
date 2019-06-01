@@ -39,7 +39,7 @@ export class ParentDialogComponent extends DestroySubscription implements OnInit
   ) { super(); }
 
   ngOnInit() {
-    if (this.data.state === DialogState.View) {
+    if (this.data.state === DialogState.View || DialogState.Edit) {
       this.journalItem = this.journalService.getJournalItemById(this.data.journalItemId);
     }
   }

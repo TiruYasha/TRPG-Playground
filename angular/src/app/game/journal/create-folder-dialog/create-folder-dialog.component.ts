@@ -1,8 +1,10 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, Input } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { ValidatorFunctions } from 'src/app/utilities/validator-functions';
 import { JournalFolder } from 'src/app/models/journal/journalitems/journal-folder.model';
 import { JournalItem } from 'src/app/models/journal/journalitems/journal-item.model';
+import { DialogPosition } from '@angular/material';
+import { DialogState } from '../parent-dialog/dialog-state.enum';
 
 @Component({
   selector: 'trpg-create-folder-dialog',
@@ -12,6 +14,10 @@ export class CreateFolderDialogComponent {
   @Output() journalItem = new EventEmitter<JournalItem>();
   @Output() close = new EventEmitter();
 
+  @Input() data: JournalFolder;
+  @Input() state: DialogState;
+
+  states = DialogState;
   name = new FormControl('', [Validators.required, ValidatorFunctions.noWhitespaceValidator]);
 
   constructor() { }

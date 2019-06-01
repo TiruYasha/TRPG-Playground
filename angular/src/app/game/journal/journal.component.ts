@@ -11,13 +11,14 @@ import { ParentDialogComponent } from './parent-dialog/parent-dialog.component';
 import { ParentDialogModel } from './parent-dialog/parent-dialog.model';
 import { JournalHandout } from 'src/app/models/journal/journalitems/journal-handout.model';
 import { JournalItemType } from 'src/app/models/journal/journalitems/journal-item-type.enum';
-import { JournalNodeContextMenuClick } from './journal-node/journal-node-context-menu-click.model';
+import { JournalNodeContextMenuAddClick } from './journal-node/journal-node-context-menu-click.model';
 import { DynamicFlatNode } from 'src/app/models/journal/dynamic-flat-node';
 import { JournalDynamicDataSource } from './dynamic-data-source';
 import { environment } from 'src/environments/environment';
 import { DestroySubscription } from 'src/app/shared/components/destroy-subscription.extendable';
 import { takeUntil } from 'rxjs/operators';
 import { DialogState } from './parent-dialog/dialog-state.enum';
+import { JournalTreeItem } from 'src/app/models/journal/journal-tree-item.model';
 
 @Component({
   selector: 'trpg-journal',
@@ -28,21 +29,21 @@ export class JournalComponent extends DestroySubscription implements OnInit {
   isOwner: boolean;
   players: Player[] = [];
 
-  journalItemsNodes: DynamicFlatNode<JournalItem>[] = [];
+  journalItemsNodes: DynamicFlatNode<JournalTreeItem>[] = [];
 
   subIcons = ['create_new_folder', 'person_add', 'note_add'];
 
-  treeControl: FlatTreeControl<DynamicFlatNode<JournalItem>>;
+  treeControl: FlatTreeControl<DynamicFlatNode<JournalTreeItem>>;
   dataSource: JournalDynamicDataSource;
 
-  getLevel = (node: DynamicFlatNode<JournalItem>) => node.level;
-  IsExpandable = (node: DynamicFlatNode<JournalItem>) => node.item.type === JournalItemType.Folder;
+  getLevel = (node: DynamicFlatNode<JournalTreeItem>) => node.level;
+  IsExpandable = (node: DynamicFlatNode<JournalTreeItem>) => node.item.type === JournalItemType.Folder;
 
-  hasChild = (_: number, node: DynamicFlatNode<JournalItem>) => this.IsExpandable(node);
+  hasChild = (_: number, node: DynamicFlatNode<JournalTreeItem>) => this.IsExpandable(node);
 
   constructor(private journalService: JournalService, private activeGameService: ActiveGameService, public dialog: MatDialog) {
     super();
-    this.treeControl = new FlatTreeControl<DynamicFlatNode<JournalItem>>(this.getLevel, this.IsExpandable);
+    this.treeControl = new FlatTreeControl<DynamicFlatNode<JournalTreeItem>>(this.getLevel, this.IsExpandable);
     this.dataSource = new JournalDynamicDataSource(this.treeControl, journalService);
     this.dataSource.data = this.journalItemsNodes;
   }
@@ -57,7 +58,8 @@ export class JournalComponent extends DestroySubscription implements OnInit {
     this.journalService.getRootJournalItems()
       .pipe(takeUntil(this.destroy))
       .subscribe(data => {
-        const nodes = data.map(item => new DynamicFlatNode<JournalItem>(item, 0));
+        console.log(data);
+        const nodes = data.map(item => new DynamicFlatNode<JournalTreeItem>(item, 0));
         this.dataSource.data = nodes;
       });
 
@@ -92,18 +94,19 @@ export class JournalComponent extends DestroySubscription implements OnInit {
   }
 
   addJournalItem(model: AddedJournalItemModel): void {
-    const journalItem = new JournalItem(model.type);
+    const journalItem = new JournalTreeItem();
+    journalItem.type = model.type;
     journalItem.name = model.name;
     journalItem.id = model.id;
     journalItem.imageId = model.imageId;
 
-    let node = new DynamicFlatNode<JournalItem>(journalItem, 0);
+    let node = new DynamicFlatNode<JournalTreeItem>(journalItem, 0);
 
     if (model.parentFolderId) {
       const parentFolder = this.dataSource.data.filter(d => d.item.id === model.parentFolderId)[0];
 
       if (parentFolder && this.treeControl.isExpanded(parentFolder)) {
-        node = new DynamicFlatNode<JournalItem>(journalItem, parentFolder.level + 1);
+        node = new DynamicFlatNode<JournalTreeItem>(journalItem, parentFolder.level + 1);
         const index = this.dataSource.data.indexOf(parentFolder);
         this.dataSource.data.splice(index + 1, 0, node);
       }
@@ -113,20 +116,24 @@ export class JournalComponent extends DestroySubscription implements OnInit {
     this.refreshDataSource();
   }
 
-  addJournalItemToParent(click: JournalNodeContextMenuClick) {
-    this.openDialog(click.item.type, DialogState.New, click.id);
+  addJournalItemToParent(click: JournalNodeContextMenuAddClick) {
+    this.openDialog(click.type, DialogState.New, null, click.id);
   }
 
-  clickFolder(node: DynamicFlatNode<JournalItem>) {
+  clickFolder(node: DynamicFlatNode<JournalTreeItem>) {
     this.treeControl.toggle(node);
   }
 
-  clickItem(node: DynamicFlatNode<JournalItem>) {
+  clickItem(node: DynamicFlatNode<JournalTreeItem>) {
     this.openDialog(node.item.type, DialogState.View, node.item.id);
   }
 
   getThumbnailLink(journalItemId: string) {
     return `${environment.apiUrl}/journal/${journalItemId}/image`;
+  }
+
+  editItem(journalItem: JournalItem) {
+    this.openDialog(journalItem.type, DialogState.Edit, journalItem.id);
   }
 
   private openDialog(journalItemType: JournalItemType, state: DialogState, journalItemId: string = null, parentFolderId: string = null) {

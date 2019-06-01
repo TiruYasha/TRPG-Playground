@@ -1,6 +1,6 @@
-import { JournalItem } from 'src/app/models/journal/journalitems/journal-item.model';
+import { JournalItemType } from 'src/app/models/journal/journalitems/journal-item-type.enum';
 
-export class JournalNodeContextMenuClick {
+export class JournalNodeContextMenuAddClick {
     id: string;
-    item: JournalItem;
+    type: JournalItemType;
 }

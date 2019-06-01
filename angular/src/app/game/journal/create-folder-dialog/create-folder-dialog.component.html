@@ -1,7 +1,8 @@
 <h1 mat-dialog-title>Please choose a name for the folder</h1>
 <div mat-dialog-content>
   <mat-form-field>
-    <input matInput placeholder="Folder name" [formControl]="name" required cdkFocusInitial>
+    <input *ngIf="state === states.New" matInput placeholder="Folder name" [formControl]="name" required cdkFocusInitial>
+    <input *ngIf="state === states.Edit && data" matInput placeholder="Folder name" [formControl]="name" [(ngModel)]="data.name" required cdkFocusInitial>
     <mat-error *ngIf="name.invalid">The name is required</mat-error>
   </mat-form-field>
 </div>
