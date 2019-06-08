@@ -8,6 +8,7 @@ import { JournalItem } from 'src/app/models/journal/journalitems/journal-item.mo
 import { ActiveGameService } from '../services/active-game.service';
 import { UploadedImage as UploadedJournalItemImage } from 'src/app/models/journal/receives/uploaded-image.model';
 import { JournalTreeItem } from 'src/app/models/journal/journal-tree-item.model';
+import { JournalEvents } from 'src/app/models/journal/journal-events.enum';
 
 @Injectable({
     providedIn: 'root'
@@ -19,6 +20,9 @@ export class JournalService {
     private journalItemImageUploadedSubject = new Subject<UploadedJournalItemImage>();
     journalItemImageUploaded = this.journalItemImageUploadedSubject.asObservable();
 
+    private journalItemUpdatedSubject = new Subject<JournalTreeItem>();
+    journalItemUpdated = this.journalItemUpdatedSubject.asObservable();
+
     constructor(private http: HttpClient, private activeGameService: ActiveGameService) { }
 
     setup() {
@@ -29,7 +33,11 @@ export class JournalService {
         return this.http.post<AddedJournalItemModel>(environment.apiUrl + '/journal/AddJournalItem', model);
     }
 
-    getJournalItemById(journalItemId): Observable<JournalItem>{
+    saveJournalItem(model: JournalItem) {
+        return this.http.put(environment.apiUrl + '/journal/updateJournalItem', model);
+    }
+
+    getJournalItemById(journalItemId): Observable<JournalItem> {
         return this.http.get<JournalItem>(environment.apiUrl + '/journal/' + journalItemId);
     }
 
@@ -52,12 +60,16 @@ export class JournalService {
     }
 
     private registerOnServerEvents(): void {
-        this.activeGameService.hubConnection.on('JournalItemAdded', (data: AddedJournalItemModel) => {
+        this.activeGameService.hubConnection.on(JournalEvents.journalItemAdded, (data: AddedJournalItemModel) => {
             this.journalItemAddedSubject.next(data);
         });
 
-        this.activeGameService.hubConnection.on('JournalItemImageUploaded', (data: UploadedJournalItemImage) => {
+        this.activeGameService.hubConnection.on(JournalEvents.journalItemImageUploaded, (data: UploadedJournalItemImage) => {
             this.journalItemImageUploadedSubject.next(data);
+        });
+
+        this.activeGameService.hubConnection.on(JournalEvents.journalItemUpdated, (data: JournalTreeItem) => {
+            this.journalItemUpdatedSubject.next(data);
         });
     }
 }

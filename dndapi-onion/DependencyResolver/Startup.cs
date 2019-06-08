@@ -15,7 +15,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using RestApi;
-using RestApi.Filters;
 using RestApi.Hubs;
 using RestApi.Utilities;
 using Service;
@@ -26,6 +25,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Domain;
 using Domain.Utilities;
+using RestApi.AuthorizationRequirements;
 
 namespace DependencyResolver
 {

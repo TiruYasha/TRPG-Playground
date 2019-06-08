@@ -3,15 +3,15 @@
     <div class="dragger" cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle></div>
     <mat-icon class="clickPointer" (click)="exitDialog()">close</mat-icon>
   </div>
-  <div #dialogContainer class="content">
+  <div #dialogContainer class="content" *ngIf="data.state === states.New || journalItem">
     <trpg-create-folder-dialog *ngIf="data.journalItemType === handoutType.Folder"
       (journalItem)="saveJournalItem($event)"
-      [data]="journalItem | async"
+      [data]="journalItem"
       [state]="this.data.state"
       (close)="exitDialog()"></trpg-create-folder-dialog>
     <trpg-create-handout-dialog *ngIf="data.journalItemType === handoutType.Handout" 
       [players]="data.players"
-      [data]="journalItem | async"
+      [data]="journalItem"
       [dialogState]="this.data.state"
       (journalItem)="saveJournalItem($event)"></trpg-create-handout-dialog>
   </div>

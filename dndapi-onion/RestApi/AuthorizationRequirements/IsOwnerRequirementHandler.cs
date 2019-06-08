@@ -1,9 +1,9 @@
-﻿using Domain.ServiceInterfaces;
+﻿using System.Threading.Tasks;
+using Domain.ServiceInterfaces;
 using Microsoft.AspNetCore.Authorization;
 using RestApi.Utilities;
-using System.Threading.Tasks;
 
-namespace RestApi.Filters
+namespace RestApi.AuthorizationRequirements
 {
     public class IsOwnerRequirementHandler : AuthorizationHandler<IsOwnerRequirement>
     {

@@ -9,6 +9,7 @@ import { JournalHandout } from 'src/app/models/journal/journalitems/journal-hand
 import { AddJournalItemRequestModel } from 'src/app/models/journal/requests/add-journal-folder-request.model';
 import { DestroySubscription } from 'src/app/shared/components/destroy-subscription.extendable';
 import { DialogState } from './dialog-state.enum';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'trpg-journal-parent-dialog',
@@ -16,7 +17,6 @@ import { DialogState } from './dialog-state.enum';
   styleUrls: ['./parent-dialog.component.scss']
 })
 export class ParentDialogComponent extends DestroySubscription implements OnInit {
-
   @ViewChild('dialogContainer') dialogContainer: ElementRef;
 
   startPageX = 0;
@@ -28,8 +28,9 @@ export class ParentDialogComponent extends DestroySubscription implements OnInit
   mouseUpSubscription: Subscription;
 
   handoutType = JournalItemType;
+  states = DialogState;
 
-  journalItem: Observable<JournalItem>;
+  journalItem: JournalItem;
 
   constructor(
     public dialogRef: MatDialogRef<ParentDialogComponent>,
@@ -38,8 +39,10 @@ export class ParentDialogComponent extends DestroySubscription implements OnInit
   ) { super(); }
 
   ngOnInit() {
-    if (this.data.state === DialogState.View || DialogState.Edit) {
-      this.journalItem = this.journalService.getJournalItemById(this.data.journalItemId);
+    if (this.data.state === DialogState.View || this.data.state === DialogState.Edit) {
+      this.journalService.getJournalItemById(this.data.journalItemId)
+        .pipe(takeUntil(this.destroy))
+        .subscribe(data => this.journalItem = data);
     }
   }
 
@@ -55,11 +58,20 @@ export class ParentDialogComponent extends DestroySubscription implements OnInit
   }
 
   saveItem(journalItem: JournalItem) {
-    const request: AddJournalItemRequestModel = {
-      parentFolderId: this.data.parentFolderId,
-      journalItem: journalItem
-    };
-    this.journalService.addJournalItemToGame(request).subscribe(() => this.exitDialog());
+    if (this.data.state === DialogState.New) {
+      const request: AddJournalItemRequestModel = {
+        parentFolderId: this.data.parentFolderId,
+        journalItem: journalItem
+      };
+      this.journalService.addJournalItemToGame(request).subscribe(() => this.exitDialog());
+    } else {
+      journalItem.id = this.data.journalItemId;
+      this.journalService.saveJournalItem(journalItem).subscribe(() => {
+        if (this.data.journalItemType === JournalItemType.Folder) {
+          this.exitDialog();
+        }
+      });
+    }
   }
 
   saveHandout(journalItem: JournalHandout) {

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Domain.Domain.JournalItems;
 using Domain.Dto.ReturnDto.Journal;
 using Domain.Dto.Shared;
+using Domain.Events;
 using Domain.ServiceInterfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -38,7 +39,7 @@ namespace RestApi.Test
         }
 
         [TestMethod]
-        public async Task UpdateJournalItemReturnsOkayAndSendsEvent()
+        public async Task UpdateJournalItemReturnsOkayAndSendsEvents()
         {
             // arrange
             var userId = Guid.NewGuid();
@@ -46,10 +47,14 @@ namespace RestApi.Test
 
             var dto = new JournalItemDto
             {
-                Id = Guid.NewGuid()
+                Id = Guid.NewGuid(),
+                Type = JournalItemType.Handout
             };
 
-            var treeItemDto = new JournalItemTreeItemDto();
+            var treeItemDto = new JournalItemTreeItemDto
+            {
+                Type = JournalItemType.Handout
+            };
 
             var permission = new JournalItemPermission
             {
@@ -70,6 +75,43 @@ namespace RestApi.Test
             hubContext.Setup(h =>
                     h.Clients.User(userId.ToString())
                         .SendCoreAsync("JournalItemUpdated", new object[] {treeItemDto}, default))
+                .Returns(Task.CompletedTask);
+
+            // act
+            var result = await sut.UpdateJournalItem(dto);
+
+            // assert
+            result.ShouldBeOfType<OkResult>();
+        }
+
+        [TestMethod]
+        public async Task UpdateJournalItemReturnsOkayAndSendsEventsToGroupIfFolder()
+        {
+            // arrange
+            var userId = Guid.NewGuid();
+            var gameId = Guid.NewGuid();
+
+            var dto = new JournalItemDto
+            {
+                Id = Guid.NewGuid(),
+            };
+
+            var treeItemDto = new JournalItemTreeItemDto();
+
+            var permission = new JournalItemPermission
+            {
+                UserId = Guid.NewGuid(),
+            };
+
+            jwtReader.Setup(s => s.GetUserId()).Returns(userId);
+            jwtReader.Setup(s => s.GetGameId()).Returns(gameId);
+
+            journalService.Setup(j => j.UpdateJournalItem(dto, gameId, userId)).ReturnsAsync(treeItemDto);
+            journalService.Setup(j => j.GetJournalItemPermissions(dto.Id)).ReturnsAsync(new[] { permission });
+
+            hubContext.Setup(h =>
+                    h.Clients.Group(gameId.ToString())
+                        .SendCoreAsync(JournalEvents.JournalItemUpdated, new object[] { treeItemDto }, default))
                 .Returns(Task.CompletedTask);
 
             // act

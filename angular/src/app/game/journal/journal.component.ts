@@ -53,12 +53,11 @@ export class JournalComponent extends DestroySubscription implements OnInit {
     this.journalService.journalItemAdded
       .pipe(takeUntil(this.destroy))
       .subscribe((model: AddedJournalItemModel) => {
-        this.addJournalItem(model);
+        this.addedJournalItem(model);
       });
     this.journalService.getRootJournalItems()
       .pipe(takeUntil(this.destroy))
       .subscribe(data => {
-        console.log(data);
         const nodes = data.map(item => new DynamicFlatNode<JournalTreeItem>(item, 0));
         this.dataSource.data = nodes;
       });
@@ -80,6 +79,10 @@ export class JournalComponent extends DestroySubscription implements OnInit {
       .subscribe((image) => {
         this.refreshDataSource();
       });
+
+    this.journalService.journalItemUpdated
+      .pipe(takeUntil(this.destroy))
+      .subscribe(journalTreeItem => this.updatedJournalItem(journalTreeItem))
   }
 
   subIconClicked(icon: string) {
@@ -93,7 +96,7 @@ export class JournalComponent extends DestroySubscription implements OnInit {
     }
   }
 
-  addJournalItem(model: AddedJournalItemModel): void {
+  addedJournalItem(model: AddedJournalItemModel): void {
     const journalItem = new JournalTreeItem();
     journalItem.type = model.type;
     journalItem.name = model.name;
@@ -113,6 +116,15 @@ export class JournalComponent extends DestroySubscription implements OnInit {
     } else {
       this.dataSource.data.push(node);
     }
+    this.refreshDataSource();
+  }
+
+  updatedJournalItem(journalTreeItem: JournalTreeItem) {
+    const journalTreeItemToUpdate = this.dataSource.data.filter(d => d.item.id === journalTreeItem.id)[0];
+
+    journalTreeItemToUpdate.item.name = journalTreeItem.name;
+    journalTreeItemToUpdate.item.canEdit = journalTreeItem.canEdit;
+
     this.refreshDataSource();
   }
 

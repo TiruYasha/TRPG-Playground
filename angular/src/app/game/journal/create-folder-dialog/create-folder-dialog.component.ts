@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, Input } from '@angular/core';
+import { Component, Output, EventEmitter, Input, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { ValidatorFunctions } from 'src/app/utilities/validator-functions';
 import { JournalFolder } from 'src/app/models/journal/journalitems/journal-folder.model';
@@ -10,7 +10,7 @@ import { DialogState } from '../parent-dialog/dialog-state.enum';
   selector: 'trpg-create-folder-dialog',
   templateUrl: './create-folder-dialog.component.html'
 })
-export class CreateFolderDialogComponent {
+export class CreateFolderDialogComponent implements OnInit {
   @Output() journalItem = new EventEmitter<JournalItem>();
   @Output() close = new EventEmitter();
 
@@ -21,6 +21,12 @@ export class CreateFolderDialogComponent {
   name = new FormControl('', [Validators.required, ValidatorFunctions.noWhitespaceValidator]);
 
   constructor() { }
+
+  ngOnInit(): void {
+    if (this.state === DialogState.Edit) {
+      this.name.setValue(this.data.name);
+    }
+  }
 
   onNoClick(): void {
     this.close.emit();

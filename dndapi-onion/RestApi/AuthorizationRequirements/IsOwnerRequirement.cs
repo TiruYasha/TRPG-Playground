@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace RestApi.Filters
+namespace RestApi.AuthorizationRequirements
 {
     public class IsOwnerRequirement : IAuthorizationRequirement
     {
