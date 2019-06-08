@@ -13,6 +13,7 @@ namespace Domain.ServiceInterfaces
     public interface IJournalService
     {
         Task<(JournalItemTreeItemDto, List<Guid>)> AddJournalItemToGame(AddJournalItemDto dto, Guid gameId);
+        Task<JournalItemTreeItemDto> UpdateJournalItem(JournalItemDto dto, Guid gameId, Guid userId);
 
         Task<IEnumerable<JournalItemTreeItemDto>> GetJournalItemsForParentFolderId(Guid userId, Guid gameId, Guid? parentFolderId);
 

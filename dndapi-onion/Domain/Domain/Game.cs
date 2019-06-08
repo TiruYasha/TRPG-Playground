@@ -86,7 +86,7 @@ namespace Domain.Domain
             });
         }
 
-        public Task<JournalItem> AddJournalItemAsync(AddJournalItemDto dto)
+        public Task<JournalItem> AddJournalItem(AddJournalItemDto dto)
         {
             return Task.Run(() =>
             {

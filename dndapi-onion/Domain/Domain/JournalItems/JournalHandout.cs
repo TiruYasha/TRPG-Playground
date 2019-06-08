@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Domain.Dto.RequestDto.Journal;
 using Domain.Dto.Shared;
 
@@ -16,6 +17,19 @@ namespace Domain.Domain.JournalItems
             var handoutModel = dto.JournalItem as JournalHandoutDto;
             Description = handoutModel.Description;
             OwnerNotes = handoutModel.OwnerNotes;
+        }
+
+        public override Task Update(JournalItemDto dto)
+        {
+            return Task.Run(async () =>
+            {
+                var handoutDto = dto as JournalHandoutDto;
+
+                await base.Update(dto);
+
+                Description = handoutDto.Description;
+                OwnerNotes = handoutDto.OwnerNotes;
+            });
         }
     }
 }

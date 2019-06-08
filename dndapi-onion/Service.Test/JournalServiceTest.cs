@@ -31,7 +31,6 @@ namespace Service.Test
     {
         private static IMapper _mapper;
 
-        private Mock<IRepository> repository;
         private Mock<IOptions<FileStorageConfig>> fileStorageConfigOptions;
         private Mock<ImageProcesser> processor;
 
@@ -39,6 +38,8 @@ namespace Service.Test
 
         private FileStorageConfig fileStorageConfig;
         private IJournalService sut;
+
+        private GameDataBuilder gameDataBuilder;
 
         [ClassInitialize]
         public static void InitializeClass(TestContext context)
@@ -50,7 +51,7 @@ namespace Service.Test
         [TestInitialize]
         public void Initialize()
         {
-            repository = new Mock<IRepository>(MockBehavior.Strict);
+
             fileStorageConfigOptions = new Mock<IOptions<FileStorageConfig>>();
             processor = new Mock<ImageProcesser>();
 
@@ -67,6 +68,8 @@ namespace Service.Test
                 .Options;
             context = new DndContext(options);
             sut = new JournalService(context, _mapper, fileStorageConfigOptions.Object, processor.Object);
+
+            gameDataBuilder = new GameDataBuilder();
         }
 
         [TestCleanup]
@@ -81,7 +84,7 @@ namespace Service.Test
             // arrange
             var formFile = new Mock<IFormFile>(MockBehavior.Strict);
 
-            var game = DataCreator.GetGame();
+            var game = await gameDataBuilder.BuildGame();
             var addJournalItemDto = new AddJournalItemDto
             {
                 JournalItem = new JournalHandoutDto
@@ -90,7 +93,7 @@ namespace Service.Test
                 }
             };
 
-            await game.AddJournalItemAsync(addJournalItemDto);
+            await game.AddJournalItem(addJournalItemDto);
             var journalItem = game.JournalItems.First();
             await context.Games.AddAsync(game);
             await context.SaveChangesAsync();
@@ -136,7 +139,7 @@ namespace Service.Test
         public async Task GetJournalItemByIdReturnsTheCorrectJournalItem()
         {
             // arrange
-            var game = DataCreator.GetGame();
+            var game = await gameDataBuilder.BuildGame();
             var addJournalItemDto = new AddJournalItemDto
             {
                 JournalItem = new JournalHandoutDto
@@ -145,11 +148,11 @@ namespace Service.Test
                 }
             };
 
-            await game.AddJournalItemAsync(addJournalItemDto);
+            await game.AddJournalItem(addJournalItemDto);
             var journalItem = game.JournalItems.First();
             await context.Games.AddAsync(game);
             await context.SaveChangesAsync();
-         
+
             // act
             var result = await sut.GetJournalItemById(game.Owner.Id, journalItem.Id);
 
@@ -162,7 +165,7 @@ namespace Service.Test
         public async Task GetJournalItemByIdThrowsAnExceptionIfTheUserDoesNotHavePermissionToSeeJournalItem()
         {
             // arrange
-            var game = DataCreator.GetGame();
+            var game = await gameDataBuilder.BuildGame();
             var addJournalItemDto = new AddJournalItemDto
             {
                 JournalItem = new JournalHandoutDto
@@ -171,18 +174,82 @@ namespace Service.Test
                 }
             };
 
-            await game.AddJournalItemAsync(addJournalItemDto);
+            await game.AddJournalItem(addJournalItemDto);
             var journalItem = game.JournalItems.First();
             await context.Games.AddAsync(game);
             await context.SaveChangesAsync();
 
             var userId = Guid.NewGuid();
-          
+
             // act
             var result = Should.Throw<PermissionException>(async () => await sut.GetJournalItemById(userId, journalItem.Id));
 
             // assert
             result.Message.ShouldBe("Access Denied");
+        }
+
+        [TestMethod]
+        public async Task UpdateJournalItemUpdatesTheJournalItem()
+        {
+            // arrange
+            var game = await gameDataBuilder.WithJournalHandout(true).BuildGame();
+            await context.Games.AddAsync(game);
+            await context.SaveChangesAsync();
+
+            var journalItemId = game.JournalItems.First().Id;
+
+            var journalItemDto = new JournalHandoutDto
+            {
+                Id = journalItemId,
+                Name = "Updated",
+                Description = "This is also updated",
+                CanEdit = new List<Guid> { gameDataBuilder.Player1.Id },
+                CanSee = new List<Guid> { gameDataBuilder.Player1.Id},
+                OwnerNotes = "OwnerNotesUpdated",
+                ImageId = Guid.NewGuid()
+            };
+
+            // act
+            var result = await sut.UpdateJournalItem(journalItemDto, game.Id, game.Owner.Id);
+
+            // assert
+            result.Name.ShouldBe(journalItemDto.Name);
+            result.Type.ShouldBe(JournalItemType.Handout);
+            result.Id.ShouldBe(journalItemId);
+
+            var journalItemInDb = await context.JournalItems.Include(j => j.Permissions).FirstAsync(j => j.Id == journalItemId) as JournalHandout;
+            journalItemInDb.Name.ShouldBe(journalItemDto.Name);
+            journalItemInDb.Description.ShouldBe(journalItemDto.Description);
+            journalItemInDb.OwnerNotes.ShouldBe(journalItemDto.OwnerNotes);
+            journalItemInDb.Permissions.Count.ShouldBe(1);
+        }
+
+        [TestMethod]
+        public async Task UpdateJournalItemThrowsExceptionIfPlayerDoesNotHaveEditPermission()
+        {
+            // arrange
+            var game = await gameDataBuilder.WithJournalHandout(true).BuildGame();
+            await context.Games.AddAsync(game);
+            await context.SaveChangesAsync();
+
+            var journalItemId = game.JournalItems.First().Id;
+
+            var journalItemDto = new JournalHandoutDto
+            {
+                Id = journalItemId,
+                Name = "Updated",
+                Description = "This is also updated",
+                CanEdit = new List<Guid> { gameDataBuilder.Player1.Id },
+                CanSee = new List<Guid> { gameDataBuilder.Player1.Id },
+                OwnerNotes = "OwnerNotesUpdated",
+                ImageId = Guid.NewGuid()
+            };
+
+            // act
+            var result =  Should.Throw<PermissionException>(async () => await sut.UpdateJournalItem(journalItemDto, game.Id, gameDataBuilder.Player1.Id));
+
+            // assert
+            result.Message.ShouldBe("You do not have permission or the journalitem could not be found");
         }
 
         //[TestMethod]
@@ -206,7 +273,7 @@ namespace Service.Test
 
         //    var mockGame1 = new Mock<Game>();
         //    mockGame1.SetupGet(g => g.Id).Returns(gameId);
-        //    mockGame1.Setup(g => g.AddJournalItemAsync(addJournalItemModel)).ReturnsAsync(journalItem);
+        //    mockGame1.Setup(g => g.AddJournalItem(addJournalItemModel)).ReturnsAsync(journalItem);
 
         //    var gameQueryable = new List<Game> { mockGame1.Object };
 

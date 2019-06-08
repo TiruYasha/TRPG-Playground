@@ -1,7 +1,9 @@
 ﻿using Domain.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Threading.Tasks;
+using Domain.Dto.Shared;
 
 namespace Domain.Domain.JournalItems
 {
@@ -25,7 +27,7 @@ namespace Domain.Domain.JournalItems
 
         protected JournalItem(JournalItemType type, string name, Guid gameId, ICollection<Guid> canSee, ICollection<Guid> canEdit)
         {
-            Permissions = new List<JournalItemPermission>();
+           
             CheckArguments(name);
             Id = Guid.NewGuid();
             Type = type;
@@ -49,8 +51,22 @@ namespace Domain.Domain.JournalItems
             });
         }
 
+        public virtual Task Update(JournalItemDto dto)
+        {
+            return Task.Run(() =>
+            {
+                CheckArguments(dto.Name);
+                Name = dto.Name;
+                LastEditedOn = DateTime.UtcNow;
+
+                SetPermissions(dto.CanSee, dto.CanEdit);
+            });
+        }
+
         private void SetPermissions(ICollection<Guid> canSee, ICollection<Guid> canEdit)
         {
+            Permissions = new List<JournalItemPermission>();
+
             if (canSee == null) canSee = new List<Guid>();
             if (canEdit == null) canEdit = new List<Guid>();
 

@@ -5,6 +5,7 @@ using System;
 using System.Threading.Tasks;
 using Domain.Dto.RequestDto.Journal;
 using Domain.Dto.Shared;
+using Domain.Exceptions;
 
 namespace Domain.Test.Domain.JournalItems
 {
@@ -61,6 +62,40 @@ namespace Domain.Test.Domain.JournalItems
             var result = Should.Throw<ArgumentNullException>(async () => await sut.AddJournalItem(null, Guid.Empty));
              
             result.ParamName.ShouldBe("dto");
+        }
+
+        [TestMethod]
+        public async Task UpdateUpdatesAllTheValues()
+        {
+            // arrange
+            var oldUpdatedTime = sut.LastEditedOn;
+            var journalItemDto = new JournalFolderDto
+            {
+                Name =  "Updated"
+            };
+
+            // act
+            await sut.Update(journalItemDto);
+
+            // assert
+            sut.Name.ShouldBe(journalItemDto.Name);
+            sut.LastEditedOn.ShouldBeGreaterThan(oldUpdatedTime);
+        }
+
+        [TestMethod]
+        public void UpdateShouldThrowJournalItemExceptionOnEmptyName()
+        {
+            // arrange
+            var journalItemDto = new JournalFolderDto
+            {
+                Name = ""
+            };
+
+            // act
+            var result = Should.Throw<JournalItemException>(async () => { await sut.Update(journalItemDto); });
+
+            // assert
+            result.Message.ShouldBe("The name is empty");
         }
     }
 }

@@ -41,11 +41,12 @@ namespace Service
 
         public async Task<(JournalItemTreeItemDto, List<Guid>)> AddJournalItemToGame(AddJournalItemDto dto, Guid gameId)
         {
+            // TODO  fix canEdit boolean
             if (dto.ParentFolderId == null)
             {
                 var game = await context.Games.FilterById(gameId).FirstOrDefaultAsync();
 
-                var journalItem = await game.AddJournalItemAsync(dto);
+                var journalItem = await game.AddJournalItem(dto);
 
                 await context.SaveChangesAsync();
 
@@ -59,6 +60,22 @@ namespace Service
             await context.SaveChangesAsync();
 
             return GetJournalItemTreeItemWithCanSeePermissions(result);
+        }
+
+        public async Task<JournalItemTreeItemDto> UpdateJournalItem(JournalItemDto dto, Guid gameId, Guid userId)
+        {
+            //TODO get canedit/cansee in controller
+            var journalItem = await context.JournalItems.FilterById(dto.Id).FilterByGameId(gameId).FilterByCanEdit(userId).FirstOrDefaultAsync();
+
+            if (journalItem == null)
+            {
+                throw new PermissionException("You do not have permission or the journalitem could not be found");
+            }
+
+            await journalItem.Update(dto);
+            await context.SaveChangesAsync();
+
+            return mapper.Map<JournalItem, JournalItemTreeItemDto>(journalItem);
         }
 
         public async Task<IEnumerable<JournalItemTreeItemDto>> GetJournalItemsForParentFolderId(Guid userId, Guid gameId, Guid? parentFolderId)

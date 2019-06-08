@@ -214,7 +214,7 @@ namespace Domain.Test.Domain
             };
 
             // Action
-            var result = await game.AddJournalItemAsync(model);
+            var result = await game.AddJournalItem(model);
 
             // Assert
             result.Name.ShouldBe(model.JournalItem.Name);

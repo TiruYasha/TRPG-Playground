@@ -9,7 +9,6 @@ import { JournalHandout } from 'src/app/models/journal/journalitems/journal-hand
 import { AddJournalItemRequestModel } from 'src/app/models/journal/requests/add-journal-folder-request.model';
 import { DestroySubscription } from 'src/app/shared/components/destroy-subscription.extendable';
 import { DialogState } from './dialog-state.enum';
-import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'trpg-journal-parent-dialog',
