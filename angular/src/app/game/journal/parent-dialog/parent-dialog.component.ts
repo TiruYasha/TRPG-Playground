@@ -40,9 +40,7 @@ export class ParentDialogComponent extends DestroySubscription implements OnInit
 
   ngOnInit() {
     if (this.data.state === DialogState.View || this.data.state === DialogState.Edit) {
-      this.journalService.getJournalItemById(this.data.journalItemId)
-        .pipe(takeUntil(this.destroy))
-        .subscribe(data => this.journalItem = data);
+      this.loadJournalItemDetails();
     }
   }
 
@@ -52,7 +50,7 @@ export class ParentDialogComponent extends DestroySubscription implements OnInit
         this.saveItem(journalItem);
         break;
       case JournalItemType.Handout:
-        this.saveHandout(journalItem as JournalHandout);
+        this.saveItem(journalItem);
         break;
     }
   }
@@ -69,22 +67,12 @@ export class ParentDialogComponent extends DestroySubscription implements OnInit
       this.journalService.saveJournalItem(journalItem).subscribe(() => {
         if (this.data.journalItemType === JournalItemType.Folder) {
           this.exitDialog();
+        } else {
+          this.journalItem = journalItem;
+          this.data.state = DialogState.View;
         }
       });
     }
-  }
-
-  saveHandout(journalItem: JournalHandout) {
-    const request: AddJournalItemRequestModel = {
-      parentFolderId: this.data.parentFolderId,
-      journalItem: journalItem
-    };
-
-    this.journalService.addJournalItemToGame(request)
-      .subscribe(i => {
-        this.journalService.uploadImage(i.id, journalItem.image)
-          .subscribe(e => this.exitDialog());
-      });
   }
 
   exitDialog(): void {
@@ -122,5 +110,11 @@ export class ParentDialogComponent extends DestroySubscription implements OnInit
   cancelResize(event: MouseEvent) {
     this.mouseMoveSubscription.unsubscribe();
     this.mouseUpSubscription.unsubscribe();
+  }
+
+  private loadJournalItemDetails() {
+    this.journalService.getJournalItemById(this.data.journalItemId)
+      .pipe(takeUntil(this.destroy))
+      .subscribe(data => this.journalItem = data);
   }
 }

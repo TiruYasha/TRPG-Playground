@@ -1,5 +1,5 @@
 import { Subject, Observable } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Injectable } from '@angular/core';
 import { AddJournalItemRequestModel } from 'src/app/models/journal/requests/add-journal-folder-request.model';

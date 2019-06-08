@@ -4,12 +4,10 @@ import { JournalItem } from 'src/app/models/journal/journalitems/journal-item.mo
 import { JournalService } from './journal.service';
 import { MatDialog } from '@angular/material';
 import { AddedJournalItemModel } from 'src/app/models/journal/receives/added-journal-folder.model';
-import { JournalFolder } from 'src/app/models/journal/journalitems/journal-folder.model';
 import { ActiveGameService } from '../services/active-game.service';
 import { Player } from 'src/app/models/game/player.model';
 import { ParentDialogComponent } from './parent-dialog/parent-dialog.component';
 import { ParentDialogModel } from './parent-dialog/parent-dialog.model';
-import { JournalHandout } from 'src/app/models/journal/journalitems/journal-handout.model';
 import { JournalItemType } from 'src/app/models/journal/journalitems/journal-item-type.enum';
 import { JournalNodeContextMenuAddClick } from './journal-node/journal-node-context-menu-click.model';
 import { DynamicFlatNode } from 'src/app/models/journal/dynamic-flat-node';

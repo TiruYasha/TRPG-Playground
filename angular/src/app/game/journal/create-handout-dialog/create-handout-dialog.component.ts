@@ -11,7 +11,8 @@ import { environment } from 'src/environments/environment';
   templateUrl: './create-handout-dialog.component.html',
   styleUrls: ['./create-handout-dialog.component.scss']
 })
-export class CreateHandoutDialogComponent{
+export class CreateHandoutDialogComponent implements OnInit {
+
 
   @Input() players: Player[];
   @Input() data: JournalHandout;
@@ -32,6 +33,16 @@ export class CreateHandoutDialogComponent{
   });
 
   constructor() {
+  }
+
+  ngOnInit(): void {
+    if (this.dialogState === DialogState.Edit) {
+      this.name.setValue(this.data.name);
+      this.canSee.setValue(this.data.canSee);
+      this.canEdit.setValue(this.data.canEdit);
+      this.description.setValue(this.data.description);
+      this.ownerNotes.setValue(this.data.ownerNotes);
+    }
   }
 
   get name() { return this.form.get('name'); }
