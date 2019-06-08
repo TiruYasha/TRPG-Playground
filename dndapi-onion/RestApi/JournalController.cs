@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Domain.Domain.JournalItems;
 using Domain.Dto.RequestDto.Journal;
 using Domain.Dto.ReturnDto.Journal;
+using Domain.Dto.Shared;
 using Domain.Exceptions;
 using Domain.ServiceInterfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -57,6 +58,7 @@ namespace RestApi
 
 
         [HttpPost]
+        [Authorize(Policy = "IsOwner")]
         [Route("AddJournalItem")]
         public async Task<IActionResult> AddJournalItemAsync([FromBody] AddJournalItemDto dto)
         {
@@ -106,15 +108,29 @@ namespace RestApi
         {
             var userId = jwtReader.GetUserId();
 
-            try
+            var journalItem = await journalService.GetJournalItemById(userId, journalItemId);
+            return Ok(journalItem);
+        }
+
+        [HttpPut]
+        [Route("updateJournalItem")]
+        public async Task<IActionResult> UpdateJournalItem([FromBody] JournalItemDto dto)
+        {
+            var (userId, gameId) = GetUserIdAndGameId();
+
+            var treeItem = await journalService.UpdateJournalItem(dto, gameId, userId);
+
+            var permissions = await journalService.GetJournalItemPermissions(dto.Id);
+
+            await hubContext.Clients.User(userId.ToString()).SendAsync("JournalItemUpdated", treeItem);
+
+            foreach (var permission in permissions)
             {
-                var journalItem = await journalService.GetJournalItemById(userId, journalItemId);
-                return Ok(journalItem);
+                treeItem.CanEdit = permission.CanEdit;
+                await hubContext.Clients.User(permission.UserId.ToString()).SendAsync("JournalItemUpdated", treeItem);
             }
-            catch (PermissionException)
-            {
-                return Unauthorized();
-            }
+
+            return Ok();
         }
 
         private (Guid userId, Guid gameId) GetUserIdAndGameId()

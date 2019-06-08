@@ -139,6 +139,12 @@ namespace Service
             return mapper.Map<JournalItem, JournalItemDto>(journalItem);
         }
 
+        public async Task<IEnumerable<JournalItemPermission>> GetJournalItemPermissions(Guid journalItemId)
+        {
+            return await context.JournalItems.Include(j => j.Permissions).FilterById(journalItemId)
+                .SelectMany(j => j.Permissions).ToListAsync();
+        }
+
         private (JournalItemTreeItemDto, List<Guid>) GetJournalItemTreeItemWithCanSeePermissions(JournalItem journalItem)
         {
             return (mapper.Map<JournalItem, JournalItemTreeItemDto>(journalItem), journalItem.Permissions.Where(w => w.CanSee == true).Select(s => s.UserId).ToList());

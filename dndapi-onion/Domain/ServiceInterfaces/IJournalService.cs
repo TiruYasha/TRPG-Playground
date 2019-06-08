@@ -20,5 +20,6 @@ namespace Domain.ServiceInterfaces
         Task<Guid> UploadImage(IFormFile file, Guid gameId, Guid journalItemId);
         Task<byte[]> GetImage(Guid journalItemId, bool isThumbnail);
         Task<JournalItemDto> GetJournalItemById(Guid userId, Guid journalItemId);
+        Task<IEnumerable<JournalItemPermission>> GetJournalItemPermissions(Guid journalItemId);
     }
 }
