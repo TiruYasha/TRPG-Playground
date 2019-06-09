@@ -1,4 +1,4 @@
-export class JournalItemPermission{
+export class JournalItemPermission {
     userId: string;
     canSee: boolean;
     canEdit: boolean;

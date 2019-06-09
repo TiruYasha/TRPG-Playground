@@ -67,6 +67,7 @@ export class ParentDialogComponent extends DestroySubscription implements OnInit
         .subscribe((i) => {
           if (this.journalItem.image) {
             this.journalService.uploadImage(i.id, journalItem.image)
+              .pipe(takeUntil(this.destroy))
               .subscribe(e => this.exitDialog());
           } else {
             this.exitDialog();
@@ -81,6 +82,7 @@ export class ParentDialogComponent extends DestroySubscription implements OnInit
           } else {
             if (this.journalItem.image) {
               this.journalService.uploadImage(this.journalItem.id, journalItem.image)
+                .pipe(takeUntil(this.destroy))
                 .subscribe(() => {
                   this.journalItem = journalItem;
                   this.data.state = DialogState.View;
@@ -101,12 +103,15 @@ export class ParentDialogComponent extends DestroySubscription implements OnInit
     this.mouseMove = fromEvent(document, 'mousemove');
 
     this.mouseMoveSubscription = this.mouseMove
+      .pipe(takeUntil(this.destroy))
       .subscribe((next: MouseEvent) => {
         this.resize(next);
       });
 
     this.mouseUp = fromEvent(document, 'mouseup');
-    this.mouseUpSubscription = this.mouseUp.subscribe((next: MouseEvent) => this.cancelResize(next));
+    this.mouseUpSubscription = this.mouseUp
+      .pipe(takeUntil(this.destroy))
+      .subscribe((next: MouseEvent) => this.cancelResize(next));
   }
 
   resize(event: MouseEvent) {

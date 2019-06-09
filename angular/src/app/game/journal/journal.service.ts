@@ -9,7 +9,6 @@ import { ActiveGameService } from '../services/active-game.service';
 import { UploadedImage as UploadedJournalItemImage } from 'src/app/models/journal/receives/uploaded-image.model';
 import { JournalTreeItem } from 'src/app/models/journal/journal-tree-item.model';
 import { JournalEvents } from 'src/app/models/journal/journal-events.enum';
-import { DeleteJournalItemRequest } from 'src/app/models/journal/requests/delete-journal-item-request.model';
 
 @Injectable({
     providedIn: 'root'

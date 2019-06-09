@@ -7,10 +7,10 @@ export class JournalItem {
     type: JournalItemType;
     imageId?: string;
     image?: File;
-    permissions?: JournalItemPermission[]
+    permissions?: JournalItemPermission[];
     parentFolderId?: string;
 
-    constructor(type: JournalItemType){
+    constructor(type: JournalItemType) {
         this.type = type;
         this.permissions = [];
     }

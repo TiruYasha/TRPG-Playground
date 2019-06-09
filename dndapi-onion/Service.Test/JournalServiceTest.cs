@@ -275,5 +275,23 @@ namespace Service.Test
             var result = await context.JournalItems.FilterById(journalItemId).FirstOrDefaultAsync();
             result.ShouldBeNull();
         }
+
+        [TestMethod]
+        public async Task DeleteJournalItemDeletesTheJournalItemWithNestedItem()
+        {
+            // arrange
+            var game = await gameDataBuilder.WithJournalFolder(true).BuildGame();
+            await context.Games.AddAsync(game);
+            await context.SaveChangesAsync();
+
+            var journalItemId = game.JournalItems.First().Id;
+
+            // act
+            await sut.DeleteJournalItem(journalItemId);
+
+            // assert
+            var result = await context.JournalItems.FilterById(journalItemId).FirstOrDefaultAsync();
+            result.ShouldBeNull();
+        }
     }
 }

@@ -146,7 +146,6 @@ namespace Service
         {
             var item = await context.JournalItems.FilterById(journalItemId).FirstOrDefaultAsync();
             context.JournalItems.Remove(item);
-
             await context.SaveChangesAsync();
         }
 

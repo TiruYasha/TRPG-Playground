@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FlatTreeControl } from '@angular/cdk/tree';
-import { JournalItem } from 'src/app/models/journal/journalitems/journal-item.model';
 import { JournalService } from './journal.service';
 import { MatDialog } from '@angular/material';
 import { AddedJournalItemModel } from 'src/app/models/journal/receives/added-journal-folder.model';
@@ -82,7 +81,7 @@ export class JournalComponent extends DestroySubscription implements OnInit {
       .pipe(takeUntil(this.destroy))
       .subscribe(journalTreeItem => this.updatedJournalItem(journalTreeItem));
 
-      this.journalService.journalItemDeleted
+    this.journalService.journalItemDeleted
       .pipe(takeUntil(this.destroy))
       .subscribe(journalItemId => this.removeItemFromTree(journalItemId));
   }
@@ -105,6 +104,7 @@ export class JournalComponent extends DestroySubscription implements OnInit {
     journalItem.name = model.name;
     journalItem.id = model.id;
     journalItem.imageId = model.imageId;
+    journalItem.parentFolderId = model.parentFolderId;
 
     let node = new DynamicFlatNode<JournalTreeItem>(journalItem, 0);
 
@@ -132,7 +132,26 @@ export class JournalComponent extends DestroySubscription implements OnInit {
   }
 
   removeItemFromTree(journalItemId: string): void {
-    this.dataSource.data = this.dataSource.data.filter(j => j.item.id !== journalItemId);
+    const node = this.dataSource.data.filter(j => j.item.id === journalItemId)[0];
+    if (node.item.type === JournalItemType.Folder) {
+      const parentIds: string[] = [];
+      parentIds.push(node.item.id);
+
+      while (parentIds.length > 0) {
+        const parentId = parentIds.pop();
+        const childNodes = this.dataSource.data.filter(j => j.item.parentFolderId === parentId);
+        this.dataSource.data = this.dataSource.data.filter(j => j.item.id !== node.item.id);
+        childNodes.forEach(node => {
+          if (node.item.type === JournalItemType.Folder) {
+            parentIds.push(node.item.id);
+          }
+
+          this.dataSource.data = this.dataSource.data.filter(j => j.item.id !== node.item.id);
+        });
+      }
+    } else {
+      this.dataSource.data = this.dataSource.data.filter(j => j.item.id !== journalItemId);
+    }
     this.refreshDataSource();
   }
 

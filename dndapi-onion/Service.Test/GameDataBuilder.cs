@@ -23,7 +23,7 @@ namespace Service.Test
             actions = new Queue<Func<Task>>();
         }
 
-        public GameDataBuilder WithJournalFolder()
+        public GameDataBuilder WithJournalFolder(bool withNestedItems = false)
         {
             actions.Enqueue(async () =>
             {
@@ -32,7 +32,26 @@ namespace Service.Test
                     Name = "TestingFolder"
                 };
 
-                await game.AddJournalItem(dto);
+                var item = await game.AddJournalItem(dto) as JournalFolder;
+
+                if (withNestedItems)
+                {
+                    var nestedFolder = new JournalFolderDto
+                    {
+                        Name = "TestingFolder"
+                    };
+
+                    var nestedHandout = new JournalHandoutDto()
+                    {
+                        Name = "TestingHandout",
+                        Description = "This is a description",
+                        OwnerNotes = "These are ownernotes",
+                        ImageId = Guid.NewGuid()
+                    };
+
+                    await item.AddJournalItem(nestedFolder, game.Id);
+                    await item.AddJournalItem(nestedHandout, game.Id);
+                }
             });
 
             return this;
@@ -43,7 +62,7 @@ namespace Service.Test
             actions.Enqueue(async () =>
             {
 
-                var journalItem = new JournalHandoutDto()
+                var journalHandout = new JournalHandoutDto()
                 {
                     Name = "TestingHandout",
                     Description = "This is a description",
@@ -55,14 +74,14 @@ namespace Service.Test
                 {
                     await AddPlayers();
 
-                    journalItem.Permissions.Add(
+                    journalHandout.Permissions.Add(
                         new JournalItemPermissionDto
                         {
                             UserId = Player1.Id,
                             CanSee = true
                         });
 
-                    journalItem.Permissions.Add(
+                    journalHandout.Permissions.Add(
                         new JournalItemPermissionDto
                         {
                             UserId = Player2.Id,
@@ -71,7 +90,7 @@ namespace Service.Test
                         });
                 }
 
-                await game.AddJournalItem(journalItem);
+                await game.AddJournalItem(journalHandout);
             });
 
             return this;
