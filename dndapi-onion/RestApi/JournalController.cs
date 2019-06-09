@@ -141,6 +141,20 @@ namespace RestApi
             return Ok();
         }
 
+        [HttpDelete]
+        [Authorize(Policy = "IsGameOwner")]
+        [Route("deleteJournalItem/{journalItemId}")]
+        public async Task<IActionResult> DeleteJournalItem(Guid journalItemId)
+        {
+            var gameId = jwtReader.GetGameId();
+
+            await journalService.DeleteJournalItem(journalItemId);
+
+            await hubContext.Clients.Group(gameId.ToString()).SendAsync(JournalEvents.JournalItemDeleted, journalItemId);
+
+            return Ok();
+        }
+
         private (Guid userId, Guid gameId) GetUserIdAndGameId()
         {
             var userId = jwtReader.GetUserId();

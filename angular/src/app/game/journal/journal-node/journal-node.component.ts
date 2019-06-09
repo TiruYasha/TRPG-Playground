@@ -15,6 +15,7 @@ export class JournalNodeComponent {
   @Output() addJournalItem = new EventEmitter<JournalNodeContextMenuAddClick>();
   @Output() clickItem = new EventEmitter<JournalTreeItem>();
   @Output() editItem = new EventEmitter<JournalTreeItem>();
+  @Output() deleteItem = new EventEmitter<JournalTreeItem>();
 
   @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
   @ViewChild('menuButton') button: ElementRef;
@@ -37,6 +38,10 @@ export class JournalNodeComponent {
 
   editItemClick(journalItem: JournalTreeItem) {
     this.editItem.next(journalItem);
+  }
+
+  deleteItemClick(journalItem: JournalTreeItem) {
+    this.deleteItem.next(journalItem);
   }
 
   clickedFolder() {

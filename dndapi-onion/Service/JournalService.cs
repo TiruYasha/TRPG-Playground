@@ -6,13 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using Domain;
 using Domain.Config;
-using Domain.Domain;
 using Domain.Dto.RequestDto.Journal;
 using Domain.Dto.ReturnDto.Journal;
 using Domain.Dto.Shared;
@@ -143,6 +140,14 @@ namespace Service
         {
             return await context.JournalItems.Include(j => j.Permissions).FilterById(journalItemId)
                 .SelectMany(j => j.Permissions).ToListAsync();
+        }
+
+        public async Task DeleteJournalItem(Guid journalItemId)
+        {
+            var item = await context.JournalItems.FilterById(journalItemId).FirstOrDefaultAsync();
+            context.JournalItems.Remove(item);
+
+            await context.SaveChangesAsync();
         }
 
         private (JournalItemTreeItemDto, List<Guid>) GetJournalItemTreeItemWithCanSeePermissions(JournalItem journalItem)

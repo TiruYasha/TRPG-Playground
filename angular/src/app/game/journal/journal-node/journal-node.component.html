@@ -2,6 +2,7 @@
   <button mat-menu-item *ngIf="isOwner && journalItem.type === type.Folder" (click)="sendContextMenuClick(type.Folder)">Add folder</button>
   <button mat-menu-item *ngIf="isOwner && journalItem.type === type.Folder" (click)="sendContextMenuClick(type.Handout)">Add handout</button>
   <button mat-menu-item *ngIf="isOwner || journalItem.canEdit" (click)="editItemClick(journalItem)">Edit</button>
+  <button mat-menu-item *ngIf="isOwner" (click)="deleteItemClick(journalItem)">Delete</button>
   <button mat-menu-item>Help</button>
 </mat-menu>
 

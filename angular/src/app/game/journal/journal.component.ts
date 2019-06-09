@@ -80,8 +80,13 @@ export class JournalComponent extends DestroySubscription implements OnInit {
 
     this.journalService.journalItemUpdated
       .pipe(takeUntil(this.destroy))
-      .subscribe(journalTreeItem => this.updatedJournalItem(journalTreeItem))
+      .subscribe(journalTreeItem => this.updatedJournalItem(journalTreeItem));
+
+      this.journalService.journalItemDeleted
+      .pipe(takeUntil(this.destroy))
+      .subscribe(journalItemId => this.removeItemFromTree(journalItemId));
   }
+
 
   subIconClicked(icon: string) {
     switch (icon) {
@@ -126,6 +131,11 @@ export class JournalComponent extends DestroySubscription implements OnInit {
     this.refreshDataSource();
   }
 
+  removeItemFromTree(journalItemId: string): void {
+    this.dataSource.data = this.dataSource.data.filter(j => j.item.id !== journalItemId);
+    this.refreshDataSource();
+  }
+
   addJournalItemToParent(click: JournalNodeContextMenuAddClick) {
     this.openDialog(click.type, DialogState.New, null, click.id);
   }
@@ -142,8 +152,14 @@ export class JournalComponent extends DestroySubscription implements OnInit {
     return `${environment.apiUrl}/journal/${journalItemId}/image`;
   }
 
-  editItem(journalItem: JournalItem) {
+  editItem(journalItem: JournalTreeItem) {
     this.openDialog(journalItem.type, DialogState.Edit, journalItem.id);
+  }
+
+  deleteItem(journalItem: JournalTreeItem) {
+    this.journalService.deleteJournalItem(journalItem.id)
+      .pipe(takeUntil(this.destroy))
+      .subscribe();
   }
 
   private openDialog(journalItemType: JournalItemType, state: DialogState, journalItemId: string = null, parentFolderId: string = null) {

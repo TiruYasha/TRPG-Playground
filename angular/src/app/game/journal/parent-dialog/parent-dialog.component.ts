@@ -6,7 +6,7 @@ import { JournalItem } from 'src/app/models/journal/journalitems/journal-item.mo
 import { JournalItemType } from 'src/app/models/journal/journalitems/journal-item-type.enum';
 import { JournalService } from '../journal.service';
 import { JournalHandout } from 'src/app/models/journal/journalitems/journal-handout.model';
-import { AddJournalItemRequestModel } from 'src/app/models/journal/requests/add-journal-folder-request.model';
+import { AddJournalItemRequestModel } from 'src/app/models/journal/requests/add-journal-item-request.model';
 import { DestroySubscription } from 'src/app/shared/components/destroy-subscription.extendable';
 import { DialogState } from './dialog-state.enum';
 import { takeUntil } from 'rxjs/operators';

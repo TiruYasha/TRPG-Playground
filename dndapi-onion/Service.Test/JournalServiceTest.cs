@@ -257,5 +257,23 @@ namespace Service.Test
             result.Any(p => p.UserId == gameDataBuilder.Player1.Id).ShouldBeTrue();
             result.Any(p => p.UserId == gameDataBuilder.Player2.Id).ShouldBeTrue();
         }
+
+        [TestMethod]
+        public async Task DeleteJournalItemDeletesTheJournalItem()
+        {
+            // arrange
+            var game = await gameDataBuilder.WithJournalHandout(true).BuildGame();
+            await context.Games.AddAsync(game);
+            await context.SaveChangesAsync();
+
+            var journalItemId = game.JournalItems.First().Id;
+
+            // act
+            await sut.DeleteJournalItem(journalItemId);
+
+            // assert
+            var result = await context.JournalItems.FilterById(journalItemId).FirstOrDefaultAsync();
+            result.ShouldBeNull();
+        }
     }
 }

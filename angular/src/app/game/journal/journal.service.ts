@@ -1,14 +1,15 @@
 import { Subject, Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Injectable } from '@angular/core';
-import { AddJournalItemRequestModel } from 'src/app/models/journal/requests/add-journal-folder-request.model';
+import { AddJournalItemRequestModel } from 'src/app/models/journal/requests/add-journal-item-request.model';
 import { AddedJournalItemModel } from 'src/app/models/journal/receives/added-journal-folder.model';
 import { JournalItem } from 'src/app/models/journal/journalitems/journal-item.model';
 import { ActiveGameService } from '../services/active-game.service';
 import { UploadedImage as UploadedJournalItemImage } from 'src/app/models/journal/receives/uploaded-image.model';
 import { JournalTreeItem } from 'src/app/models/journal/journal-tree-item.model';
 import { JournalEvents } from 'src/app/models/journal/journal-events.enum';
+import { DeleteJournalItemRequest } from 'src/app/models/journal/requests/delete-journal-item-request.model';
 
 @Injectable({
     providedIn: 'root'
@@ -23,6 +24,9 @@ export class JournalService {
     private journalItemUpdatedSubject = new Subject<JournalTreeItem>();
     journalItemUpdated = this.journalItemUpdatedSubject.asObservable();
 
+    private journalItemDeletedSubject = new Subject<string>();
+    journalItemDeleted = this.journalItemDeletedSubject.asObservable();
+
     constructor(private http: HttpClient, private activeGameService: ActiveGameService) { }
 
     setup() {
@@ -35,6 +39,23 @@ export class JournalService {
 
     saveJournalItem(model: JournalItem) {
         return this.http.put(environment.apiUrl + '/journal/updateJournalItem', model);
+    }
+
+    deleteJournalItem(journalItemId: string) {
+        // const model: DeleteJournalItemRequest = {
+        //     journalItemId: journalItemId
+        // };
+
+        // const options = {
+        //     headers: new HttpHeaders(
+        //         {
+        //             'Content-Type': 'application/json'
+        //         }
+        //     ),
+        //     body: model
+        // };
+        // console.log(options);
+        return this.http.delete(environment.apiUrl + '/journal/deleteJournalItem/' + journalItemId);
     }
 
     getJournalItemById(journalItemId): Observable<JournalItem> {
@@ -70,6 +91,10 @@ export class JournalService {
 
         this.activeGameService.hubConnection.on(JournalEvents.journalItemUpdated, (data: JournalTreeItem) => {
             this.journalItemUpdatedSubject.next(data);
+        });
+
+        this.activeGameService.hubConnection.on(JournalEvents.journalItemDeleted, (journalItemId: string) => {
+            this.journalItemDeletedSubject.next(journalItemId);
         });
     }
 }
