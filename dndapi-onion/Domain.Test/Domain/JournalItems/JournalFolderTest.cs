@@ -26,7 +26,7 @@ namespace Domain.Test.Domain.JournalItems
                     Name = "test"
                 }
             };
-            sut = new JournalFolder(baseDto, Guid.NewGuid());
+            sut = new JournalFolder(baseDto.JournalItem, Guid.NewGuid());
         }
 
         [TestMethod]
@@ -50,7 +50,7 @@ namespace Domain.Test.Domain.JournalItems
                 ParentFolderId = Guid.Empty
             };
 
-            var result = await sut.AddJournalItem(journalItem, Guid.Empty);
+            var result = await sut.AddJournalItem(journalItem.JournalItem, Guid.Empty);
 
             sut.JournalItems.Count.ShouldBe(1);
             result.Name.ShouldBe(journalItem.JournalItem.Name);

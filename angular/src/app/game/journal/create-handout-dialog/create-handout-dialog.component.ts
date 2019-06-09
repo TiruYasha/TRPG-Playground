@@ -5,6 +5,7 @@ import { ValidatorFunctions } from 'src/app/utilities/validator-functions';
 import { JournalHandout } from 'src/app/models/journal/journalitems/journal-handout.model';
 import { DialogState } from '../parent-dialog/dialog-state.enum';
 import { environment } from 'src/environments/environment';
+import { JournalItemPermission } from 'src/app/models/journal/journalitems/journal-item-permission.model';
 
 @Component({
   selector: 'trpg-create-handout-dialog',
@@ -38,11 +39,25 @@ export class CreateHandoutDialogComponent implements OnInit {
   ngOnInit(): void {
     if (this.dialogState === DialogState.Edit) {
       this.name.setValue(this.data.name);
-      this.canSee.setValue(this.data.canSee);
-      this.canEdit.setValue(this.data.canEdit);
+      this.setPermissionInputValues();
       this.description.setValue(this.data.description);
       this.ownerNotes.setValue(this.data.ownerNotes);
     }
+  }
+
+  private setPermissionInputValues() {
+    const canSeeValues: string[]  = [];
+    const canEditValues: string[]  = [];
+    this.data.permissions.forEach(permission => {
+      if (permission.canEdit) {
+        canSeeValues.push(permission.userId);
+        canEditValues.push(permission.userId);
+      } else if (permission.canSee) {
+        canSeeValues.push(permission.userId);
+      }
+    });
+    this.canSee.setValue(canSeeValues);
+    this.canEdit.setValue(canEditValues);
   }
 
   get name() { return this.form.get('name'); }
@@ -53,17 +68,36 @@ export class CreateHandoutDialogComponent implements OnInit {
   get image() { return this.form.get('image'); }
 
   save() {
-    const canSee = (this.canSee.value as Player[]).map(m => m.userId);
-    const canEdit = (this.canEdit.value as Player[]).map(m => m.userId);
     const handout = new JournalHandout();
     handout.name = this.name.value;
     handout.description = this.description.value;
     handout.ownerNotes = this.ownerNotes.value;
-    handout.canSee = canSee;
-    handout.canEdit = canEdit;
+    handout.permissions = this.createPermissions();
     handout.image = this.image.value;
-
     this.journalItem.emit(handout);
+  }
+
+  private createPermissions() {
+    const permissions: JournalItemPermission[] = [];
+    this.canEdit.value.forEach(element => {
+      permissions.push({
+        canEdit: true,
+        canSee: true,
+        userId: element
+      });
+    });
+    this.canSee.value.forEach(element => {
+      const permission = permissions.filter(e => e.userId === element);
+      if (permission.length === 0) {
+        permissions.push({
+          canEdit: false,
+          canSee: true,
+          userId: element
+        });
+      }
+    });
+
+    return permissions;
   }
 
   onImageChange(event: Event) {

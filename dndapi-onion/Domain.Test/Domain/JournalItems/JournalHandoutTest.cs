@@ -22,21 +22,21 @@ namespace Domain.Test.Domain.JournalItems
         [TestInitialize]
         public void Initialize()
         {
+            var permission = new JournalItemPermissionDto
+            {
+                UserId = userId,
+                CanSee = true,
+                CanEdit = true
+            };
             handoutModel = new JournalHandoutDto
             {
                 Name = "handout",
                 Description = "description",
                 OwnerNotes = "ownerNotes",
-                CanSee = new List<Guid> { userId },
-                CanEdit = new List<Guid> { userId }
+                Permissions = new List<JournalItemPermissionDto> { permission }
             };
 
-            model = new AddJournalItemDto
-            {
-                JournalItem = handoutModel
-            };
-
-            sut = new JournalHandout(model, Guid.NewGuid());
+            sut = new JournalHandout(handoutModel, Guid.NewGuid());
         }
 
         [TestMethod]
@@ -54,13 +54,26 @@ namespace Domain.Test.Domain.JournalItems
         {
             // arrange
             var newUserId = Guid.NewGuid();
+            var permission1 = new JournalItemPermissionDto
+            {
+                UserId = userId,
+                CanSee = true,
+                CanEdit = true
+            };
+
+            var permission2 = new JournalItemPermissionDto
+            {
+                UserId = newUserId,
+                CanSee = true,
+                CanEdit = true
+            };
+
             JournalHandoutDto updateModel = new JournalHandoutDto
             {
                 Name = "updated",
                 Description = "updated",
                 OwnerNotes = "updated",
-                CanSee = new List<Guid> { userId, newUserId },
-                CanEdit = new List<Guid> { userId, newUserId }
+                Permissions = new List<JournalItemPermissionDto> { permission1, permission2 }
             };
 
             // act

@@ -1,13 +1,14 @@
 ﻿using System;
 using Domain.Dto.RequestDto.Journal;
+using Domain.Dto.Shared;
 
 namespace Domain.Domain.JournalItems
 {
     public static class JournalItemFactory
     {
-        public static JournalItem Create(AddJournalItemDto dto, Guid gameId)
+        public static JournalItem Create(JournalItemDto dto, Guid gameId)
         {
-            switch (dto.JournalItem.Type)
+            switch (dto.Type)
             {
                 case JournalItemType.Folder:
                     return new JournalFolder(dto, gameId);

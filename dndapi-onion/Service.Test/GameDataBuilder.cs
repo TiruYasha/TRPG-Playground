@@ -27,12 +27,9 @@ namespace Service.Test
         {
             actions.Enqueue(async () =>
             {
-                var dto = new AddJournalItemDto
+                var dto = new JournalFolderDto
                 {
-                    JournalItem = new JournalFolderDto
-                    {
-                        Name = "TestingFolder"
-                    }
+                    Name = "TestingFolder"
                 };
 
                 await game.AddJournalItem(dto);
@@ -45,27 +42,36 @@ namespace Service.Test
         {
             actions.Enqueue(async () =>
             {
-                var dto = new AddJournalItemDto
+
+                var journalItem = new JournalHandoutDto()
                 {
-                    JournalItem = new JournalHandoutDto()
-                    {
-                        Name = "TestingHandout",
-                        Description = "This is a description",
-                        OwnerNotes = "These are ownernotes",
-                        ImageId = Guid.NewGuid()
-                    }
+                    Name = "TestingHandout",
+                    Description = "This is a description",
+                    OwnerNotes = "These are ownernotes",
+                    ImageId = Guid.NewGuid()
                 };
 
                 if (withPlayers)
                 {
                     await AddPlayers();
-                    dto.JournalItem.CanSee.Add(Player1.Id);
-                    dto.JournalItem.CanSee.Add(Player2.Id);
 
-                    dto.JournalItem.CanEdit.Add(Player2.Id);
+                    journalItem.Permissions.Add(
+                        new JournalItemPermissionDto
+                        {
+                            UserId = Player1.Id,
+                            CanSee = true
+                        });
+
+                    journalItem.Permissions.Add(
+                        new JournalItemPermissionDto
+                        {
+                            UserId = Player2.Id,
+                            CanSee = true,
+                            CanEdit = true
+                        });
                 }
 
-                await game.AddJournalItem(dto);
+                await game.AddJournalItem(journalItem);
             });
 
             return this;
@@ -75,7 +81,8 @@ namespace Service.Test
         {
             return Task.Run(async () =>
             {
-                var user = new User{
+                var user = new User
+                {
                     Id = Guid.NewGuid(),
                     UserName = "owner",
                 };
@@ -95,8 +102,8 @@ namespace Service.Test
         {
             if (!game.Players.Any())
             {
-                Player1 = new User {Id = Guid.NewGuid(), UserName = "canSeeJournalHandout"};
-                Player2 = new User {Id = Guid.NewGuid(), UserName = "canEditJournalHandout"};
+                Player1 = new User { Id = Guid.NewGuid(), UserName = "canSeeJournalHandout" };
+                Player2 = new User { Id = Guid.NewGuid(), UserName = "canEditJournalHandout" };
 
                 await game.Join(Player1);
                 await game.Join(Player2);

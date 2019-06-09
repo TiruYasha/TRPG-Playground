@@ -5,6 +5,7 @@ using Shouldly;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Domain.Dto.Shared;
 using Domain.Mocks;
 
 namespace Domain.Test.Domain.JournalItems
@@ -18,16 +19,33 @@ namespace Domain.Test.Domain.JournalItems
             var user1Guid = Guid.NewGuid();
             var user2Guid = Guid.NewGuid();
 
-            var itemType = JournalItemType.Handout;
-            var name = "test";
             var gameId = Guid.NewGuid();
-            var canSee = new List<Guid> { user1Guid, user2Guid };
-            var canEdit = new List<Guid> { user1Guid };
+            
+            var dto = new JournalItemDto
+            {
+                Type = JournalItemType.Handout,
+                Name = "test",
+                Permissions = new List<JournalItemPermissionDto>()
+                {
+                    new JournalItemPermissionDto
+                    {
+                        CanEdit = true,
+                        CanSee = true,
+                        UserId = user1Guid
+                    },
+                    new JournalItemPermissionDto
+                    {
+                        CanEdit = false,
+                        CanSee = true,
+                        UserId = user2Guid
+                    }
+                }
+            };
 
-            var result = new JournalItemMock(itemType, name, gameId, canSee, canEdit);
+            var result = new JournalItemMock(dto, gameId);
 
-            result.Type.ShouldBe(itemType);
-            result.Name.ShouldBe(name);
+            result.Type.ShouldBe(dto.Type);
+            result.Name.ShouldBe(dto.Name);
             result.GameId.ShouldBe(gameId);
 
             result.Permissions.Count.ShouldBe(2);
@@ -40,7 +58,13 @@ namespace Domain.Test.Domain.JournalItems
         [TestMethod]
         public void ConstructorThrowsJournalItemExceptionOnEmptyName()
         {
-            var result = Should.Throw<JournalItemException>(() => new JournalItemMock(JournalItemType.Folder, "", Guid.NewGuid(), null, null));
+            var dto = new JournalItemDto
+            {
+                Type = JournalItemType.Handout,
+                Name = ""
+            };
+
+            var result = Should.Throw<JournalItemException>(() => new JournalItemMock(dto, Guid.NewGuid()));
 
             result.Message.ShouldBe("The name is empty");
         }

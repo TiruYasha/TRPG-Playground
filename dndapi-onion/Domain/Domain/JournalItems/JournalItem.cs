@@ -25,18 +25,18 @@ namespace Domain.Domain.JournalItems
 
         protected JournalItem() { }
 
-        protected JournalItem(JournalItemType type, string name, Guid gameId, ICollection<Guid> canSee, ICollection<Guid> canEdit)
+        protected JournalItem(JournalItemDto dto, Guid gameId)
         {
            
-            CheckArguments(name);
+            CheckArguments(dto.Name);
             Id = Guid.NewGuid();
-            Type = type;
-            Name = name;
+            Type = dto.Type;
+            Name = dto.Name;
             GameId = gameId;
             CreatedOn = DateTime.UtcNow;
             LastEditedOn = DateTime.UtcNow;
 
-            SetPermissions(canSee, canEdit);
+            SetPermissions(dto.Permissions);
         }
 
         public Task<Image> SetImage(string extension, string originalName)
@@ -59,22 +59,17 @@ namespace Domain.Domain.JournalItems
                 Name = dto.Name;
                 LastEditedOn = DateTime.UtcNow;
 
-                SetPermissions(dto.CanSee, dto.CanEdit);
+                SetPermissions(dto.Permissions);
             });
         }
 
-        private void SetPermissions(ICollection<Guid> canSee, ICollection<Guid> canEdit)
+        private void SetPermissions(IEnumerable<JournalItemPermissionDto> permissions)
         {
             Permissions = new List<JournalItemPermission>();
-
-            if (canSee == null) canSee = new List<Guid>();
-            if (canEdit == null) canEdit = new List<Guid>();
-
-            foreach (var s in canSee)
+            foreach (var permission in permissions)
             {
-                Permissions.Add(canEdit.Contains(s)
-                    ? new JournalItemPermission(Id, s, GameId, true, true)
-                    : new JournalItemPermission(Id, s, GameId, true));
+                var newPermission = new JournalItemPermission(Id, permission.UserId, GameId, permission.CanSee, permission.CanEdit);
+                Permissions.Add(newPermission);
             }
         }
 

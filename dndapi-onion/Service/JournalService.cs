@@ -46,7 +46,7 @@ namespace Service
             {
                 var game = await context.Games.FilterById(gameId).FirstOrDefaultAsync();
 
-                var journalItem = await game.AddJournalItem(dto);
+                var journalItem = await game.AddJournalItem(dto.JournalItem);
 
                 await context.SaveChangesAsync();
 
@@ -55,7 +55,7 @@ namespace Service
 
             var parent = await context.JournalFolders.FilterById(dto.ParentFolderId.Value).FirstOrDefaultAsync();
 
-            var result = await parent.AddJournalItem(dto, gameId);
+            var result = await parent.AddJournalItem(dto.JournalItem, gameId);
 
             await context.SaveChangesAsync();
 

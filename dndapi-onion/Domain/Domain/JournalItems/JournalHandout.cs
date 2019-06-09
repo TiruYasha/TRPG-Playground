@@ -12,9 +12,9 @@ namespace Domain.Domain.JournalItems
 
         private JournalHandout() { }
 
-        public JournalHandout(AddJournalItemDto dto, Guid gameId) : base(JournalItemType.Handout, dto.JournalItem.Name, gameId, dto.JournalItem.CanSee, dto.JournalItem.CanEdit)
+        public JournalHandout(JournalItemDto dto, Guid gameId) : base(dto, gameId)
         {
-            var handoutModel = dto.JournalItem as JournalHandoutDto;
+            var handoutModel = dto as JournalHandoutDto;
             Description = handoutModel.Description;
             OwnerNotes = handoutModel.OwnerNotes;
         }

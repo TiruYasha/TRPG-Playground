@@ -15,13 +15,13 @@ namespace Domain.Dto.Shared
         public JournalItemType Type { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime LastEditedOn { get; set; }
-        public ICollection<Guid> CanSee {get;set;}
-        public ICollection<Guid> CanEdit { get; set; }
+        public List<JournalItemPermissionDto> Permissions { get; set; }
+        //public ICollection<Guid> CanSee {get;set;}
+        //public ICollection<Guid> CanEdit { get; set; }
 
         public JournalItemDto()
         {
-            CanSee = new List<Guid>();
-            CanEdit = new List<Guid>();
+            Permissions = new List<JournalItemPermissionDto>();
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Domain.Dto.RequestDto.Journal;
+using Domain.Dto.Shared;
 
 namespace Domain.Domain
 {
@@ -86,7 +87,7 @@ namespace Domain.Domain
             });
         }
 
-        public Task<JournalItem> AddJournalItem(AddJournalItemDto dto)
+        public Task<JournalItem> AddJournalItem(JournalItemDto dto)
         {
             return Task.Run(() =>
             {

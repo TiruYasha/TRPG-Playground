@@ -11,13 +11,13 @@
         <mat-form-field>
           <mat-label>Can see</mat-label>
           <mat-select formControlName="canSee" multiple>
-            <mat-option *ngFor="let player of players" [value]="player">{{player.username}}</mat-option>
+            <mat-option *ngFor="let player of players" [value]="player.userId">{{player.username}}</mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field>
           <mat-label>Can edit</mat-label>
           <mat-select formControlName="canEdit" multiple>
-            <mat-option *ngFor="let player of players" [value]="player">{{player.username}}</mat-option>
+            <mat-option *ngFor="let player of players" [value]="player.userId">{{player.username}}</mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field>
