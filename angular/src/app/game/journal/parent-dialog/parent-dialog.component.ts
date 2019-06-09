@@ -63,17 +63,31 @@ export class ParentDialogComponent extends DestroySubscription implements OnInit
         parentFolderId: this.data.parentFolderId,
         journalItem: journalItem
       };
-      this.journalService.addJournalItemToGame(request).subscribe(() => this.exitDialog());
+      this.journalService.addJournalItemToGame(request).pipe(takeUntil(this.destroy))
+        .subscribe((i) => {
+          if (this.journalItem.image) {
+            this.journalService.uploadImage(i.id, journalItem.image)
+              .subscribe(e => this.exitDialog());
+          } else {
+            this.exitDialog();
+          }
+        });
     } else {
       journalItem.id = this.data.journalItemId;
-      this.journalService.saveJournalItem(journalItem).subscribe(() => {
-        if (this.data.journalItemType === JournalItemType.Folder) {
-          this.exitDialog();
-        } else {
-          this.journalItem = journalItem;
-          this.data.state = DialogState.View;
-        }
-      });
+      this.journalService.saveJournalItem(journalItem).pipe(takeUntil(this.destroy))
+        .subscribe(() => {
+          if (this.data.journalItemType === JournalItemType.Folder) {
+            this.exitDialog();
+          } else {
+            if (this.journalItem.image) {
+              this.journalService.uploadImage(this.journalItem.id, journalItem.image)
+                .subscribe(() => {
+                  this.journalItem = journalItem;
+                  this.data.state = DialogState.View;
+                });
+            }
+          }
+        });
     }
   }
 

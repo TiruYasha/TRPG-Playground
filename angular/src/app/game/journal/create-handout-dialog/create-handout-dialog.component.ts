@@ -24,6 +24,8 @@ export class CreateHandoutDialogComponent extends DestroySubscription implements
 
   states = DialogState;
 
+  imageToUpload: string = null;
+
   form = new FormGroup({
     name: new FormControl('', [Validators.required, ValidatorFunctions.noWhitespaceValidator]),
     canSee: new FormControl([]),
@@ -70,6 +72,12 @@ export class CreateHandoutDialogComponent extends DestroySubscription implements
     if (target.files && target.files.length) {
       const file = target.files[0];
       this.image.setValue(file);
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+
+      reader.onload = () => {
+        this.imageToUpload = reader.result.toString();
+      };
     }
   }
 

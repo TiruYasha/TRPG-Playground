@@ -6,6 +6,7 @@ export class JournalItem {
     name: string;
     type: JournalItemType;
     imageId?: string;
+    image?: File;
     permissions?: JournalItemPermission[]
     parentFolderId?: string;
 

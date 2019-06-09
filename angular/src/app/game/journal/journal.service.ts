@@ -42,19 +42,6 @@ export class JournalService {
     }
 
     deleteJournalItem(journalItemId: string) {
-        // const model: DeleteJournalItemRequest = {
-        //     journalItemId: journalItemId
-        // };
-
-        // const options = {
-        //     headers: new HttpHeaders(
-        //         {
-        //             'Content-Type': 'application/json'
-        //         }
-        //     ),
-        //     body: model
-        // };
-        // console.log(options);
         return this.http.delete(environment.apiUrl + '/journal/deleteJournalItem/' + journalItemId);
     }
 
