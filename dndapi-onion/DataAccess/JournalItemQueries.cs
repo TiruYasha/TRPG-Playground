@@ -32,5 +32,11 @@ namespace DataAccess
             return queryable.Include(j => j.Permissions).Include(j => j.Game)
                 .Where(j => j.Game.OwnerId == userId || j.Permissions.Any(p => p.UserId == userId && p.CanSee));
         }
+
+        public static IQueryable<JournalItem> FilterByCanEdit(this IQueryable<JournalItem> queryable, Guid? userId)
+        {
+            return queryable.Include(j => j.Permissions).Include(j => j.Game)
+                .Where(j => j.Game.OwnerId == userId || j.Permissions.Any(p => p.UserId == userId && p.CanEdit));
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Domain.Dto.RequestDto.Journal;
 using Domain.Dto.Shared;
 
@@ -11,11 +12,24 @@ namespace Domain.Domain.JournalItems
 
         private JournalHandout() { }
 
-        public JournalHandout(AddJournalItemDto dto, Guid gameId) : base(JournalItemType.Handout, dto.JournalItem.Name, gameId, dto.JournalItem.CanSee, dto.JournalItem.CanEdit)
+        public JournalHandout(JournalItemDto dto, Guid gameId) : base(dto, gameId)
         {
-            var handoutModel = dto.JournalItem as JournalHandoutDto;
+            var handoutModel = dto as JournalHandoutDto;
             Description = handoutModel.Description;
             OwnerNotes = handoutModel.OwnerNotes;
+        }
+
+        public override Task Update(JournalItemDto dto)
+        {
+            return Task.Run(async () =>
+            {
+                var handoutDto = dto as JournalHandoutDto;
+
+                await base.Update(dto);
+
+                Description = handoutDto.Description;
+                OwnerNotes = handoutDto.OwnerNotes;
+            });
         }
     }
 }

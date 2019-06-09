@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using Domain.Domain.JournalItems;
+using Domain.Dto.Shared;
 
 namespace Domain.Mocks
 {
     public class JournalItemMock : JournalItem
     {
-        public JournalItemMock(JournalItemType type, string name, Guid gameId, ICollection<Guid> canSee, ICollection<Guid> canEdit) : base(type, name, gameId, canSee, canEdit)
+        public JournalItemMock(JournalItemDto dto, Guid gameId) : base(dto, gameId)
         {
         }
     }

@@ -6,13 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using Domain;
 using Domain.Config;
-using Domain.Domain;
 using Domain.Dto.RequestDto.Journal;
 using Domain.Dto.ReturnDto.Journal;
 using Domain.Dto.Shared;
@@ -41,11 +38,12 @@ namespace Service
 
         public async Task<(JournalItemTreeItemDto, List<Guid>)> AddJournalItemToGame(AddJournalItemDto dto, Guid gameId)
         {
+            // TODO  fix canEdit boolean
             if (dto.ParentFolderId == null)
             {
                 var game = await context.Games.FilterById(gameId).FirstOrDefaultAsync();
 
-                var journalItem = await game.AddJournalItemAsync(dto);
+                var journalItem = await game.AddJournalItem(dto.JournalItem);
 
                 await context.SaveChangesAsync();
 
@@ -54,11 +52,27 @@ namespace Service
 
             var parent = await context.JournalFolders.FilterById(dto.ParentFolderId.Value).FirstOrDefaultAsync();
 
-            var result = await parent.AddJournalItem(dto, gameId);
+            var result = await parent.AddJournalItem(dto.JournalItem, gameId);
 
             await context.SaveChangesAsync();
 
             return GetJournalItemTreeItemWithCanSeePermissions(result);
+        }
+
+        public async Task<JournalItemTreeItemDto> UpdateJournalItem(JournalItemDto dto, Guid gameId, Guid userId)
+        {
+            //TODO get canedit/cansee in controller
+            var journalItem = await context.JournalItems.FilterById(dto.Id).FilterByGameId(gameId).FilterByCanEdit(userId).FirstOrDefaultAsync();
+
+            if (journalItem == null)
+            {
+                throw new PermissionException("You do not have permission or the journalitem could not be found");
+            }
+
+            await journalItem.Update(dto);
+            await context.SaveChangesAsync();
+
+            return mapper.Map<JournalItem, JournalItemTreeItemDto>(journalItem);
         }
 
         public async Task<IEnumerable<JournalItemTreeItemDto>> GetJournalItemsForParentFolderId(Guid userId, Guid gameId, Guid? parentFolderId)
@@ -69,7 +83,8 @@ namespace Service
                 return await GetJournalItemsForParentFolderIdWithEmptyFolders(gameId, parentFolderId);
             }
 
-            var query = context.JournalItems.FilterByParentFolderId(parentFolderId).Where(i => i.Type == JournalItemType.Folder || (i.Permissions.Any(p => p.UserId == userId && p.CanSee || p.CanEdit)));
+            var query = context.JournalItems.FilterByParentFolderId(parentFolderId).Where(i => i.Type == JournalItemType.Folder || (i.Permissions.Any(p => p.UserId == userId && p.CanSee || p.CanEdit)))
+                .Select(j => new {j.Type, j.Name, j.ParentFolderId, j.Id, j.ImageId, CanEdit = j.Permissions.Any(p => p.UserId == userId && p.CanEdit)});
 
             return await query.ProjectTo<JournalItemTreeItemDto>(mapper.ConfigurationProvider).ToListAsync();
         }
@@ -119,6 +134,19 @@ namespace Service
             }
 
             return mapper.Map<JournalItem, JournalItemDto>(journalItem);
+        }
+
+        public async Task<IEnumerable<JournalItemPermission>> GetJournalItemPermissions(Guid journalItemId)
+        {
+            return await context.JournalItems.Include(j => j.Permissions).FilterById(journalItemId)
+                .SelectMany(j => j.Permissions).ToListAsync();
+        }
+
+        public async Task DeleteJournalItem(Guid journalItemId)
+        {
+            var item = await context.JournalItems.FilterById(journalItemId).FirstOrDefaultAsync();
+            context.JournalItems.Remove(item);
+            await context.SaveChangesAsync();
         }
 
         private (JournalItemTreeItemDto, List<Guid>) GetJournalItemTreeItemWithCanSeePermissions(JournalItem journalItem)

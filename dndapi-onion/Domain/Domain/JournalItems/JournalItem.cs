@@ -1,7 +1,9 @@
 ﻿using Domain.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Threading.Tasks;
+using Domain.Dto.Shared;
 
 namespace Domain.Domain.JournalItems
 {
@@ -23,18 +25,18 @@ namespace Domain.Domain.JournalItems
 
         protected JournalItem() { }
 
-        protected JournalItem(JournalItemType type, string name, Guid gameId, ICollection<Guid> canSee, ICollection<Guid> canEdit)
+        protected JournalItem(JournalItemDto dto, Guid gameId)
         {
-            Permissions = new List<JournalItemPermission>();
-            CheckArguments(name);
+           
+            CheckArguments(dto.Name);
             Id = Guid.NewGuid();
-            Type = type;
-            Name = name;
+            Type = dto.Type;
+            Name = dto.Name;
             GameId = gameId;
             CreatedOn = DateTime.UtcNow;
             LastEditedOn = DateTime.UtcNow;
 
-            SetPermissions(canSee, canEdit);
+            SetPermissions(dto.Permissions);
         }
 
         public Task<Image> SetImage(string extension, string originalName)
@@ -49,16 +51,25 @@ namespace Domain.Domain.JournalItems
             });
         }
 
-        private void SetPermissions(ICollection<Guid> canSee, ICollection<Guid> canEdit)
+        public virtual Task Update(JournalItemDto dto)
         {
-            if (canSee == null) canSee = new List<Guid>();
-            if (canEdit == null) canEdit = new List<Guid>();
-
-            foreach (var s in canSee)
+            return Task.Run(() =>
             {
-                Permissions.Add(canEdit.Contains(s)
-                    ? new JournalItemPermission(Id, s, GameId, true, true)
-                    : new JournalItemPermission(Id, s, GameId, true));
+                CheckArguments(dto.Name);
+                Name = dto.Name;
+                LastEditedOn = DateTime.UtcNow;
+
+                SetPermissions(dto.Permissions);
+            });
+        }
+
+        private void SetPermissions(IEnumerable<JournalItemPermissionDto> permissions)
+        {
+            Permissions = new List<JournalItemPermission>();
+            foreach (var permission in permissions)
+            {
+                var newPermission = new JournalItemPermission(Id, permission.UserId, GameId, permission.CanSee, permission.CanEdit);
+                Permissions.Add(newPermission);
             }
         }
 

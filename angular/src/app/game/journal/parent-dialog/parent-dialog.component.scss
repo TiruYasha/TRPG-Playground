@@ -1,5 +1,6 @@
 ::ng-deep .mat-dialog-container {
   padding: 0;
+  overflow:hidden;
 }
 
 .dialog-header {
@@ -14,8 +15,7 @@
   width: 40vw;
   max-height: 80vh;
   max-width: calc(80vw - 48px);
-  padding: 24px;
-  padding-top: 0;
+  padding: 0px 24px 0px 24px;
   height: 600px;
 }
 
@@ -27,4 +27,8 @@
 
 .clickPointer {
   cursor: pointer;
+}
+
+.mat-dialog-actions{
+  padding-left: 16px;
 }

@@ -31,7 +31,6 @@ namespace Service.Test
     {
         private static IMapper _mapper;
 
-        private Mock<IRepository> repository;
         private Mock<IOptions<FileStorageConfig>> fileStorageConfigOptions;
         private Mock<ImageProcesser> processor;
 
@@ -39,6 +38,8 @@ namespace Service.Test
 
         private FileStorageConfig fileStorageConfig;
         private IJournalService sut;
+
+        private GameDataBuilder gameDataBuilder;
 
         [ClassInitialize]
         public static void InitializeClass(TestContext context)
@@ -50,7 +51,7 @@ namespace Service.Test
         [TestInitialize]
         public void Initialize()
         {
-            repository = new Mock<IRepository>(MockBehavior.Strict);
+
             fileStorageConfigOptions = new Mock<IOptions<FileStorageConfig>>();
             processor = new Mock<ImageProcesser>();
 
@@ -67,6 +68,8 @@ namespace Service.Test
                 .Options;
             context = new DndContext(options);
             sut = new JournalService(context, _mapper, fileStorageConfigOptions.Object, processor.Object);
+
+            gameDataBuilder = new GameDataBuilder();
         }
 
         [TestCleanup]
@@ -81,16 +84,13 @@ namespace Service.Test
             // arrange
             var formFile = new Mock<IFormFile>(MockBehavior.Strict);
 
-            var game = DataCreator.GetGame();
-            var addJournalItemDto = new AddJournalItemDto
+            var game = await gameDataBuilder.BuildGame();
+            var dto = new JournalHandoutDto
             {
-                JournalItem = new JournalHandoutDto
-                {
-                    Name = "test"
-                }
+                Name = "test"
             };
 
-            await game.AddJournalItemAsync(addJournalItemDto);
+            await game.AddJournalItem(dto);
             var journalItem = game.JournalItems.First();
             await context.Games.AddAsync(game);
             await context.SaveChangesAsync();
@@ -136,48 +136,32 @@ namespace Service.Test
         public async Task GetJournalItemByIdReturnsTheCorrectJournalItem()
         {
             // arrange
-            var game = DataCreator.GetGame();
-            var addJournalItemDto = new AddJournalItemDto
-            {
-                JournalItem = new JournalHandoutDto
-                {
-                    Name = "test"
-                }
-            };
-
-            await game.AddJournalItemAsync(addJournalItemDto);
+            var game = await gameDataBuilder.WithJournalHandout(true).BuildGame();
+            
             var journalItem = game.JournalItems.First();
             await context.Games.AddAsync(game);
             await context.SaveChangesAsync();
-         
+
             // act
             var result = await sut.GetJournalItemById(game.Owner.Id, journalItem.Id);
 
             // assert
             result.Name.ShouldBe(journalItem.Name);
             result.ShouldBeOfType<JournalHandoutDto>();
+            result.Permissions.Count.ShouldBe(2);
         }
 
         [TestMethod]
         public async Task GetJournalItemByIdThrowsAnExceptionIfTheUserDoesNotHavePermissionToSeeJournalItem()
         {
             // arrange
-            var game = DataCreator.GetGame();
-            var addJournalItemDto = new AddJournalItemDto
-            {
-                JournalItem = new JournalHandoutDto
-                {
-                    Name = "test"
-                }
-            };
-
-            await game.AddJournalItemAsync(addJournalItemDto);
+            var game = await gameDataBuilder.WithJournalHandout().BuildGame();
             var journalItem = game.JournalItems.First();
             await context.Games.AddAsync(game);
             await context.SaveChangesAsync();
 
             var userId = Guid.NewGuid();
-          
+
             // act
             var result = Should.Throw<PermissionException>(async () => await sut.GetJournalItemById(userId, journalItem.Id));
 
@@ -185,246 +169,129 @@ namespace Service.Test
             result.Message.ShouldBe("Access Denied");
         }
 
-        //[TestMethod]
-        //public async Task AddJournalItemToGameAddsTheJournalItemToTheGame()
-        //{
-        //    // arrange
-        //    var gameId = Guid.NewGuid();
-        //    var addJournalItemModel = new AddJournalItemDto
-        //    {
-        //        JournalItem = new JournalItemDto()
-        //    };
-
-        //    var journalItem = new JournalItemMock
-        //    {
-        //        Id = Guid.Empty,
-        //        Name = "test",
-        //        ParentFolderId = Guid.Empty,
-        //        Type = JournalItemType.Folder,
-        //        ImageId = Guid.Empty
-        //    };
-
-        //    var mockGame1 = new Mock<Game>();
-        //    mockGame1.SetupGet(g => g.Id).Returns(gameId);
-        //    mockGame1.Setup(g => g.AddJournalItemAsync(addJournalItemModel)).ReturnsAsync(journalItem);
-
-        //    var gameQueryable = new List<Game> { mockGame1.Object };
-
-        //    var mock = gameQueryable.AsQueryable().BuildMock();
-
-        //    repository.SetupGet(r => r.Games).Returns(mock.Object);
-        //    repository.Setup(r => r.Commit()).Returns(Task.CompletedTask).Verifiable();
-
-        //    // act
-        //    var (result, _) = await sut.AddJournalItemToGame(addJournalItemModel, gameId);
-
-        //    // assert
-        //    result.Name.ShouldBe(journalItem.Name);
-        //    result.Id.ShouldBe(journalItem.Id);
-        //    result.ImageId.ShouldBe(journalItem.ImageId);
-        //    result.ParentFolderId.ShouldBe(journalItem.ParentFolderId);
-        //    result.Type.ShouldBe(journalItem.Type);
-
-        //    repository.VerifyAll();
-        //}
-
-        //[TestMethod]
-        //public async Task AddJournalItemToGameAddsJournalItemToParent()
-        //{
-        //    // arrange
-        //    var gameId = Guid.NewGuid();
-        //    var addJournalItemModel = new AddJournalItemDto
-        //    {
-        //        JournalItem = new JournalItemDto(),
-        //        ParentFolderId = Guid.NewGuid()
-        //    };
-
-        //    var journalItem = new JournalItemMock
-        //    {
-        //        Id = Guid.Empty,
-        //        Name = "test",
-        //        ParentFolderId = Guid.NewGuid(),
-        //        Type = JournalItemType.Folder,
-        //        ImageId = Guid.Empty
-        //    };
-
-        //    // Journalitem mock
-
-        //    var mockJournalItem = new Mock<JournalFolder>();
-        //    mockJournalItem.SetupGet(s => s.Id).Returns(addJournalItemModel.ParentFolderId.Value);
-        //    mockJournalItem.Setup(s => s.AddJournalItem(addJournalItemModel, gameId)).ReturnsAsync(journalItem);
-
-        //    var journalItemList = new List<JournalFolder> { mockJournalItem.Object };
-        //    var journalFolderQueryable = journalItemList.AsQueryable().BuildMock();
-
-        //    repository.SetupGet(r => r.JournalFolders).Returns(journalFolderQueryable.Object);
-
-        //    // Others
-        //    repository.Setup(r => r.Commit()).Returns(Task.CompletedTask).Verifiable();
-
-        //    // act
-        //    var (result, _) = await sut.AddJournalItemToGame(addJournalItemModel, gameId);
-
-        //    // assert
-        //    result.Name.ShouldBe(journalItem.Name);
-        //    result.Id.ShouldBe(journalItem.Id);
-        //    result.ImageId.ShouldBe(journalItem.ImageId);
-        //    result.ParentFolderId.ShouldBe(journalItem.ParentFolderId);
-        //    result.Type.ShouldBe(journalItem.Type);
-
-        //    repository.VerifyAll();
-        //}
-
-
-        //[TestMethod]
-        //public async Task GetJournalItemsForParentFolderIdForOwner()
-        //{
-        //    // arrange
-        //    var gameId = Guid.NewGuid();
-        //    var userId = Guid.NewGuid();
-        //    var parentFolderId = Guid.NewGuid();
-
-        //    var journalItem = new JournalFolder
-        //    {
-        //        Id = Guid.Empty,
-        //        Name = "test",
-        //        ParentFolderId = parentFolderId,
-        //        Type = JournalItemType.Folder,
-        //        ImageId = Guid.Empty
-        //    };
-
-        //    var journalItemList = new List<JournalFolder> { journalItem };
-        //    var journalFolderQueryable = journalItemList.AsQueryable().BuildMock();
-
-        //    repository.SetupGet(r => r.JournalItems).Returns(journalFolderQueryable.Object);
-
-        //    // Game mock
-        //    var mockGame1 = new Mock<Game>();
-        //    mockGame1.SetupGet(g => g.Id).Returns(gameId);
-        //    mockGame1.SetupGet(g => g.Owner.Id).Returns(userId);
-
-        //    var gameQueryable = new List<Game> { mockGame1.Object };
-
-        //    var mock = gameQueryable.AsQueryable().BuildMock();
-
-        //    repository.SetupGet(r => r.Games).Returns(mock.Object);
-
-        //    // act
-        //    var result = await sut.GetJournalItemsForParentFolderId(userId, gameId, parentFolderId);
-
-        //    // assert
-        //    var resultObject = result.First();
-        //    result.Count().ShouldBe(1);
-        //    resultObject.Name.ShouldBe(journalItem.Name);
-        //    resultObject.Id.ShouldBe(journalItem.Id);
-        //    resultObject.ImageId.ShouldBe(journalItem.ImageId);
-        //    resultObject.ParentFolderId.ShouldBe(journalItem.ParentFolderId);
-        //    resultObject.Type.ShouldBe(journalItem.Type);
-        //}
-
-        //[TestMethod]
-        //public async Task GetJournalItemsForNullParentFolderId()
-        //{
-        //    // arrange
-        //    var gameId = Guid.NewGuid();
-        //    var userId = Guid.NewGuid();
-
-        //    var journalItem = new JournalFolder
-        //    {
-        //        Id = Guid.Empty,
-        //        Name = "test",
-        //        Type = JournalItemType.Folder,
-        //        ImageId = Guid.Empty,
-        //        GameId = gameId
-        //    };
-
-        //    var journalItem2 = new JournalFolder
-        //    {
-        //        Id = Guid.Empty,
-        //        Name = "test2",
-        //        Type = JournalItemType.Folder,
-        //        ImageId = Guid.Empty,
-        //        GameId = Guid.Empty
-        //    };
-
-        //    var journalItemList = new List<JournalFolder> { journalItem, journalItem2 };
-        //    var journalFolderQueryable = journalItemList.AsQueryable().BuildMock();
-
-        //    repository.SetupGet(r => r.JournalItems).Returns(journalFolderQueryable.Object);
-
-        //    // Game mock
-        //    var mockGame1 = new Mock<Game>();
-        //    mockGame1.SetupGet(g => g.Id).Returns(gameId);
-        //    mockGame1.SetupGet(g => g.Owner.Id).Returns(userId);
-
-        //    var gameQueryable = new List<Game> { mockGame1.Object };
-
-        //    var mock = gameQueryable.AsQueryable().BuildMock();
-
-        //    repository.SetupGet(r => r.Games).Returns(mock.Object);
-
-        //    // act
-        //    var result = await sut.GetJournalItemsForParentFolderId(userId, gameId, null);
-
-        //    // assert
-        //    var resultObject = result.First();
-        //    result.Count().ShouldBe(1);
-        //    resultObject.Name.ShouldBe(journalItem.Name);
-        //    resultObject.Id.ShouldBe(journalItem.Id);
-        //    resultObject.ImageId.ShouldBe(journalItem.ImageId);
-        //    resultObject.ParentFolderId.ShouldBe(journalItem.ParentFolderId);
-        //    resultObject.Type.ShouldBe(journalItem.Type);
-        //}
-
         [TestMethod]
-        public async Task GetJournalItemsForParentFolderIdReturnsOnlyFilledFoldersAndNotFolders()
+        public async Task UpdateJournalItemUpdatesTheJournalItem()
         {
             // arrange
-            //var gameId = Guid.NewGuid();
-            //var userId = Guid.NewGuid();
+            var game = await gameDataBuilder.WithJournalHandout(true).BuildGame();
+            await context.Games.AddAsync(game);
+            await context.SaveChangesAsync();
 
-            //var permission = new JournalItemPermission
-            //{
-            //    UserId = userId,
-            //    GameId = gameId,
-            //    CanEdit = true,
-            //    CanSee = true
-            //};
+            var journalItemId = game.JournalItems.First().Id;
 
-            //var handout = new JournalHandout
-            //{
-            //    Id = Guid.NewGuid(),
-            //    Name = "test2",
-            //    Type = JournalItemType.Folder,
-            //    ImageId = Guid.Empty,
-            //    GameId = Guid.Empty,
-            //    Permissions = new List<JournalItemPermission> { permission }
-            //};
+            var journalItemDto = new JournalHandoutDto
+            {
+                Id = journalItemId,
+                Name = "Updated",
+                Description = "This is also updated",
+                Permissions = new List<JournalItemPermissionDto>
+                {
+                    new JournalItemPermissionDto
+                    {
+                        UserId = gameDataBuilder.Player1.Id,
+                        CanSee = true
+                    }
+                },
+                OwnerNotes = "OwnerNotesUpdated",
+                ImageId = Guid.NewGuid()
+            };
 
-            //var game = new Game
-            //{
-            //    Id = gameId,
-            //    JournalItems = new List<JournalItem> { handout },
-            //    Owner = new User()
-            //};
+            // act
+            var result = await sut.UpdateJournalItem(journalItemDto, game.Id, game.Owner.Id);
 
-            //var journalItemList = new List<JournalItem> { handout };
-            //var journalItemQueryable = journalItemList.AsQueryable().BuildMock();
+            // assert
+            result.Name.ShouldBe(journalItemDto.Name);
+            result.Type.ShouldBe(JournalItemType.Handout);
+            result.Id.ShouldBe(journalItemId);
 
-            //var gameQueryable = new List<Game> { game }.AsQueryable().BuildMock();
+            var journalItemInDb = await context.JournalItems.Include(j => j.Permissions).FirstAsync(j => j.Id == journalItemId) as JournalHandout;
+            journalItemInDb.Name.ShouldBe(journalItemDto.Name);
+            journalItemInDb.Description.ShouldBe(journalItemDto.Description);
+            journalItemInDb.OwnerNotes.ShouldBe(journalItemDto.OwnerNotes);
+            journalItemInDb.Permissions.Count.ShouldBe(1);
+        }
 
-            //repository.SetupGet(r => r.JournalItems).Returns(journalItemQueryable.Object);
-            //repository.SetupGet(r => r.Games).Returns(gameQueryable.Object);
+        [TestMethod]
+        public async Task UpdateJournalItemThrowsExceptionIfPlayerDoesNotHaveEditPermission()
+        {
+            // arrange
+            var game = await gameDataBuilder.WithJournalHandout(true).BuildGame();
+            await context.Games.AddAsync(game);
+            await context.SaveChangesAsync();
 
-            //// act
-            //var result = await sut.GetJournalItemsForParentFolderId(userId, gameId, null);
+            var journalItemId = game.JournalItems.First().Id;
 
-            //// Assert
-            //result.Count().ShouldBe(1);
-            //result.First().Id.ShouldBe(handout.Id);
-            //result.First().ImageId.ShouldBe(handout.ImageId);
-            //result.First().Name.ShouldBe(handout.Name);
-            //result.First().ParentFolderId.ShouldBe(handout.ParentFolderId);
+            var journalItemDto = new JournalHandoutDto
+            {
+                Id = journalItemId,
+                Name = "Updated",
+                Description = "This is also updated",
+                //CanEdit = new List<Guid> { gameDataBuilder.Player1.Id },
+                //CanSee = new List<Guid> { gameDataBuilder.Player1.Id },
+                OwnerNotes = "OwnerNotesUpdated",
+                ImageId = Guid.NewGuid()
+            };
+
+            // act
+            var result = Should.Throw<PermissionException>(async () => await sut.UpdateJournalItem(journalItemDto, game.Id, gameDataBuilder.Player1.Id));
+
+            // assert
+            result.Message.ShouldBe("You do not have permission or the journalitem could not be found");
+        }
+
+        [TestMethod]
+        public async Task GetJournalItemPermissionsReturnJournalItemPermissions()
+        {
+            // arrange
+            var game = await gameDataBuilder.WithJournalHandout(true).BuildGame();
+            await context.Games.AddAsync(game);
+            await context.SaveChangesAsync();
+
+            var journalItemId = game.JournalItems.First().Id;
+
+            // act
+            var result = await sut.GetJournalItemPermissions(journalItemId);
+
+            // assert
+            result.Count().ShouldBe(2);
+            result.Any(p => p.UserId == gameDataBuilder.Player1.Id).ShouldBeTrue();
+            result.Any(p => p.UserId == gameDataBuilder.Player2.Id).ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public async Task DeleteJournalItemDeletesTheJournalItem()
+        {
+            // arrange
+            var game = await gameDataBuilder.WithJournalHandout(true).BuildGame();
+            await context.Games.AddAsync(game);
+            await context.SaveChangesAsync();
+
+            var journalItemId = game.JournalItems.First().Id;
+
+            // act
+            await sut.DeleteJournalItem(journalItemId);
+
+            // assert
+            var result = await context.JournalItems.FilterById(journalItemId).FirstOrDefaultAsync();
+            result.ShouldBeNull();
+        }
+
+        [TestMethod]
+        public async Task DeleteJournalItemDeletesTheJournalItemWithNestedItem()
+        {
+            // arrange
+            var game = await gameDataBuilder.WithJournalFolder(true).BuildGame();
+            await context.Games.AddAsync(game);
+            await context.SaveChangesAsync();
+
+            var journalItemId = game.JournalItems.First().Id;
+
+            // act
+            await sut.DeleteJournalItem(journalItemId);
+
+            // assert
+            var result = await context.JournalItems.FilterById(journalItemId).FirstOrDefaultAsync();
+            result.ShouldBeNull();
         }
     }
 }

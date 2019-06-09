@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Domain.Dto.RequestDto.Journal;
+using Domain.Dto.Shared;
 
 namespace Domain.Domain.JournalItems
 {
@@ -14,16 +15,16 @@ namespace Domain.Domain.JournalItems
             JournalItems = new List<JournalItem>();
         }
 
-        public JournalFolder(AddJournalItemDto dto, Guid gameId) : base(JournalItemType.Folder, dto.JournalItem.Name, gameId, null, null)
+        public JournalFolder(JournalItemDto dto, Guid gameId) : base(dto, gameId)
         {
             JournalItems = new List<JournalItem>();
         }
 
-        public virtual Task<JournalItem> AddJournalItem(AddJournalItemDto dto, Guid gameId)
+        public virtual Task<JournalItem> AddJournalItem(JournalItemDto dto, Guid gameId)
         {
             return Task.Run(() =>
             {
-                if (dto?.JournalItem == null)
+                if (dto == null)
                 {
                     throw new ArgumentNullException(nameof(dto));
                 }

@@ -1,10 +1,8 @@
 import { Component, Input, ViewChild, ElementRef, Output, EventEmitter, OnInit } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material';
-import { JournalFolder } from 'src/app/models/journal/journalitems/journal-folder.model';
-import { JournalItem } from 'src/app/models/journal/journalitems/journal-item.model';
-import { JournalNodeContextMenuClick } from './journal-node-context-menu-click.model';
-import { JournalHandout } from 'src/app/models/journal/journalitems/journal-handout.model';
+import { JournalNodeContextMenuAddClick } from './journal-node-context-menu-click.model';
 import { JournalItemType } from 'src/app/models/journal/journalitems/journal-item-type.enum';
+import { JournalTreeItem } from 'src/app/models/journal/journal-tree-item.model';
 
 @Component({
   selector: 'trpg-journal-node',
@@ -12,17 +10,21 @@ import { JournalItemType } from 'src/app/models/journal/journalitems/journal-ite
   styleUrls: ['./journal-node.component.scss']
 })
 export class JournalNodeComponent {
-  @Input() journalItem: JournalItem;
+  @Input() journalItem: JournalTreeItem;
   @Input() isOwner: boolean;
-  @Output() addJournalItem = new EventEmitter<JournalNodeContextMenuClick>();
-  @Output() clickItem = new EventEmitter<JournalItem>();
+  @Output() addJournalItem = new EventEmitter<JournalNodeContextMenuAddClick>();
+  @Output() clickItem = new EventEmitter<JournalTreeItem>();
+  @Output() editItem = new EventEmitter<JournalTreeItem>();
+  @Output() deleteItem = new EventEmitter<JournalTreeItem>();
 
   @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
   @ViewChild('menuButton') button: ElementRef;
 
   type = JournalItemType;
 
-  constructor() { }
+  constructor() {
+
+  }
 
   triggerMenu(event: MouseEvent) {
     event.preventDefault();
@@ -34,22 +36,22 @@ export class JournalNodeComponent {
     this.trigger.openMenu();
   }
 
-  addFolder() {
-    this.sendContextMenuClick(new JournalFolder());
+  editItemClick(journalItem: JournalTreeItem) {
+    this.editItem.next(journalItem);
   }
 
-  addHandout() {
-    this.sendContextMenuClick(new JournalHandout());
+  deleteItemClick(journalItem: JournalTreeItem) {
+    this.deleteItem.next(journalItem);
   }
 
   clickedFolder() {
     this.clickItem.emit(this.journalItem);
   }
 
-  private sendContextMenuClick(item: JournalItem){
-    const click: JournalNodeContextMenuClick = {
+  sendContextMenuClick(type: JournalItemType) {
+    const click: JournalNodeContextMenuAddClick = {
       id: this.journalItem.id,
-      item: item
+      type
     };
 
     this.addJournalItem.emit(click);

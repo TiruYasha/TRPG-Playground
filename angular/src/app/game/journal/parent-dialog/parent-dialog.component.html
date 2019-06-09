@@ -3,15 +3,22 @@
     <div class="dragger" cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle></div>
     <mat-icon class="clickPointer" (click)="exitDialog()">close</mat-icon>
   </div>
-  <div #dialogContainer class="content">
+  <div #dialogContainer class="content" *ngIf="journalItem">
     <trpg-create-folder-dialog *ngIf="data.journalItemType === handoutType.Folder"
-      (journalItem)="saveJournalItem($event)"
-      (close)="exitDialog()"></trpg-create-folder-dialog>
+      [(data)]="journalItem"
+      (close)="exitDialog()"
+      (isValid)="isValid = $event"></trpg-create-folder-dialog>
     <trpg-create-handout-dialog *ngIf="data.journalItemType === handoutType.Handout" 
       [players]="data.players"
-      [data]="journalItem | async"
+      [(data)]="journalItem"
       [dialogState]="this.data.state"
-      (journalItem)="saveJournalItem($event)"></trpg-create-handout-dialog>
+      (isValid)="isValid = $event"
+     ></trpg-create-handout-dialog>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-raised-button (click)="exitDialog()">Close</button>
+    <button mat-raised-button *ngIf="this.data.state === states.View"  (click)="data.state = states.Edit">Edit</button>
+    <button mat-raised-button *ngIf="this.data.state !== states.View" [disabled]="!isValid" (click)="saveJournalItem()">Save</button>
   </div>
   <div style="height: 20px" (mousedown)="startResize($event)"></div>
 </div>

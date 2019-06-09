@@ -15,26 +15,27 @@ import { CollectionViewer, SelectionChange } from '@angular/cdk/collections';
 import { map } from 'rxjs/operators';
 
 import { JournalItemType } from 'src/app/models/journal/journalitems/journal-item-type.enum';
+import { JournalTreeItem } from 'src/app/models/journal/journal-tree-item.model';
 
 @Injectable()
 export class JournalDynamicDataSource {
 
-  dataChange = new BehaviorSubject<DynamicFlatNode<JournalItem>[]>([]);
+  dataChange = new BehaviorSubject<DynamicFlatNode<JournalTreeItem>[]>([]);
 
-  get data(): DynamicFlatNode<JournalItem>[] { return this.dataChange.value; }
-  set data(value: DynamicFlatNode<JournalItem>[]) {
+  get data(): DynamicFlatNode<JournalTreeItem>[] { return this.dataChange.value; }
+  set data(value: DynamicFlatNode<JournalTreeItem>[]) {
     this.treeControl.dataNodes = value;
     this.dataChange.next(value);
   }
 
-  constructor(private treeControl: FlatTreeControl<DynamicFlatNode<JournalItem>>,
+  constructor(private treeControl: FlatTreeControl<DynamicFlatNode<JournalTreeItem>>,
     private journalService: JournalService) { }
 
-  connect(collectionViewer: CollectionViewer): Observable<DynamicFlatNode<JournalItem>[]> {
+  connect(collectionViewer: CollectionViewer): Observable<DynamicFlatNode<JournalTreeItem>[]> {
     this.treeControl.expansionModel.changed.subscribe(change => {
-      if ((change as SelectionChange<DynamicFlatNode<JournalItem>>).added ||
-        (change as SelectionChange<DynamicFlatNode<JournalItem>>).removed) {
-        this.handleTreeControl(change as SelectionChange<DynamicFlatNode<JournalItem>>);
+      if ((change as SelectionChange<DynamicFlatNode<JournalTreeItem>>).added ||
+        (change as SelectionChange<DynamicFlatNode<JournalTreeItem>>).removed) {
+        this.handleTreeControl(change as SelectionChange<DynamicFlatNode<JournalTreeItem>>);
       }
     });
 
@@ -42,7 +43,7 @@ export class JournalDynamicDataSource {
   }
 
   /** Handle expand/collapse behaviors */
-  handleTreeControl(change: SelectionChange<DynamicFlatNode<JournalItem>>) {
+  handleTreeControl(change: SelectionChange<DynamicFlatNode<JournalTreeItem>>) {
     if (change.added) {
       change.added.forEach(node => this.toggleNode(node, true));
     }
@@ -54,17 +55,17 @@ export class JournalDynamicDataSource {
   /**
    * Toggle the node, remove from display list
    */
-  toggleNode(node: DynamicFlatNode<JournalItem>, expand: boolean) {
+  toggleNode(node: DynamicFlatNode<JournalTreeItem>, expand: boolean) {
     const index = this.data.indexOf(node);
     node.isLoading = true;
     this.journalService.getJournalItemsByParentFolderId(node.item.id)
-      .subscribe((data: JournalItem[]) => {
+      .subscribe((data: JournalTreeItem[]) => {
         if (!data || index < 0) {
           return;
         }
 
         if (expand) {
-          const nodes = data.map(item => new DynamicFlatNode<JournalItem>(item, node.level + 1, item.type === JournalItemType.Folder));
+          const nodes = data.map(item => new DynamicFlatNode<JournalTreeItem>(item, node.level + 1, item.type === JournalItemType.Folder));
           this.data.splice(index + 1, 0, ...nodes);
         } else {
           let count = 0;

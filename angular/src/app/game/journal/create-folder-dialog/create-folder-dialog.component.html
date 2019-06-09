@@ -5,7 +5,3 @@
     <mat-error *ngIf="name.invalid">The name is required</mat-error>
   </mat-form-field>
 </div>
-<div mat-dialog-actions>
-  <button mat-button (click)="onNoClick()">No Thanks</button>
-  <button mat-button [disabled]="name.invalid" (click)="Ok()">Ok</button>
-</div>

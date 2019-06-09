@@ -30,6 +30,25 @@ namespace DataAccess
             base.OnModelCreating(modelBuilder);
 
             SetupGamePlayer(modelBuilder);
+            SetupJournalItemPermission(modelBuilder);
+
+            modelBuilder.Entity<JournalFolder>().HasMany(j => j.JournalItems).WithOne(j => j.ParentFolder)
+                .OnDelete(DeleteBehavior.Cascade);
+        }
+
+        private void SetupJournalItemPermission(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<JournalItemPermission>()
+                .HasKey(j => new { j.JournalItemId, j.UserId, j.GameId });
+
+            modelBuilder.Entity<JournalItemPermission>()
+                .HasOne(j => j.JournalItem)
+                .WithMany(j => j.Permissions)
+                .HasForeignKey(j => j.JournalItemId);
+            modelBuilder.Entity<JournalItemPermission>()
+                .HasOne(j => j.GamePlayer)
+                .WithMany(j => j.JournalItemPermissions)
+                .HasForeignKey(j => new { j.GameId, j.UserId });
         }
 
         private static void SetupGamePlayer(ModelBuilder modelBuilder)
@@ -45,17 +64,7 @@ namespace DataAccess
                 .WithMany(g => g.JoinedGames)
                 .HasForeignKey(gp => gp.UserId);
 
-            modelBuilder.Entity<JournalItemPermission>()
-               .HasKey(j => new { j.JournalItemId, j.UserId, j.GameId });
-
-            modelBuilder.Entity<JournalItemPermission>()
-                .HasOne(j => j.JournalItem)
-                .WithMany(j => j.Permissions)
-                .HasForeignKey(j => j.JournalItemId);
-            modelBuilder.Entity<JournalItemPermission>()
-                .HasOne(j => j.GamePlayer)
-                .WithMany(j => j.JournalItemPermissions)
-                .HasForeignKey(j => new { j.GameId, j.UserId});
+         
         }
     }
 }

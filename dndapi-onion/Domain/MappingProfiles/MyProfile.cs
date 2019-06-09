@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Linq;
+using AutoMapper;
 using Domain.Domain;
 using Domain.Domain.Commands;
 using Domain.Domain.JournalItems;

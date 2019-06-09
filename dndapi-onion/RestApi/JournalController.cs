@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 using Domain.Domain.JournalItems;
 using Domain.Dto.RequestDto.Journal;
 using Domain.Dto.ReturnDto.Journal;
-using Domain.Exceptions;
+using Domain.Dto.Shared;
+using Domain.Events;
 using Domain.ServiceInterfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -57,6 +58,7 @@ namespace RestApi
 
 
         [HttpPost]
+        [Authorize(Policy = "IsGameOwner")]
         [Route("AddJournalItem")]
         public async Task<IActionResult> AddJournalItemAsync([FromBody] AddJournalItemDto dto)
         {
@@ -66,11 +68,11 @@ namespace RestApi
 
             if (journalItem.Type == JournalItemType.Folder)
             {
-                await hubContext.Clients.Group(gameId.ToString()).SendAsync("JournalItemAdded", journalItem);
+                await hubContext.Clients.Group(gameId.ToString()).SendAsync(JournalEvents.JournalItemAdded, journalItem);
             }
             else
             {
-                await hubContext.Clients.User(userId.ToString()).SendAsync("JournalItemAdded", journalItem);
+                await hubContext.Clients.User(userId.ToString()).SendAsync(JournalEvents.JournalItemAdded, journalItem);
 
                 await SendMessageToPlayers(canSee, journalItem);
             }
@@ -86,7 +88,7 @@ namespace RestApi
             var file = Request.Form.Files.FirstOrDefault();
 
             var result = await journalService.UploadImage(file, gameId, journalItemId);
-            await hubContext.Clients.Group(gameId.ToString()).SendAsync("JournalItemImageUploaded", new UploadedImageDto { ImageId = result, JournalItemId = journalItemId });
+            await hubContext.Clients.Group(gameId.ToString()).SendAsync(JournalEvents.JournalItemImageUploaded, new UploadedImageDto { ImageId = result, JournalItemId = journalItemId });
             return Ok(result);
         }
 
@@ -106,15 +108,51 @@ namespace RestApi
         {
             var userId = jwtReader.GetUserId();
 
-            try
+            var journalItem = await journalService.GetJournalItemById(userId, journalItemId);
+            return Ok(journalItem);
+        }
+
+        [HttpPut]
+        [Route("updateJournalItem")]
+        public async Task<IActionResult> UpdateJournalItem([FromBody] JournalItemDto dto)
+        {
+            var (userId, gameId) = GetUserIdAndGameId();
+
+            var treeItem = await journalService.UpdateJournalItem(dto, gameId, userId);
+
+            var permissions = await journalService.GetJournalItemPermissions(dto.Id);
+
+            if (treeItem.Type == JournalItemType.Folder)
             {
-                var journalItem = await journalService.GetJournalItemById(userId, journalItemId);
-                return Ok(journalItem);
+                await hubContext.Clients.Group(gameId.ToString()).SendAsync(JournalEvents.JournalItemUpdated, treeItem);
             }
-            catch (PermissionException)
+            else
             {
-                return Unauthorized();
+                await hubContext.Clients.User(userId.ToString()).SendAsync(JournalEvents.JournalItemUpdated, treeItem);
+
+                foreach (var permission in permissions)
+                {
+                    treeItem.CanEdit = permission.CanEdit;
+                    await hubContext.Clients.User(permission.UserId.ToString())
+                        .SendAsync(JournalEvents.JournalItemUpdated, treeItem);
+                }
             }
+
+            return Ok();
+        }
+
+        [HttpDelete]
+        [Authorize(Policy = "IsGameOwner")]
+        [Route("deleteJournalItem/{journalItemId}")]
+        public async Task<IActionResult> DeleteJournalItem(Guid journalItemId)
+        {
+            var gameId = jwtReader.GetGameId();
+
+            await journalService.DeleteJournalItem(journalItemId);
+
+            await hubContext.Clients.Group(gameId.ToString()).SendAsync(JournalEvents.JournalItemDeleted, journalItemId);
+
+            return Ok();
         }
 
         private (Guid userId, Guid gameId) GetUserIdAndGameId()
@@ -128,7 +166,7 @@ namespace RestApi
         {
             foreach (var playerId in canSee)
             {
-                await hubContext.Clients.User(playerId.ToString()).SendAsync("JournalItemAdded", journalItem);
+                await hubContext.Clients.User(playerId.ToString()).SendAsync(JournalEvents.JournalItemAdded, journalItem);
             }
         }
     }

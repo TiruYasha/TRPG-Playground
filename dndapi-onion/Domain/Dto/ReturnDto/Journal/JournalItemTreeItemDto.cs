@@ -10,5 +10,6 @@ namespace Domain.Dto.ReturnDto.Journal
         public Guid? ParentFolderId { get; set; }
         public JournalItemType Type { get; set; }
         public Guid? ImageId { get; set; }
+        public bool CanEdit { get; set; }
     }
 }

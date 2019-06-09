@@ -207,17 +207,11 @@ namespace Domain.Test.Domain
                 Name = "folder"
             };
 
-            var model = new AddJournalItemDto()
-            {
-                JournalItem = folder,
-                ParentFolderId = Guid.Empty
-            };
-
             // Action
-            var result = await game.AddJournalItemAsync(model);
+            var result = await game.AddJournalItem(folder);
 
             // Assert
-            result.Name.ShouldBe(model.JournalItem.Name);
+            result.Name.ShouldBe(folder.Name);
             game.JournalItems.Count.ShouldBe(1);
         }
     }

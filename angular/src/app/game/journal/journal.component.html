@@ -2,11 +2,10 @@
   <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="tree">
     <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
       <li class="mat-tree-node">
-        <!-- <button mat-icon-button disabled></button> -->
         <div class="thumbnail-container">
           <img class="thumbnail" mat-icon-button [src]="getThumbnailLink(node.item.id)">
         </div>
-        <trpg-journal-node class="node-container" [isOwner]="isOwner" [journalItem]="node.item" (clickItem)="clickItem(node)"></trpg-journal-node>
+        <trpg-journal-node class="node-container" [isOwner]="isOwner" [journalItem]="node.item" (clickItem)="clickItem(node)" (editItem)="editItem($event)" (deleteItem)="deleteItem($event)"></trpg-journal-node>
       </li>
     </mat-tree-node>
     <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
@@ -16,7 +15,7 @@
         </mat-icon>
       </button>
       <trpg-journal-node class="node-container" [isOwner]="isOwner" [journalItem]="node.item"
-        (addJournalItem)="addJournalItemToParent($event)" (clickItem)="clickFolder(node)"></trpg-journal-node>
+        (addJournalItem)="addJournalItemToParent($event)" (clickItem)="clickFolder(node)" (editItem)="editItem($event)" (deleteItem)="deleteItem($event)"></trpg-journal-node>
       <mat-progress-bar *ngIf="node.isLoading" mode="indeterminate" class="example-tree-progress-bar">
       </mat-progress-bar>
     </mat-tree-node>
