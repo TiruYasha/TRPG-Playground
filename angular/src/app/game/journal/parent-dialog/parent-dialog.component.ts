@@ -31,6 +31,7 @@ export class ParentDialogComponent extends DestroySubscription implements OnInit
   states = DialogState;
 
   journalItem: JournalItem;
+  isValid = false;
 
   constructor(
     public dialogRef: MatDialogRef<ParentDialogComponent>,
@@ -42,20 +43,21 @@ export class ParentDialogComponent extends DestroySubscription implements OnInit
     if (this.data.state === DialogState.View || this.data.state === DialogState.Edit) {
       this.loadJournalItemDetails();
     }
-  }
 
-  saveJournalItem(journalItem: JournalItem) {
-    switch (journalItem.type) {
-      case JournalItemType.Folder:
-        this.saveItem(journalItem);
-        break;
-      case JournalItemType.Handout:
-        this.saveItem(journalItem);
-        break;
+    if (this.data.state === DialogState.New) {
+      this.journalItem = new JournalItem(this.data.journalItemType);
     }
+
+    this.journalService.journalItemUpdated.pipe(takeUntil(this.destroy))
+      .subscribe(data => {
+        if (data.id === this.journalItem.id) {
+          this.loadJournalItemDetails();
+        }
+      });
   }
 
-  saveItem(journalItem: JournalItem) {
+  saveJournalItem() {
+    const journalItem = this.journalItem;
     if (this.data.state === DialogState.New) {
       const request: AddJournalItemRequestModel = {
         parentFolderId: this.data.parentFolderId,
@@ -103,7 +105,7 @@ export class ParentDialogComponent extends DestroySubscription implements OnInit
     this.startPageX = event.pageX;
     this.startPageY = event.pageY;
 
-    element.style.height = (element.clientHeight - minHeigth - 24) + 'px';
+    element.style.height = (element.clientHeight - minHeigth) + 'px';
     element.style.width = (element.clientWidth - minWidth - 48) + 'px';
   }
 

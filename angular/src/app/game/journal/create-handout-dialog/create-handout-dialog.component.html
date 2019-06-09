@@ -30,13 +30,9 @@
         </mat-form-field>
       </form>
     </div>
-    <div mat-dialog-actions>
-      <button mat-button>Cancel</button>
-      <button mat-button [disabled]="form.pristine" (click)="save()">Save</button>
-    </div>
   </ng-container>
 
-  <ng-container *ngIf="dialogState === states.View && data">
+  <ng-container *ngIf="dialogState === states.View">
     <div mat-dialog-content class="content">
       <img [src]="getImageLink(data.id)">
       <div class="notes">
@@ -45,10 +41,6 @@
           {{data.description}}
         </div>
       </div>
-    </div>
-
-    <div mat-dialog-actions>
-      <button mat-button>Close</button>
     </div>
   </ng-container>
 </div>

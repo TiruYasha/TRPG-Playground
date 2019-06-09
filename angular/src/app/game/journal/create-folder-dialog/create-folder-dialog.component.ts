@@ -1,40 +1,31 @@
-import { Component, Output, EventEmitter, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { ValidatorFunctions } from 'src/app/utilities/validator-functions';
 import { JournalFolder } from 'src/app/models/journal/journalitems/journal-folder.model';
-import { JournalItem } from 'src/app/models/journal/journalitems/journal-item.model';
-import { DialogPosition } from '@angular/material';
 import { DialogState } from '../parent-dialog/dialog-state.enum';
+import { DestroySubscription } from 'src/app/shared/components/destroy-subscription.extendable';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'trpg-create-folder-dialog',
   templateUrl: './create-folder-dialog.component.html'
 })
-export class CreateFolderDialogComponent implements OnInit {
-  @Output() journalItem = new EventEmitter<JournalItem>();
-  @Output() close = new EventEmitter();
-
+export class CreateFolderDialogComponent extends DestroySubscription implements OnInit {
   @Input() data: JournalFolder;
-  @Input() state: DialogState;
 
-  states = DialogState;
+  @Output() isValid = new EventEmitter<boolean>();
   name = new FormControl('', [Validators.required, ValidatorFunctions.noWhitespaceValidator]);
 
-  constructor() { }
+  constructor() { super(); }
 
   ngOnInit(): void {
-    if (this.state === DialogState.Edit) {
-      this.name.setValue(this.data.name);
-    }
-  }
-
-  onNoClick(): void {
-    this.close.emit();
-  }
-
-  Ok() {
-    const folder = new JournalFolder();
-    folder.name = this.name.value;
-    this.journalItem.emit(folder);
+    this.name.setValue(this.data.name);
+    this.name.valueChanges.pipe(takeUntil(this.destroy))
+      .subscribe(() => {
+        if (this.name.valid) {
+          this.data.name = this.name.value;
+          this.isValid.emit(this.name.valid);
+        }
+      });
   }
 }
