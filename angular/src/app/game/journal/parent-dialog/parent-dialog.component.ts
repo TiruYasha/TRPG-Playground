@@ -5,7 +5,6 @@ import { ParentDialogModel } from './parent-dialog.model';
 import { JournalItem } from 'src/app/models/journal/journalitems/journal-item.model';
 import { JournalItemType } from 'src/app/models/journal/journalitems/journal-item-type.enum';
 import { JournalService } from '../journal.service';
-import { JournalHandout } from 'src/app/models/journal/journalitems/journal-handout.model';
 import { AddJournalItemRequestModel } from 'src/app/models/journal/requests/add-journal-item-request.model';
 import { DestroySubscription } from 'src/app/shared/components/destroy-subscription.extendable';
 import { DialogState } from './dialog-state.enum';
@@ -65,10 +64,9 @@ export class ParentDialogComponent extends DestroySubscription implements OnInit
       };
       this.journalService.addJournalItemToGame(request).pipe(takeUntil(this.destroy))
         .subscribe((i) => {
-          if (this.journalItem.image) {
-            this.journalService.uploadImage(i.id, journalItem.image)
-              .pipe(takeUntil(this.destroy))
-              .subscribe(e => this.exitDialog());
+          if (this.journalItem.type === JournalItemType.Handout) {
+            this.journalItem.id = i.id;
+            this.data.state = DialogState.Edit;
           } else {
             this.exitDialog();
           }
@@ -80,15 +78,17 @@ export class ParentDialogComponent extends DestroySubscription implements OnInit
           if (this.data.journalItemType === JournalItemType.Folder) {
             this.exitDialog();
           } else {
-            if (this.journalItem.image) {
-              this.journalService.uploadImage(this.journalItem.id, journalItem.image)
-                .pipe(takeUntil(this.destroy))
-                .subscribe(() => {
-                  this.journalItem = journalItem;
-                  this.data.state = DialogState.View;
-                });
-            }
+            this.data.state = DialogState.View;
           }
+        });
+    }
+  }
+
+  uploadImage() {
+    if (this.journalItem.image) {
+      this.journalService.uploadImage(this.journalItem.id, this.journalItem.image)
+        .pipe(takeUntil(this.destroy))
+        .subscribe(() => {
         });
     }
   }

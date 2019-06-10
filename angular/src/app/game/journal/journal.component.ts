@@ -141,12 +141,12 @@ export class JournalComponent extends DestroySubscription implements OnInit {
         const parentId = parentIds.pop();
         const childNodes = this.dataSource.data.filter(j => j.item.parentFolderId === parentId);
         this.dataSource.data = this.dataSource.data.filter(j => j.item.id !== node.item.id);
-        childNodes.forEach(node => {
-          if (node.item.type === JournalItemType.Folder) {
-            parentIds.push(node.item.id);
+        childNodes.forEach(childNode => {
+          if (childNode.item.type === JournalItemType.Folder) {
+            parentIds.push(childNode.item.id);
           }
 
-          this.dataSource.data = this.dataSource.data.filter(j => j.item.id !== node.item.id);
+          this.dataSource.data = this.dataSource.data.filter(j => j.item.id !== childNode.item.id);
         });
       }
     } else {

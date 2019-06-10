@@ -13,6 +13,7 @@
       [(data)]="journalItem"
       [dialogState]="this.data.state"
       (isValid)="isValid = $event"
+      (changeImage)="uploadImage()"
      ></trpg-create-handout-dialog>
   </div>
   <div mat-dialog-actions>

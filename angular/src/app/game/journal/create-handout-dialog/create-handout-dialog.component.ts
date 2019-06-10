@@ -21,6 +21,7 @@ export class CreateHandoutDialogComponent extends DestroySubscription implements
   @Input() dialogState: DialogState;
 
   @Output() isValid = new EventEmitter<boolean>();
+  @Output() changeImage = new EventEmitter<File>();
 
   states = DialogState;
 
@@ -72,9 +73,10 @@ export class CreateHandoutDialogComponent extends DestroySubscription implements
     if (target.files && target.files.length) {
       const file = target.files[0];
       this.image.setValue(file);
+      this.changeImage.emit(file);
       const reader = new FileReader();
       reader.readAsDataURL(file);
-
+      
       reader.onload = () => {
         this.imageToUpload = reader.result.toString();
       };
