@@ -76,7 +76,7 @@ export class CreateHandoutDialogComponent extends DestroySubscription implements
       this.changeImage.emit(file);
       const reader = new FileReader();
       reader.readAsDataURL(file);
-      
+
       reader.onload = () => {
         this.imageToUpload = reader.result.toString();
       };

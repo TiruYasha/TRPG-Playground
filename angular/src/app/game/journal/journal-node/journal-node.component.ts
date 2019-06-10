@@ -33,7 +33,13 @@ export class JournalNodeComponent {
     button.style.left = `${event.offsetX}px`;
     button.style.top = `${event.pageY - 48}px`;
 
+    this.trigger.menu.hasBackdrop = true;
     this.trigger.openMenu();
+    document.getElementsByClassName('cdk-overlay-backdrop')[0].addEventListener('contextmenu', (offEvent: MouseEvent) => {
+      //Temporary right click fix
+      this.trigger.closeMenu();
+      offEvent.preventDefault();
+    });
   }
 
   editItemClick(journalItem: JournalTreeItem) {

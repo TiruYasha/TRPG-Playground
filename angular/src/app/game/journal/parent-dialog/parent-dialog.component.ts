@@ -89,6 +89,7 @@ export class ParentDialogComponent extends DestroySubscription implements OnInit
       this.journalService.uploadImage(this.journalItem.id, this.journalItem.image)
         .pipe(takeUntil(this.destroy))
         .subscribe(() => {
+          //TODO message that uploading image is successful.
         });
     }
   }

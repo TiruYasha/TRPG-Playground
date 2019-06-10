@@ -56,7 +56,6 @@ namespace RestApi
             return Ok(result);
         }
 
-
         [HttpPost]
         [Authorize(Policy = "IsGameOwner")]
         [Route("AddJournalItem")]

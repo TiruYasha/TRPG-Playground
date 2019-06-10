@@ -4,5 +4,6 @@
     {
         Folder,
         Handout,
+        CharacterSheet
     }
 }
