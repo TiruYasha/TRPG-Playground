@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using AutoMapper;
+﻿using AutoMapper;
 using Domain.Domain;
 using Domain.Domain.Commands;
 using Domain.Domain.JournalItems;
@@ -26,19 +25,27 @@ namespace Domain.MappingProfiles
             CreateMap<DefaultCommand, DefaultCommandResult>();
             CreateMap<NormalDiceRollCommand, NormalDiceRollCommandResult>();
 
+            JournalItemsMapConfig();
 
+            CreateMap<GamePlayer, GetPlayersModel>().ForMember(dest => dest.Username, opt => opt.MapFrom(from => from.User.UserName));
+            CreateMap<User, GetPlayersModel>().ForMember(dest => dest.UserId, opt => opt.MapFrom(from => from.Id));
+        }
+
+        private void JournalItemsMapConfig()
+        {
             CreateMap<JournalItem, JournalItemDto>()
                 .Include<JournalFolder, JournalFolderDto>()
-                .Include<JournalHandout, JournalHandoutDto>();
+                .Include<JournalHandout, JournalHandoutDto>()
+                .Include<JournalCharacterSheet, JournalCharacterSheetDto>();
+
             CreateMap<JournalFolder, JournalFolderDto>();
             CreateMap<JournalHandout, JournalHandoutDto>();
+            CreateMap<JournalCharacterSheet, JournalCharacterSheetDto>();
 
             CreateMap<JournalItem, JournalItemTreeItemDto>();
             CreateMap<JournalFolder, JournalItemTreeItemDto>();
             CreateMap<JournalHandout, JournalItemTreeItemDto>();
-
-            CreateMap<GamePlayer, GetPlayersModel>().ForMember(dest => dest.Username, opt => opt.MapFrom(from => from.User.UserName));
-            CreateMap<User, GetPlayersModel>().ForMember(dest => dest.UserId, opt => opt.MapFrom(from => from.Id));
+            CreateMap<JournalCharacterSheet, JournalItemTreeItemDto>();
         }
     }
 }

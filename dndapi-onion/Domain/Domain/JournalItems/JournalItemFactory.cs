@@ -14,6 +14,8 @@ namespace Domain.Domain.JournalItems
                     return new JournalFolder(dto, gameId);
                 case JournalItemType.Handout:
                     return new JournalHandout(dto, gameId);
+                case JournalItemType.CharacterSheet:
+                    return new JournalCharacterSheet(dto, gameId);
                 default:
                     throw new NotImplementedException();
             }

@@ -17,8 +17,9 @@ namespace Domain.ServiceInterfaces
 
         Task<IEnumerable<JournalItemTreeItemDto>> GetJournalItemsForParentFolderId(Guid userId, Guid gameId, Guid? parentFolderId);
 
-        Task<Guid> UploadImage(IFormFile file, Guid gameId, Guid journalItemId);
+        Task<Guid> UploadImage(IFormFile file, Guid gameId, Guid journalItemId, bool token = false);
         Task<byte[]> GetImage(Guid journalItemId, bool isThumbnail);
+        Task<byte[]> GetToken(Guid journalItemId, bool isThumbnail);
         Task<JournalItemDto> GetJournalItemById(Guid userId, Guid journalItemId);
         Task<IEnumerable<JournalItemPermission>> GetJournalItemPermissions(Guid journalItemId);
         Task DeleteJournalItem(Guid journalItemId);

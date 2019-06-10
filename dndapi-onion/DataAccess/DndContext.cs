@@ -18,6 +18,7 @@ namespace DataAccess
         public DbSet<JournalItem> JournalItems { get; set; }
         public DbSet<JournalFolder> JournalFolders { get; set; }
         public DbSet<JournalHandout> JournalHandouts { get; set; }
+        public DbSet<JournalCharacterSheet> JournalCharacterSheets { get; set; }
         public DbSet<Image> Images { get; set; }
 
         public DndContext(DbContextOptions<DndContext> options) : base(options)
@@ -63,8 +64,6 @@ namespace DataAccess
                 .HasOne(gp => gp.User)
                 .WithMany(g => g.JoinedGames)
                 .HasForeignKey(gp => gp.UserId);
-
-         
         }
     }
 }

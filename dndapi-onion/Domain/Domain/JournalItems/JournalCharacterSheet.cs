@@ -6,9 +6,11 @@ namespace Domain.Domain.JournalItems
 {
     public class JournalCharacterSheet : JournalItem
     {
-        public string Description { get; set; }
-        public string OwnerNotes { get; set; }
-        public virtual Image Token { get; set; }
+        public string Description { get; private set; }
+        public string OwnerNotes { get; private set; }
+
+        public Guid? TokenId { get; private set; }
+        public virtual Image Token { get; private set; }
 
         private JournalCharacterSheet() { }
 

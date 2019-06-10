@@ -7,14 +7,19 @@ namespace DataAccess
 {
     public static class JournalItemQueries
     {
-        public static IQueryable<JournalItem> FilterById(this IQueryable<JournalItem> journalFolder, Guid id)
+        public static IQueryable<JournalItem> FilterById(this IQueryable<JournalItem> queryable, Guid id)
         {
-            return journalFolder.Where(j => j.Id == id);
+            return queryable.Where(j => j.Id == id);
         }
 
-        public static IQueryable<JournalFolder> FilterById(this IQueryable<JournalFolder> journalFolder, Guid id)
+        public static IQueryable<JournalFolder> FilterById(this IQueryable<JournalFolder> queryable, Guid id)
         {
-            return journalFolder.Where(j => j.Id == id);
+            return queryable.Where(j => j.Id == id);
+        }
+
+        public static IQueryable<JournalCharacterSheet> FilterById(this IQueryable<JournalCharacterSheet> queryable, Guid id)
+        {
+            return queryable.Where(j => j.Id == id);
         }
 
         public static IQueryable<JournalItem> FilterByParentFolderId(this IQueryable<JournalItem> queryable, Guid? id)

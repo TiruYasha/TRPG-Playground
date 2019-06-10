@@ -115,6 +115,42 @@ namespace Service.Test
         }
 
         [TestMethod]
+        public async Task UploadImageWillSaveAndAddATokenToTheCharacterSheet()
+        {
+            // arrange
+            var formFile = new Mock<IFormFile>(MockBehavior.Strict);
+
+            var game = await gameDataBuilder.BuildGame();
+            var dto = new JournalCharacterSheetDto()
+            {
+                Name = "test"
+            };
+
+            await game.AddJournalItem(dto);
+            var journalItem = game.JournalItems.First();
+            await context.Games.AddAsync(game);
+            await context.SaveChangesAsync();
+
+            formFile.SetupGet(f => f.FileName).Returns("test.png");
+
+            var path = fileStorageConfig.BigImageLocation + game.Id;
+
+            processor.Setup(p => p.SaveImage(formFile.Object, path, It.IsAny<string>())).Returns(Task.CompletedTask).Verifiable();
+
+            // act
+            var result = await sut.UploadImage(formFile.Object, game.Id, journalItem.Id, true);
+
+            // assert
+            processor.VerifyAll();
+
+            var journalItemResult = context.JournalItems.First(j => j.Id == journalItem.Id) as JournalCharacterSheet;
+            journalItemResult.Token.Extension.ShouldBe(".png");
+            journalItemResult.Token.OriginalName.ShouldBe("test.png");
+
+            result.ShouldNotBe(Guid.Empty);
+        }
+
+        [TestMethod]
         public void UploadImageWillThrowBadImageFormatExceptionOnBadExtension()
         {
             // arrange
@@ -226,8 +262,6 @@ namespace Service.Test
                 Id = journalItemId,
                 Name = "Updated",
                 Description = "This is also updated",
-                //CanEdit = new List<Guid> { gameDataBuilder.Player1.Id },
-                //CanSee = new List<Guid> { gameDataBuilder.Player1.Id },
                 OwnerNotes = "OwnerNotesUpdated",
                 ImageId = Guid.NewGuid()
             };

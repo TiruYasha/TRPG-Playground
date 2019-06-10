@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Domain.Domain.JournalItems;
-using Domain.Dto.RequestDto.Journal;
 using Domain.Dto.Shared;
 using Domain.Exceptions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
