@@ -86,11 +86,13 @@ export class JournalComponent extends DestroySubscription implements OnInit {
       .subscribe(journalItemId => this.removeItemFromTree(journalItemId));
   }
 
-
   subIconClicked(icon: string) {
     switch (icon) {
       case this.subIcons[0]:
         this.openDialog(JournalItemType.Folder, DialogState.New);
+        break;
+      case this.subIcons[1]:
+        this.openDialog(JournalItemType.CharacterSheet, DialogState.New);
         break;
       case this.subIcons[2]:
         this.openDialog(JournalItemType.Handout, DialogState.New);

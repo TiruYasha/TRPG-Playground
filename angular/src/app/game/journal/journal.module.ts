@@ -20,6 +20,7 @@ import { JournalNodeComponent } from './journal-node/journal-node.component';
 import { CreateHandoutDialogComponent } from './create-handout-dialog/create-handout-dialog.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ParentDialogComponent } from './parent-dialog/parent-dialog.component';
+import { CharacterSheetDialogComponent } from './character-sheet-dialog/character-sheet-dialog.component';
 
 @NgModule({
   imports: [
@@ -42,7 +43,12 @@ import { ParentDialogComponent } from './parent-dialog/parent-dialog.component';
   exports: [
     JournalComponent
   ],
-  declarations: [JournalComponent, CreateFolderDialogComponent, JournalNodeComponent, CreateHandoutDialogComponent, ParentDialogComponent],
+  declarations: [JournalComponent,
+    CreateFolderDialogComponent,
+    JournalNodeComponent,
+    CreateHandoutDialogComponent,
+    ParentDialogComponent,
+    CharacterSheetDialogComponent],
   entryComponents: [ParentDialogComponent]
 })
 export class JournalModule { }

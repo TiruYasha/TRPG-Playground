@@ -66,6 +66,12 @@ export class JournalService {
         return this.http.post(environment.apiUrl + `/journal/${journalItemId}/image`, formData);
     }
 
+    uploadToken(journalItemId: string, image: File) {
+        const formData = new FormData();
+        formData.append('file', image);
+        return this.http.post(environment.apiUrl + `/journal/${journalItemId}/token`, formData);
+    }
+
     private registerOnServerEvents(): void {
         this.activeGameService.hubConnection.on(JournalEvents.journalItemAdded, (data: AddedJournalItemModel) => {
             this.journalItemAddedSubject.next(data);

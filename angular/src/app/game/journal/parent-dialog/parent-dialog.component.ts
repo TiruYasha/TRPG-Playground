@@ -9,6 +9,7 @@ import { AddJournalItemRequestModel } from 'src/app/models/journal/requests/add-
 import { DestroySubscription } from 'src/app/shared/components/destroy-subscription.extendable';
 import { DialogState } from './dialog-state.enum';
 import { takeUntil } from 'rxjs/operators';
+import { JournalCharacterSheet } from 'src/app/models/journal/journalitems/journal-character-sheet.model';
 
 @Component({
   selector: 'trpg-journal-parent-dialog',
@@ -56,6 +57,7 @@ export class ParentDialogComponent extends DestroySubscription implements OnInit
   }
 
   saveJournalItem() {
+    console.log(this.journalItem);
     const journalItem = this.journalItem;
     if (this.data.state === DialogState.New) {
       const request: AddJournalItemRequestModel = {
@@ -64,15 +66,15 @@ export class ParentDialogComponent extends DestroySubscription implements OnInit
       };
       this.journalService.addJournalItemToGame(request).pipe(takeUntil(this.destroy))
         .subscribe((i) => {
-          if (this.journalItem.type === JournalItemType.Handout) {
+          if (this.journalItem.type !== JournalItemType.Folder) {
             this.journalItem.id = i.id;
+            this.data.journalItemId = i.id;
             this.data.state = DialogState.Edit;
           } else {
             this.exitDialog();
           }
         });
     } else {
-      journalItem.id = this.data.journalItemId;
       this.journalService.saveJournalItem(journalItem).pipe(takeUntil(this.destroy))
         .subscribe(() => {
           if (this.data.journalItemType === JournalItemType.Folder) {
@@ -87,6 +89,18 @@ export class ParentDialogComponent extends DestroySubscription implements OnInit
   uploadImage() {
     if (this.journalItem.image) {
       this.journalService.uploadImage(this.journalItem.id, this.journalItem.image)
+        .pipe(takeUntil(this.destroy))
+        .subscribe(() => {
+          //TODO message that uploading image is successful.
+        });
+    }
+  }
+
+  uploadToken() {
+    const characterSheet = this.journalItem as JournalCharacterSheet;
+    if (characterSheet.token) {
+      const characterSheet = this.journalItem as JournalCharacterSheet;
+      this.journalService.uploadToken(characterSheet.id, characterSheet.token)
         .pipe(takeUntil(this.destroy))
         .subscribe(() => {
           //TODO message that uploading image is successful.

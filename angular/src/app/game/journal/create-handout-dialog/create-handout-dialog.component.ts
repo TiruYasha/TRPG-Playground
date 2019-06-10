@@ -8,6 +8,7 @@ import { environment } from 'src/environments/environment';
 import { JournalItemPermission } from 'src/app/models/journal/journalitems/journal-item-permission.model';
 import { takeUntil } from 'rxjs/operators';
 import { DestroySubscription } from 'src/app/shared/components/destroy-subscription.extendable';
+import { PermissionParser } from 'src/app/utilities/permission-parser.util';
 
 @Component({
   selector: 'trpg-create-handout-dialog',
@@ -36,6 +37,13 @@ export class CreateHandoutDialogComponent extends DestroySubscription implements
     image: new FormControl(null)
   });
 
+  get name() { return this.form.get('name'); }
+  get description() { return this.form.get('description'); }
+  get ownerNotes() { return this.form.get('ownerNotes'); }
+  get canSee() { return this.form.get('canSee'); }
+  get canEdit() { return this.form.get('canEdit'); }
+  get image() { return this.form.get('image'); }
+
   constructor() {
     super();
   }
@@ -54,18 +62,11 @@ export class CreateHandoutDialogComponent extends DestroySubscription implements
           this.data.name = this.name.value;
           this.data.description = this.description.value;
           this.data.ownerNotes = this.ownerNotes.value;
-          this.data.permissions = this.createPermissions();
+          this.data.permissions = PermissionParser.createPermissions(this.canEdit.value, this.canSee.value);
           this.data.image = this.image.value;
         }
       });
   }
-
-  get name() { return this.form.get('name'); }
-  get description() { return this.form.get('description'); }
-  get ownerNotes() { return this.form.get('ownerNotes'); }
-  get canSee() { return this.form.get('canSee'); }
-  get canEdit() { return this.form.get('canEdit'); }
-  get image() { return this.form.get('image'); }
 
   onImageChange(event: Event) {
     const target = event.target as HTMLInputElement;
@@ -87,40 +88,9 @@ export class CreateHandoutDialogComponent extends DestroySubscription implements
     return `${environment.apiUrl}/journal/${journalItemId}/image`;
   }
 
-  private createPermissions() {
-    const permissions: JournalItemPermission[] = [];
-    this.canEdit.value.forEach(element => {
-      permissions.push({
-        canEdit: true,
-        canSee: true,
-        userId: element
-      });
-    });
-    this.canSee.value.forEach(element => {
-      const permission = permissions.filter(e => e.userId === element);
-      if (permission.length === 0) {
-        permissions.push({
-          canEdit: false,
-          canSee: true,
-          userId: element
-        });
-      }
-    });
-
-    return permissions;
-  }
-
   private setPermissionInputValues() {
-    const canSeeValues: string[] = [];
-    const canEditValues: string[] = [];
-    this.data.permissions.forEach(permission => {
-      if (permission.canEdit) {
-        canSeeValues.push(permission.userId);
-        canEditValues.push(permission.userId);
-      } else if (permission.canSee) {
-        canSeeValues.push(permission.userId);
-      }
-    });
+    const [canSeeValues, canEditValues] = PermissionParser.splitJournalItemPermissions(this.data.permissions);
+
     this.canSee.setValue(canSeeValues);
     this.canEdit.setValue(canEditValues);
   }
