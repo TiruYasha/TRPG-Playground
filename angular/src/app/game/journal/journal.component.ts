@@ -108,29 +108,21 @@ export class JournalComponent extends DestroySubscription implements OnInit {
     journalItem.imageId = model.imageId;
     journalItem.parentFolderId = model.parentFolderId;
 
-    let node = new DynamicFlatNode<JournalTreeItem>(journalItem, 0);
-
-    if (model.parentFolderId) {
-      const parentFolder = this.dataSource.data.filter(d => d.item.id === model.parentFolderId)[0];
-
-      if (parentFolder && this.treeControl.isExpanded(parentFolder)) {
-        node = new DynamicFlatNode<JournalTreeItem>(journalItem, parentFolder.level + 1);
-        const index = this.dataSource.data.indexOf(parentFolder);
-        this.dataSource.data.splice(index + 1, 0, node);
-      }
-    } else {
-      this.dataSource.data.push(node);
-    }
-    this.refreshDataSource();
+    this.addJournalItemToTree(journalItem);
   }
+
 
   updatedJournalItem(journalTreeItem: JournalTreeItem) {
     const journalTreeItemToUpdate = this.dataSource.data.filter(d => d.item.id === journalTreeItem.id)[0];
 
-    journalTreeItemToUpdate.item.name = journalTreeItem.name;
-    journalTreeItemToUpdate.item.canEdit = journalTreeItem.canEdit;
+    if (journalTreeItemToUpdate) {
+      journalTreeItemToUpdate.item.name = journalTreeItem.name;
+      journalTreeItemToUpdate.item.canEdit = journalTreeItem.canEdit;
 
-    this.refreshDataSource();
+      this.refreshDataSource();
+    } else {
+      this.addJournalItemToTree(journalTreeItem);
+    }
   }
 
   removeItemFromTree(journalItemId: string): void {
@@ -182,6 +174,22 @@ export class JournalComponent extends DestroySubscription implements OnInit {
       .pipe(takeUntil(this.destroy))
       .subscribe();
   }
+
+  private addJournalItemToTree(journalItem: JournalTreeItem) {
+    let node = new DynamicFlatNode<JournalTreeItem>(journalItem, 0);
+    if (journalItem.parentFolderId) {
+      const parentFolder = this.dataSource.data.filter(d => d.item.id === journalItem.parentFolderId)[0];
+      if (parentFolder && this.treeControl.isExpanded(parentFolder)) {
+        node = new DynamicFlatNode<JournalTreeItem>(journalItem, parentFolder.level + 1);
+        const index = this.dataSource.data.indexOf(parentFolder);
+        this.dataSource.data.splice(index + 1, 0, node);
+      }
+    } else {
+      this.dataSource.data.push(node);
+    }
+    this.refreshDataSource();
+  }
+
 
   private openDialog(journalItemType: JournalItemType, state: DialogState, journalItemId: string = null, parentFolderId: string = null) {
     const data: ParentDialogModel = {
