@@ -111,7 +111,6 @@ export class JournalComponent extends DestroySubscription implements OnInit {
     this.addJournalItemToTree(journalItem);
   }
 
-
   updatedJournalItem(journalTreeItem: JournalTreeItem) {
     const journalTreeItemToUpdate = this.dataSource.data.filter(d => d.item.id === journalTreeItem.id)[0];
 
@@ -189,7 +188,6 @@ export class JournalComponent extends DestroySubscription implements OnInit {
     }
     this.refreshDataSource();
   }
-
 
   private openDialog(journalItemType: JournalItemType, state: DialogState, journalItemId: string = null, parentFolderId: string = null) {
     const data: ParentDialogModel = {

@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { DestroySubscription } from 'src/app/shared/components/destroy-subscription.extendable';
-import { Player } from '@angular/core/src/render3/interfaces/player';
 import { DialogState } from '../parent-dialog/dialog-state.enum';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ValidatorFunctions } from 'src/app/utilities/validator-functions';
@@ -8,6 +7,7 @@ import { PermissionParser } from 'src/app/utilities/permission-parser.util';
 import { takeUntil } from 'rxjs/operators';
 import { JournalCharacterSheet } from 'src/app/models/journal/journalitems/journal-character-sheet.model';
 import { environment } from 'src/environments/environment';
+import { Player } from 'src/app/models/game/player.model';
 
 @Component({
   selector: 'trpg-character-sheet-dialog',

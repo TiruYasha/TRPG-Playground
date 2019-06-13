@@ -10,15 +10,24 @@
   </ng-container>
   <ng-container *ngIf="dialogState === states.Edit">
     <div mat-dialog-content class="content">
-      <img *ngIf="imageToUpload" [src]="imageToUpload">
-      <img *ngIf="dialogState === states.Edit && !imageToUpload" [src]="getImageLink(data.id)">
+      <div class="coverImage">
+        <img class="imgScaleHeight" *ngIf="imageToUpload" [src]="imageToUpload">
+        <img class="imgScaleHeight" *ngIf="dialogState === states.Edit && !imageToUpload" [src]="getImageLink(data.id)">
+      </div>
       <div class="notes">
         <h1 mat-dialog-title>Character Sheet</h1>
         <form class="dialogContent" [formGroup]="form">
-          <mat-form-field>
-            <input matInput placeholder="Handout name" formControlName="name" required cdkFocusInitial>
-            <mat-error *ngIf="name.invalid">The name is required</mat-error>
-          </mat-form-field>
+          <div class="tokenName">
+            <div class="token">
+              <img class="imgScaleWidth" *ngIf="tokenToUpload" [src]="tokenToUpload">
+              <img class="imgScaleWidth" *ngIf="dialogState === states.Edit && !tokenToUpload"
+                [src]="getTokenLink(data.id)">
+            </div>
+            <mat-form-field class="title">
+              <input matInput placeholder="Handout name" formControlName="name" required cdkFocusInitial>
+              <mat-error *ngIf="name.invalid">The name is required</mat-error>
+            </mat-form-field>
+          </div>
           <input placeholder="Image" type="file" (change)="onImageChange($event)">
           <input placeholder="Token" type="file" (change)="onTokenChange($event)">
           <mat-form-field>
@@ -48,9 +57,16 @@
 
   <ng-container *ngIf="dialogState === states.View">
     <div mat-dialog-content class="content">
-      <img [src]="getImageLink(data.id)">
+      <div class="coverImage" *ngIf="data.imageId">
+        <img class="imgScaleHeight" [src]="getImageLink(data.id)">
+      </div>
       <div class="notes">
-        <h1 mat-dialog-title>{{data.name}}</h1>
+        <div class="tokenName">
+          <div class="token">
+            <img class="imgScaleWidth" [src]="getTokenLink(data.id)">
+          </div>
+          <h1 class="title" mat-dialog-title>{{data.name}}</h1>
+        </div>
         <div class="description">
           {{data.description}}
         </div>
