@@ -1,23 +1,21 @@
-﻿using Domain.Domain.JournalItems;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Shouldly;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Domain.Dto.RequestDto.Journal;
+using Domain.Domain.JournalItems;
 using Domain.Dto.Shared;
 using Domain.Exceptions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Shouldly;
 
 namespace Domain.Test.Domain.JournalItems
 {
     [TestClass]
-    public class JournalHandoutTest
+    public class JournalCharacterSheetTest
     {
         private readonly Guid userId = Guid.NewGuid();
-        private JournalHandoutDto handoutModel;
-        private AddJournalItemDto model;
+        private JournalCharacterSheetDto characterSheetModel;
 
-        private JournalHandout sut;
+        private JournalCharacterSheet sut;
 
         [TestInitialize]
         public void Initialize()
@@ -28,7 +26,8 @@ namespace Domain.Test.Domain.JournalItems
                 CanSee = true,
                 CanEdit = true
             };
-            handoutModel = new JournalHandoutDto
+
+            characterSheetModel = new JournalCharacterSheetDto
             {
                 Name = "handout",
                 Description = "description",
@@ -36,21 +35,21 @@ namespace Domain.Test.Domain.JournalItems
                 Permissions = new List<JournalItemPermissionDto> { permission }
             };
 
-            sut = new JournalHandout(handoutModel, Guid.NewGuid());
+            sut = new JournalCharacterSheet(characterSheetModel, Guid.NewGuid());
         }
 
         [TestMethod]
-        public void ConstructorSetsTheHandoutData()
+        public void ConstructorSetsTheCharacterSheetData()
         {
-            sut.Type.ShouldBe(JournalItemType.Handout);
-            sut.Name.ShouldBe(handoutModel.Name);
-            sut.Description.ShouldBe(handoutModel.Description);
-            sut.OwnerNotes.ShouldBe(handoutModel.OwnerNotes);
+            sut.Type.ShouldBe(JournalItemType.CharacterSheet);
+            sut.Name.ShouldBe(characterSheetModel.Name);
+            sut.Description.ShouldBe(characterSheetModel.Description);
+            sut.OwnerNotes.ShouldBe(characterSheetModel.OwnerNotes);
             sut.Permissions.Count.ShouldBe(1);
         }
 
         [TestMethod]
-        public async Task UpdateUpdatesTheHandout()
+        public async Task UpdateUpdatesTheCharacterSheet()
         {
             // arrange
             var newUserId = Guid.NewGuid();
@@ -68,7 +67,7 @@ namespace Domain.Test.Domain.JournalItems
                 CanEdit = true
             };
 
-            JournalHandoutDto updateModel = new JournalHandoutDto
+            JournalCharacterSheetDto updateModel = new JournalCharacterSheetDto
             {
                 Name = "updated",
                 Description = "updated",
@@ -103,17 +102,17 @@ namespace Domain.Test.Domain.JournalItems
         }
 
         [TestMethod]
-        public async Task SetImageSetsTheImage()
+        public async Task SetTokenSetsTheToken()
         {
             // arrange
             var extension = ".png";
             var originalName = "testing.png";
 
             // act
-            var result = await sut.SetImage(extension, originalName);
+            var result = await sut.SetToken(extension, originalName);
 
             // assert
-            sut.Image.ShouldBe(result);
+            sut.Token.ShouldBe(result);
         }
     }
 }

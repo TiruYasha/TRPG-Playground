@@ -86,11 +86,13 @@ export class JournalComponent extends DestroySubscription implements OnInit {
       .subscribe(journalItemId => this.removeItemFromTree(journalItemId));
   }
 
-
   subIconClicked(icon: string) {
     switch (icon) {
       case this.subIcons[0]:
         this.openDialog(JournalItemType.Folder, DialogState.New);
+        break;
+      case this.subIcons[1]:
+        this.openDialog(JournalItemType.CharacterSheet, DialogState.New);
         break;
       case this.subIcons[2]:
         this.openDialog(JournalItemType.Handout, DialogState.New);
@@ -106,29 +108,20 @@ export class JournalComponent extends DestroySubscription implements OnInit {
     journalItem.imageId = model.imageId;
     journalItem.parentFolderId = model.parentFolderId;
 
-    let node = new DynamicFlatNode<JournalTreeItem>(journalItem, 0);
-
-    if (model.parentFolderId) {
-      const parentFolder = this.dataSource.data.filter(d => d.item.id === model.parentFolderId)[0];
-
-      if (parentFolder && this.treeControl.isExpanded(parentFolder)) {
-        node = new DynamicFlatNode<JournalTreeItem>(journalItem, parentFolder.level + 1);
-        const index = this.dataSource.data.indexOf(parentFolder);
-        this.dataSource.data.splice(index + 1, 0, node);
-      }
-    } else {
-      this.dataSource.data.push(node);
-    }
-    this.refreshDataSource();
+    this.addJournalItemToTree(journalItem);
   }
 
   updatedJournalItem(journalTreeItem: JournalTreeItem) {
     const journalTreeItemToUpdate = this.dataSource.data.filter(d => d.item.id === journalTreeItem.id)[0];
 
-    journalTreeItemToUpdate.item.name = journalTreeItem.name;
-    journalTreeItemToUpdate.item.canEdit = journalTreeItem.canEdit;
+    if (journalTreeItemToUpdate) {
+      journalTreeItemToUpdate.item.name = journalTreeItem.name;
+      journalTreeItemToUpdate.item.canEdit = journalTreeItem.canEdit;
 
-    this.refreshDataSource();
+      this.refreshDataSource();
+    } else {
+      this.addJournalItemToTree(journalTreeItem);
+    }
   }
 
   removeItemFromTree(journalItemId: string): void {
@@ -141,12 +134,12 @@ export class JournalComponent extends DestroySubscription implements OnInit {
         const parentId = parentIds.pop();
         const childNodes = this.dataSource.data.filter(j => j.item.parentFolderId === parentId);
         this.dataSource.data = this.dataSource.data.filter(j => j.item.id !== node.item.id);
-        childNodes.forEach(node => {
-          if (node.item.type === JournalItemType.Folder) {
-            parentIds.push(node.item.id);
+        childNodes.forEach(childNode => {
+          if (childNode.item.type === JournalItemType.Folder) {
+            parentIds.push(childNode.item.id);
           }
 
-          this.dataSource.data = this.dataSource.data.filter(j => j.item.id !== node.item.id);
+          this.dataSource.data = this.dataSource.data.filter(j => j.item.id !== childNode.item.id);
         });
       }
     } else {
@@ -181,14 +174,32 @@ export class JournalComponent extends DestroySubscription implements OnInit {
       .subscribe();
   }
 
+  private addJournalItemToTree(journalItem: JournalTreeItem) {
+    let node = new DynamicFlatNode<JournalTreeItem>(journalItem, 0);
+    if (journalItem.parentFolderId) {
+      const parentFolder = this.dataSource.data.filter(d => d.item.id === journalItem.parentFolderId)[0];
+      if (parentFolder && this.treeControl.isExpanded(parentFolder)) {
+        node = new DynamicFlatNode<JournalTreeItem>(journalItem, parentFolder.level + 1);
+        const index = this.dataSource.data.indexOf(parentFolder);
+        this.dataSource.data.splice(index + 1, 0, node);
+      }
+    } else {
+      this.dataSource.data.push(node);
+    }
+    this.refreshDataSource();
+  }
+
   private openDialog(journalItemType: JournalItemType, state: DialogState, journalItemId: string = null, parentFolderId: string = null) {
+    const treeItem = this.dataSource.data.filter(d => d.item.id === journalItemId)[0];
+
     const data: ParentDialogModel = {
       players: this.players,
       isOwner: this.isOwner,
       parentFolderId: parentFolderId,
       journalItemId: journalItemId,
       state: state,
-      journalItemType: journalItemType
+      journalItemType: journalItemType,
+      canEdit: treeItem.item.canEdit
     };
     this.dialog.open(ParentDialogComponent, {
       width: 'auto',

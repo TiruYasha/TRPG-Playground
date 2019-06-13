@@ -5,11 +5,11 @@ import { ParentDialogModel } from './parent-dialog.model';
 import { JournalItem } from 'src/app/models/journal/journalitems/journal-item.model';
 import { JournalItemType } from 'src/app/models/journal/journalitems/journal-item-type.enum';
 import { JournalService } from '../journal.service';
-import { JournalHandout } from 'src/app/models/journal/journalitems/journal-handout.model';
 import { AddJournalItemRequestModel } from 'src/app/models/journal/requests/add-journal-item-request.model';
 import { DestroySubscription } from 'src/app/shared/components/destroy-subscription.extendable';
 import { DialogState } from './dialog-state.enum';
 import { takeUntil } from 'rxjs/operators';
+import { JournalCharacterSheet } from 'src/app/models/journal/journalitems/journal-character-sheet.model';
 
 @Component({
   selector: 'trpg-journal-parent-dialog',
@@ -57,6 +57,7 @@ export class ParentDialogComponent extends DestroySubscription implements OnInit
   }
 
   saveJournalItem() {
+    console.log(this.journalItem);
     const journalItem = this.journalItem;
     if (this.data.state === DialogState.New) {
       const request: AddJournalItemRequestModel = {
@@ -65,30 +66,44 @@ export class ParentDialogComponent extends DestroySubscription implements OnInit
       };
       this.journalService.addJournalItemToGame(request).pipe(takeUntil(this.destroy))
         .subscribe((i) => {
-          if (this.journalItem.image) {
-            this.journalService.uploadImage(i.id, journalItem.image)
-              .pipe(takeUntil(this.destroy))
-              .subscribe(e => this.exitDialog());
+          if (this.journalItem.type !== JournalItemType.Folder) {
+            this.journalItem.id = i.id;
+            this.data.journalItemId = i.id;
+            this.data.state = DialogState.Edit;
           } else {
             this.exitDialog();
           }
         });
     } else {
-      journalItem.id = this.data.journalItemId;
       this.journalService.saveJournalItem(journalItem).pipe(takeUntil(this.destroy))
         .subscribe(() => {
           if (this.data.journalItemType === JournalItemType.Folder) {
             this.exitDialog();
           } else {
-            if (this.journalItem.image) {
-              this.journalService.uploadImage(this.journalItem.id, journalItem.image)
-                .pipe(takeUntil(this.destroy))
-                .subscribe(() => {
-                  this.journalItem = journalItem;
-                  this.data.state = DialogState.View;
-                });
-            }
+            this.data.state = DialogState.View;
           }
+        });
+    }
+  }
+
+  uploadImage() {
+    if (this.journalItem.image) {
+      this.journalService.uploadImage(this.journalItem.id, this.journalItem.image)
+        .pipe(takeUntil(this.destroy))
+        .subscribe(() => {
+          //TODO message that uploading image is successful.
+        });
+    }
+  }
+
+  uploadToken() {
+    const characterSheet = this.journalItem as JournalCharacterSheet;
+    if (characterSheet.token) {
+      const characterSheet = this.journalItem as JournalCharacterSheet;
+      this.journalService.uploadToken(characterSheet.id, characterSheet.token)
+        .pipe(takeUntil(this.destroy))
+        .subscribe(() => {
+          //TODO message that uploading image is successful.
         });
     }
   }

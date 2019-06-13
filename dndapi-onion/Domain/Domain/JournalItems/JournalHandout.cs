@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Domain.Dto.RequestDto.Journal;
 using Domain.Dto.Shared;
 
 namespace Domain.Domain.JournalItems
 {
     public class JournalHandout : JournalItem
     {
-        public string Description { get; set; }
-        public string OwnerNotes { get; set; }
+        public string Description { get; private set; }
+        public string OwnerNotes { get; private set; }
 
         private JournalHandout() { }
 

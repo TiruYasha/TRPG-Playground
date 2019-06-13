@@ -10,16 +10,20 @@ namespace Domain.JsonConverter
         protected override JournalItemDto Create(Type objectType, JObject jObject)
         {
             if (jObject == null) throw new ArgumentNullException("jObject");
+            var typeNumber = jObject.Value<int>("type");
+            var journalItemType = (JournalItemType)typeNumber;
 
-            var journalItemType = jObject.Value<JournalItemType>("Type");
-
-            if (journalItemType != JournalItemType.Folder)
+            if (journalItemType == JournalItemType.Folder)
             {
                 return new JournalFolderDto();
             }
-            else if (journalItemType != JournalItemType.Handout)
+            else if (journalItemType == JournalItemType.Handout)
             {
                 return new JournalHandoutDto();
+            }
+            else if (journalItemType == JournalItemType.CharacterSheet)
+            {
+                return new JournalCharacterSheetDto();
             }
             else
             {

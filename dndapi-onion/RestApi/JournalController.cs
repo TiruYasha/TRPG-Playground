@@ -56,7 +56,6 @@ namespace RestApi
             return Ok(result);
         }
 
-
         [HttpPost]
         [Authorize(Policy = "IsGameOwner")]
         [Route("AddJournalItem")]
@@ -92,12 +91,34 @@ namespace RestApi
             return Ok(result);
         }
 
+        [HttpPost]
+        [Route("{journalItemId}/token")]
+        public async Task<IActionResult> UploadTokenForJournalCharacterSheet(Guid journalItemId)
+        {
+            var gameId = jwtReader.GetGameId();
+            var file = Request.Form.Files.FirstOrDefault();
+
+            var result = await journalService.UploadImage(file, gameId, journalItemId, true);
+            await hubContext.Clients.Group(gameId.ToString()).SendAsync(JournalEvents.JournalCharacterSheetTokenUploaded, new UploadedImageDto { ImageId = result, JournalItemId = journalItemId });
+            return Ok(result);
+        }
+
         [HttpGet]
         [Route("{journalItemId}/image")]
         [AllowAnonymous]
         public async Task<IActionResult> GetThumbnailForJournalItem(Guid journalItemId)
         {
             var imageInBytes = await journalService.GetImage(journalItemId, true);
+
+            return File(imageInBytes, "image/jpeg");
+        }
+
+        [HttpGet]
+        [Route("{journalItemId}/token")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetTokenForCharacterSheet(Guid journalItemId)
+        {
+            var imageInBytes = await journalService.GetToken(journalItemId, true);
 
             return File(imageInBytes, "image/jpeg");
         }

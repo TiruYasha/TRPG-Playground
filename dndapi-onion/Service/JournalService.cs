@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain.Config;
+using Domain.Domain;
 using Domain.Dto.RequestDto.Journal;
 using Domain.Dto.ReturnDto.Journal;
 using Domain.Dto.Shared;
@@ -89,7 +90,7 @@ namespace Service
             return await query.ProjectTo<JournalItemTreeItemDto>(mapper.ConfigurationProvider).ToListAsync();
         }
 
-        public async Task<Guid> UploadImage(IFormFile file, Guid gameId, Guid journalItemId)
+        public async Task<Guid> UploadImage(IFormFile file, Guid gameId, Guid journalItemId, bool token = false)
         {
             //TODO: In future updates also limit size of images.
             var originalName = file.FileName;
@@ -101,7 +102,17 @@ namespace Service
             }
 
             var journalItem = context.JournalItems.FirstOrDefault(j => j.Id == journalItemId);
-            var image = await journalItem.SetImage(extension, originalName);
+
+            Image image;
+            if (token)
+            {
+                var journalCharacterSheet = journalItem as JournalCharacterSheet;
+                image = await journalCharacterSheet.SetToken(extension, originalName);
+            }
+            else
+            {
+                image = await journalItem.SetImage(extension, originalName);
+            }
 
             await imageProcessor.SaveImage(file, fileStorageConfig.BigImageLocation + gameId, $"{image.Id}{extension}");
 
@@ -113,11 +124,29 @@ namespace Service
         public async Task<byte[]> GetImage(Guid journalItemId, bool isThumbnail)
         {
             var location = isThumbnail ? fileStorageConfig.ThumbnailLocation : fileStorageConfig.BigImageLocation;
-            var image = await context.JournalItems.Include(j => j.Image).FilterById(journalItemId).Select(j => new { j.GameId, j.ImageId, j.Image.Extension }).FirstOrDefaultAsync();
+            
+            var image = await context.JournalItems.Include(j => j.Image).FilterById(journalItemId)
+                    .Select(j => new {j.GameId, j.ImageId, j.Image.Extension}).FirstOrDefaultAsync();
 
             if (image.ImageId == null) return new byte[0];
 
             var fullPath = $"{location}{image.GameId}/{image.ImageId}{image.Extension}";
+
+            var binary = await File.ReadAllBytesAsync(fullPath);
+
+            return binary;
+        }
+
+        public async Task<byte[]> GetToken(Guid journalItemId, bool isThumbnail)
+        {
+            var location = isThumbnail ? fileStorageConfig.ThumbnailLocation : fileStorageConfig.BigImageLocation;
+
+            var image = await context.JournalCharacterSheets.Include(j => j.Token).FilterById(journalItemId)
+                .Select(j => new { j.GameId, j.TokenId, j.Token.Extension }).FirstOrDefaultAsync();
+
+            if (image.TokenId == null) return new byte[0];
+
+            var fullPath = $"{location}{image.GameId}/{image.TokenId}{image.Extension}";
 
             var binary = await File.ReadAllBytesAsync(fullPath);
 
