@@ -190,13 +190,16 @@ export class JournalComponent extends DestroySubscription implements OnInit {
   }
 
   private openDialog(journalItemType: JournalItemType, state: DialogState, journalItemId: string = null, parentFolderId: string = null) {
+    const treeItem = this.dataSource.data.filter(d => d.item.id === journalItemId)[0];
+
     const data: ParentDialogModel = {
       players: this.players,
       isOwner: this.isOwner,
       parentFolderId: parentFolderId,
       journalItemId: journalItemId,
       state: state,
-      journalItemType: journalItemType
+      journalItemType: journalItemType,
+      canEdit: treeItem.item.canEdit
     };
     this.dialog.open(ParentDialogComponent, {
       width: 'auto',

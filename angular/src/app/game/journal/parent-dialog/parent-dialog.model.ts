@@ -9,5 +9,5 @@ export class ParentDialogModel {
     journalItemType: JournalItemType;
     parentFolderId?: string;
     journalItemId?: string;
-
+    canEdit: boolean;
 }

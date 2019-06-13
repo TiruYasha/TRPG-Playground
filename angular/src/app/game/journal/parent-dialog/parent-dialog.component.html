@@ -26,7 +26,7 @@
   </div>
   <div mat-dialog-actions>
     <button mat-raised-button (click)="exitDialog()">Close</button>
-    <button mat-raised-button *ngIf="this.data.state === states.View"  (click)="data.state = states.Edit">Edit</button>
+    <button mat-raised-button *ngIf="this.data.state === states.View && this.data.isOwner || this.data.canEdit"  (click)="data.state = states.Edit">Edit</button>
     <button mat-raised-button *ngIf="this.data.state !== states.View" [disabled]="!isValid" (click)="saveJournalItem()">Save</button>
   </div>
   <div style="height: 20px" (mousedown)="startResize($event)"></div>
