@@ -199,7 +199,7 @@ export class JournalComponent extends DestroySubscription implements OnInit {
       journalItemId: journalItemId,
       state: state,
       journalItemType: journalItemType,
-      canEdit: treeItem.item.canEdit
+      canEdit: state === DialogState.New ? true :  treeItem.item.canEdit
     };
     this.dialog.open(ParentDialogComponent, {
       width: 'auto',

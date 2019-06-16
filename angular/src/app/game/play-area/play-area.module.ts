@@ -5,7 +5,7 @@ import { PlayAreaComponent } from './play-area.component';
 @NgModule({
   declarations: [PlayAreaComponent],
   imports: [
-    CommonModule
+    CommonModule,
   ],
   exports: [
     PlayAreaComponent
