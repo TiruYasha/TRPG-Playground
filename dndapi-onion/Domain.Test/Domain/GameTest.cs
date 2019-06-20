@@ -38,6 +38,20 @@ namespace Domain.Test.Domain
         }
 
         [TestMethod]
+        public void NewGameCreatesPlayArea()
+        {
+            // Arrange
+            var name = "Elysia";
+            var owner = new User();
+
+            // Action
+            var game = new Game(name, owner);
+
+            // Assert
+            game.PlayArea.ShouldNotBeNull();
+        }
+
+        [TestMethod]
         public void NewGameThrowsExceptionOnEmptyName()
         {
             // Arrange
