@@ -7,6 +7,7 @@ using DataAccess;
 using Domain.Domain;
 using Domain.Dto.RequestDto;
 using Domain.Dto.Shared;
+using Domain.Exceptions;
 using Domain.ServiceInterfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,6 +27,11 @@ namespace Service
         public async Task<MapDto> AddMap(AddMapDto dto, Guid playAreaId, Guid gameId)
         {
             var playArea = await context.PlayAreas.FilterByGameAndPlayAreaId(gameId, playAreaId).FirstOrDefaultAsync();
+
+            if (playArea == null)
+            {
+                throw new NotFoundException("The playarea can not be found");
+            }
 
             var map = await playArea.AddMap(dto);
 

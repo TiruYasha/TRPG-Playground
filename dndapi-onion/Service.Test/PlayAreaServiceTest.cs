@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Domain.Dto.RequestDto;
+using Domain.Exceptions;
 using Domain.MappingProfiles;
 using Domain.ServiceInterfaces;
 using Microsoft.EntityFrameworkCore;
@@ -51,6 +52,19 @@ namespace Service.Test
             result.HeightInPixels.ShouldBe(addMapDto.HeightInPixels);
             result.Name.ShouldBe(addMapDto.Name);
             result.WidthInPixels.ShouldBe(addMapDto.WidthInPixels);
+        }
+
+        [TestMethod]
+        public async Task AddMapThrowNotFoundExceptionWhenGameOrPlayAreaCantBeFound()
+        {
+            // Arrange
+            var addMapDto = new AddMapDto();
+
+            // Act
+            var result = await Should.ThrowAsync<NotFoundException>(sut.AddMap(addMapDto, new Guid(), new Guid())); 
+
+            // Assert
+            result.Message.ShouldBe("The playarea can not be found");
         }
     }
 }
