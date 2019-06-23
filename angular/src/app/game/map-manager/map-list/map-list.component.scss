@@ -1,0 +1,20 @@
+.mapListContainer {
+  position: relative;
+  height: 100%;
+
+  h3 {
+    padding: 16px;
+    margin: 0;
+  }
+
+  .addButton {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+  }
+
+  .listItemsContainer {
+    height: calc(100% - 60px);
+    overflow-y: scroll;
+  }
+}

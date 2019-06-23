@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Domain.Dto.RequestDto;
 using Domain.Dto.Shared;
 
 namespace Domain.Domain
@@ -17,7 +18,7 @@ namespace Domain.Domain
         public virtual ICollection<GamePlayer> Players { get; private set; }
         public virtual ICollection<ChatMessage> ChatMessages { get; private set; }
         public virtual ICollection<JournalItem> JournalItems { get; private set; }
-        public virtual PlayArea PlayArea { get; set; }
+        public virtual  ICollection<Map> Maps { get; private set; }
 
         private Game()
         {
@@ -25,7 +26,7 @@ namespace Domain.Domain
             Players = new List<GamePlayer>();
             ChatMessages = new List<ChatMessage>();
             JournalItems = new List<JournalItem>();
-            PlayArea = new PlayArea(Id);
+            Maps = new List<Map>();
         }
 
         public Game(string name, User owner) : this()
@@ -95,6 +96,16 @@ namespace Domain.Domain
                 JournalItems.Add(journalItem);
 
                 return journalItem;
+            });
+        }
+
+        public Task<Map> AddMap(AddMapDto dto)
+        {
+            return Task.Run(() =>
+            {
+                var map = new Map(dto);
+                Maps.Add(map);
+                return map;
             });
         }
 

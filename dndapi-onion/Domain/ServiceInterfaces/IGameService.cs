@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Domain.Dto.RequestDto;
 using Domain.Dto.ReturnDto.Game;
+using Domain.Dto.Shared;
 
 namespace Domain.ServiceInterfaces
 {
@@ -20,5 +22,7 @@ namespace Domain.ServiceInterfaces
         Task<bool> IsOwnerOfGameAsync(Guid userId, Guid activeGameId);
         Task<bool> IsGamePlayerOrOwnerOfGameAsync(Guid userId, Guid activeGameId);
         Task<IEnumerable<GetPlayersModel>> GetPlayersAsync(Guid gameId);
+        Task<MapDto> AddMap(AddMapDto dto, Guid gameId);
+        Task<IEnumerable<MapDto>> GetMaps(Guid gameId);
     }
 }

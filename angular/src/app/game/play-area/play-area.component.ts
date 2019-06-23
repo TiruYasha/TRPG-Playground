@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
-import { Canvas } from 'fabric/fabric-impl';
-import { fabric } from 'fabric';
+
 import { Application, utils, Sprite, Loader, Graphics, interaction } from 'pixi.js';
 
 
@@ -12,7 +11,6 @@ import { Application, utils, Sprite, Loader, Graphics, interaction } from 'pixi.
 export class PlayAreaComponent implements OnInit, AfterViewInit {
 
   @ViewChild('canvasContainer') canvasContainer: ElementRef;
-  canvas: Canvas;
   application: Application;
 
   constructor() { }
@@ -28,9 +26,6 @@ export class PlayAreaComponent implements OnInit, AfterViewInit {
     this.application.renderer.backgroundColor = 0xFFFFFF;
 
     div.appendChild(this.application.view);
-
-    // const texture = utils.TextureCache['/assets/images/Canvas_test_map.jpg'];
-    // const sprite = new Sprite(texture);
 
     const testing = new Loader();
 
@@ -58,7 +53,7 @@ export class PlayAreaComponent implements OnInit, AfterViewInit {
 
     for (let j = 0; j < height; j += gridSizeInPixels) {
       const horizontalLine = new Graphics();
-      horizontalLine.lineStyle(5, 0x00000, 1);
+      horizontalLine.lineStyle(1, 0x00000, 1);
       horizontalLine.moveTo(0, j);
       horizontalLine.lineTo(width, j);
       horizontalLine.x = 0;
@@ -69,7 +64,7 @@ export class PlayAreaComponent implements OnInit, AfterViewInit {
 
     for (let i = 0; i < width; i += gridSizeInPixels) {
       const verticalLine = new Graphics();
-      verticalLine.lineStyle(5, 0x00000, 1);
+      verticalLine.lineStyle(1, 0x00000, 1);
       verticalLine.moveTo(i, 0);
       verticalLine.lineTo(i, height);
       verticalLine.x = i;
@@ -128,65 +123,4 @@ export class PlayAreaComponent implements OnInit, AfterViewInit {
       this.rectangle.y = newPosition.y;
     }
   }
-
-  // ngAfterViewInit(): void {
-  //   this.canvas = new fabric.Canvas('c');
-
-  //   fabric.Image.fromURL('/assets/images/Canvas_test_map.jpg', (oImg) => {
-  //     this.canvas.setWidth(oImg.width);
-  //     this.canvas.setHeight(oImg.height);
-  //     this.canvas.add(oImg);
-
-  //     const rect = new fabric.Rect({
-  //       left: 100,
-  //       top: 100,
-  //       fill: 'red',
-  //       width: 20,
-  //       height: 20
-  //     });
-
-  //     this.canvas.add(rect);
-
-  //     this.draw_grid(50);
-  //   });
-  // }
-
-
-  // private draw_grid(gridSizeInPixels: number) {
-
-  //   const width = this.canvas.getWidth();
-  //   const height = this.canvas.getHeight();
-
-  //   const lines = [];
-
-  //   for (let j = 0; j < height; j += gridSizeInPixels) {
-  //     const horizontalLine = new fabric.Line([0, j + gridSizeInPixels, width, j + gridSizeInPixels], {
-  //       selectable: false,
-  //       stroke: 'black',
-  //       strokeWidth: 1,
-  //     });
-
-  //     lines.push(horizontalLine);
-  //   }
-
-  //   for (let i = 0; i < width; i += gridSizeInPixels) {
-  //     const verticalLine = new fabric.Line([i + gridSizeInPixels, 0, i + gridSizeInPixels, height], {
-  //       selectable: false,
-  //       stroke: 'black',
-  //       strokeWidth: 1,
-  //     });
-
-  //     lines.push(verticalLine);
-  //   }
-
-  //   const group = new fabric.Group(lines, {
-  //     // width: this.canvas.getWidth(),
-  //     // height: this.canvas.getHeight(),
-  //     // strokeWidth: 1,
-  //     // stroke: 'black',
-  //     selectable: false,
-  //   });
-
-  //   this.canvas.add(group);
-  // }
 }

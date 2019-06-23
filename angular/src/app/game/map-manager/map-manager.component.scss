@@ -1,0 +1,14 @@
+.mapManager {
+  height: 100%;
+  display: flex;
+  flex-flow: column;
+
+  .mapList {
+      max-height: 50%;
+      flex-basis: 50%;
+  }
+
+  .layerManager {
+      flex-basis: 50%;
+  }
+}

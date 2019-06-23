@@ -20,7 +20,6 @@ namespace DataAccess
         public DbSet<JournalHandout> JournalHandouts { get; set; }
         public DbSet<JournalCharacterSheet> JournalCharacterSheets { get; set; }
         public DbSet<Image> Images { get; set; }
-        public DbSet<PlayArea> PlayAreas { get; set; }
         public DbSet<Map> Maps { get; set; }
 
         public DndContext(DbContextOptions<DndContext> options) : base(options)

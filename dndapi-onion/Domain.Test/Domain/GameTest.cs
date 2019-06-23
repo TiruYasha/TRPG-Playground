@@ -6,6 +6,7 @@ using Shouldly;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Domain.Dto.RequestDto;
 using Domain.Dto.RequestDto.Journal;
 using Domain.Dto.Shared;
 using Domain.Utilities;
@@ -38,7 +39,7 @@ namespace Domain.Test.Domain
         }
 
         [TestMethod]
-        public void NewGameCreatesPlayArea()
+        public void NewGameCreatesEmptyMapCollection()
         {
             // Arrange
             var name = "Elysia";
@@ -48,7 +49,7 @@ namespace Domain.Test.Domain
             var game = new Game(name, owner);
 
             // Assert
-            game.PlayArea.ShouldNotBeNull();
+            game.Maps.Count().ShouldBe(0);
         }
 
         [TestMethod]
@@ -227,6 +228,29 @@ namespace Domain.Test.Domain
             // Assert
             result.Name.ShouldBe(folder.Name);
             game.JournalItems.Count.ShouldBe(1);
+        }
+
+        [TestMethod]
+        public async Task AddMapAddsTheMapToTheList()
+        {
+            // arrange
+            var dto = new AddMapDto
+            {
+                Name = "test",
+                GridSizeInPixels = 10,
+                WidthInPixels = 1000,
+                HeightInPixels = 1000
+            };
+
+            var sut = new Game("name", new User());
+
+            // Act
+            var result = await sut.AddMap(dto);
+
+            // Assert
+            result.Name.ShouldBe(dto.Name);
+            sut.Maps.Count.ShouldBe(1);
+            sut.Maps.ShouldContain(result);
         }
     }
 }

@@ -36,9 +36,9 @@ export class JournalNodeComponent {
     this.trigger.menu.hasBackdrop = true;
     this.trigger.openMenu();
     document.getElementsByClassName('cdk-overlay-backdrop')[0].addEventListener('contextmenu', (offEvent: MouseEvent) => {
+      offEvent.preventDefault();
       //Temporary right click fix
       this.trigger.closeMenu();
-      offEvent.preventDefault();
     });
   }
 

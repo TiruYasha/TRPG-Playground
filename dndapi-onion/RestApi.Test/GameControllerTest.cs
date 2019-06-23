@@ -6,9 +6,12 @@ using Moq;
 using RestApi.Utilities;
 using Shouldly;
 using System;
+using System.Net;
 using System.Threading.Tasks;
+using Domain.Dto.RequestDto;
 using Domain.Dto.RequestDto.Game;
 using Domain.Dto.ReturnDto.Game;
+using Domain.Dto.Shared;
 
 namespace RestApi.Test
 {
@@ -110,6 +113,26 @@ namespace RestApi.Test
             // Assert
             result.ShouldBeOfType<BadRequestObjectResult>();
             result.Value.ShouldBe(errorMessage);
+        }
+
+        [TestMethod]
+        public async Task AddMapToPlayAreaReturnsOkWithMap()
+        {
+            // Arrange
+            var addMapDto = new AddMapDto();
+            var mapToReturn = new MapDto();
+            var gameId = Guid.NewGuid();
+
+            jwtReader.Setup(j => j.GetGameId()).Returns(gameId);
+
+            gameService.Setup(p => p.AddMap(addMapDto, gameId)).ReturnsAsync(mapToReturn);
+
+            // Act
+            var result = await sut.AddMapToPlayArea(addMapDto) as OkObjectResult;
+
+            // Assert
+            result.StatusCode.ShouldBe((int)HttpStatusCode.OK);
+            result.Value.ShouldBe(mapToReturn);
         }
     }
 }

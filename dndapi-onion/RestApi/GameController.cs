@@ -7,6 +7,7 @@ using RestApi.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Domain.Dto.RequestDto;
 using Domain.Dto.RequestDto.Game;
 
 namespace RestApi
@@ -81,6 +82,28 @@ namespace RestApi
             var result = await gameService.GetPlayersAsync(gameId);
 
             return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("map")]
+        public async Task<IActionResult> AddMapToPlayArea([FromBody] AddMapDto dto)
+        {
+            var gameId = jwtReader.GetGameId();
+
+            var map = await gameService.AddMap(dto, gameId);
+
+            return Ok(map);
+        }
+
+        [HttpGet]
+        [Route("map")]
+        public async Task<IActionResult> GetMaps()
+        {
+            var gameId = jwtReader.GetGameId();
+
+            var maps = await gameService.GetMaps(gameId);
+
+            return Ok(maps);
         }
     }
 }

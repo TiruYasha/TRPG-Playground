@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FlatTreeControl } from '@angular/cdk/tree';
-import { JournalService } from './journal.service';
+import { JournalService } from '../services/journal.service';
 import { MatDialog } from '@angular/material';
 import { AddedJournalItemModel } from 'src/app/models/journal/receives/added-journal-folder.model';
 import { ActiveGameService } from '../services/active-game.service';

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Domain.Domain;
 using Domain.Domain.JournalItems;
+using Domain.Dto.RequestDto;
 using Domain.Dto.RequestDto.Journal;
 using Domain.Dto.Shared;
 
@@ -91,6 +92,33 @@ namespace Service.Test
                 }
 
                 await game.AddJournalItem(journalHandout);
+            });
+
+            return this;
+        }
+
+        public GameDataBuilder WithMaps()
+        {
+            actions.Enqueue(async () =>
+            {
+                var addMapDto = new AddMapDto
+                {
+                    GridSizeInPixels = 40,
+                    HeightInPixels = 400,
+                    Name = "test",
+                    WidthInPixels = 400
+                };
+
+                var addMapDto2 = new AddMapDto
+                {
+                    GridSizeInPixels = 50,
+                    HeightInPixels = 500,
+                    Name = "test2",
+                    WidthInPixels = 500
+                };
+
+                await game.AddMap(addMapDto);
+                await game.AddMap(addMapDto2);
             });
 
             return this;

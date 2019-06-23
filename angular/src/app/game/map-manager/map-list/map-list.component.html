@@ -1,0 +1,16 @@
+<div class="mapListContainer">
+  <h3>
+    Maps
+  </h3>
+  <div class="listItemsContainer">
+    <mat-list>
+      <mat-list-item *ngFor="let map of maps">
+        {{map.name}}
+      </mat-list-item>
+    </mat-list>
+  </div>
+
+  <button mat-fab class="addButton" (click)="addMap.emit()">
+    <mat-icon class="material-icons">add</mat-icon>
+  </button>
+</div>

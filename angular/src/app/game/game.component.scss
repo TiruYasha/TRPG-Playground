@@ -1,33 +1,34 @@
-.side-container{
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
+.side-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 
-::ng-deep .mat-tab-body.mat-tab-body-active{
-    overflow: hidden !important;
-}
-
-::ng-deep .mat-tab-body-content{
-    overflow: hidden !important;
-}
-
-::ng-deep .mat-tab-body-wrapper, .mat-tab-group{
-    height: 100%;
-}
-
-::ng-deep .mat-tab-label{
-    width: 100%;
+::ng-deep .mat-tab-body.mat-tab-body-active {
+  overflow: hidden !important;
 }
 
 ::ng-deep .mat-tab-body-content {
-    overflow: hidden !important;
+  overflow: hidden !important;
 }
 
-.right-nav{
-    overflow: hidden;
-    width: 340px;
-    width: 340px;
+::ng-deep .mat-tab-body-wrapper,
+.mat-tab-group {
+  height: 100%;
+}
+
+::ng-deep .mat-tab-label {
+  width: 100%;
+}
+
+::ng-deep .mat-tab-body-content {
+  overflow: hidden !important;
+}
+
+.right-nav, .left-nav{
+  overflow: hidden;
+  width: 340px;
+  width: 340px;
 }

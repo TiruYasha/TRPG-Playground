@@ -11,23 +11,23 @@ namespace Service.Test
 {
     public abstract class ServiceTest<TServiceInterface>
     {
-        protected IMapper mapper;
+        protected IMapper Mapper;
 
-        protected TServiceInterface sut;
-        protected DndContext context;
+        protected TServiceInterface Sut;
+        protected DndContext Context;
 
-        protected GameDataBuilder gameDataBuilder;
+        protected GameDataBuilder GameDataBuilder;
 
         public virtual void Initialize()
         {
             IConfigurationProvider config = new MapperConfiguration(d => d.AddProfile<MyProfile>());
-            mapper = new Mapper(config);
+            Mapper = new Mapper(config);
 
             var options = new DbContextOptionsBuilder<DndContext>()
                 .UseInMemoryDatabase("inmemorydbdnd")
                 .Options;
-            context = new DndContext(options);
-            gameDataBuilder = new GameDataBuilder();
+            Context = new DndContext(options);
+            GameDataBuilder = new GameDataBuilder();
         }
     }
 }

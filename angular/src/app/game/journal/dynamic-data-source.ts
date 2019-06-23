@@ -8,7 +8,7 @@ import { JournalItem } from 'src/app/models/journal/journalitems/journal-item.mo
 
 import { FlatTreeControl } from '@angular/cdk/tree';
 
-import { JournalService } from './journal.service';
+import { JournalService } from '../services/journal.service';
 
 import { CollectionViewer, SelectionChange } from '@angular/cdk/collections';
 
