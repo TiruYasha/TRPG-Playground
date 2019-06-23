@@ -134,12 +134,12 @@ export class ParentDialogComponent extends DestroySubscription implements OnInit
 
     event.preventDefault();
     const minWidth = this.startPageX - event.pageX;
-    const minHeigth = this.startPageY - event.pageY;
+    const minHeight = this.startPageY - event.pageY;
 
     this.startPageX = event.pageX;
     this.startPageY = event.pageY;
 
-    element.style.height = (element.clientHeight - minHeigth) + 'px';
+    element.style.height = (element.clientHeight - minHeight) + 'px';
     element.style.width = (element.clientWidth - minWidth - 48) + 'px';
   }
 

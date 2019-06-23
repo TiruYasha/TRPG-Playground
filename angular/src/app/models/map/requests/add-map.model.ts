@@ -1,6 +1,6 @@
 export interface AddMap {
     name: string;
     widthInPixels: number;
-    heigthInPixels: number;
+    heightInPixels: number;
     gridSizeInPixels: number;
 }

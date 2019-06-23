@@ -1,13 +1,22 @@
+<mat-menu #appMenu="matMenu">
+  <button mat-menu-item (click)="sendEditClick()">Edit</button>
+</mat-menu>
+
 <div class="mapListContainer">
   <h3>
     Maps
   </h3>
   <div class="listItemsContainer">
-    <mat-list>
-      <mat-list-item [class.selected]="map === selectedMap" *ngFor="let map of maps" (click)="onSelectedMap(map)">
+    <mat-nav-list role="list">
+      <mat-list-item (contextmenu)="triggerMenu($event)" role="listitem" [class.selected]="map === selectedMap" *ngFor="let map of maps" (click)="onSelectedMap(map)">
         {{map.name}}
+        <div #menuButton style="position: absolute">
+          <button mat-button [matMenuTriggerFor]="appMenu" style="display: hidden">
+      
+          </button>
+        </div>
       </mat-list-item>
-    </mat-list>
+    </mat-nav-list>
   </div>
 
   <button mat-fab class="addButton" (click)="addMap.emit()">

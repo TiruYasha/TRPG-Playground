@@ -16,9 +16,9 @@
           </mat-error>
         </mat-form-field>
         <mat-form-field appearance="standard">
-          <mat-label>Heigth</mat-label>
-          <input matInput type="number" placeholder="1080" formControlName="heigthInPixels" required cdkFocusInitial>
-          <mat-error *ngIf="heigthInPixels.hasError('max') || heigthInPixels.hasError('min')">
+          <mat-label>Height</mat-label>
+          <input matInput type="number" placeholder="1080" formControlName="heightInPixels" required cdkFocusInitial>
+          <mat-error *ngIf="heightInPixels.hasError('max') || heightInPixels.hasError('min')">
             The size of the map must be between 0 and 4000.
           </mat-error>
         </mat-form-field>

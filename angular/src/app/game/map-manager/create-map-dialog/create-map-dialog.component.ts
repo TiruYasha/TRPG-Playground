@@ -18,20 +18,20 @@ export class CreateMapDialogComponent extends DestroySubscription implements OnI
   form = new FormGroup({
     name: new FormControl('', [Validators.required, ValidatorFunctions.noWhitespaceValidator]),
     gridSizeInPixels: new FormControl(50, [Validators.max(4000), Validators.min(0)]),
-    heigthInPixels: new FormControl(1080, [Validators.max(4000), Validators.min(0)]),
+    heightInPixels: new FormControl(1080, [Validators.max(4000), Validators.min(0)]),
     widthInPixels: new FormControl(1920, [Validators.max(4000), Validators.min(0)])
   });
 
   get name() { return this.form.get('name'); }
   get gridSizeInPixels() { return this.form.get('gridSizeInPixels'); }
-  get heigthInPixels() { return this.form.get('heigthInPixels'); }
+  get heightInPixels() { return this.form.get('heightInPixels'); }
   get widthInPixels() { return this.form.get('widthInPixels'); }
 
   constructor(
     public dialogRef: MatDialogRef<CreateMapDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: CreateMapDialogComponent,
     private mapService: MapService
-  ) { super() }
+  ) { super(); }
 
   ngOnInit() {
   }
@@ -44,7 +44,7 @@ export class CreateMapDialogComponent extends DestroySubscription implements OnI
     const addMap: AddMap = {
       name: this.name.value,
       gridSizeInPixels: this.gridSizeInPixels.value,
-      heigthInPixels: this.heigthInPixels.value,
+      heightInPixels: this.heightInPixels.value,
       widthInPixels: this.widthInPixels.value
     };
 

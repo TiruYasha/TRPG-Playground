@@ -8,9 +8,10 @@
 
 <div class="node-container" (contextmenu)="triggerMenu($event)" (click)="clickedFolder()" #trigger>
   {{journalItem.name}}
-  <div #menuButton style="position: absolute">
-    <button mat-button [matMenuTriggerFor]="appMenu" style="display: ''">
+ 
+</div>
+<div #menuButton style="position: absolute; z-index: 999;">
+  <button mat-button [matMenuTriggerFor]="appMenu" style="display: ''; display: none;">
 
-    </button>
-  </div>
+  </button>
 </div>
