@@ -64,7 +64,7 @@ namespace Service.Test
             var result = await Should.ThrowAsync<NotFoundException>(Sut.AddMap(addMapDto, new Guid()));
 
             // Assert
-            result.Message.ShouldBe("The playarea can not be found");
+            result.Message.ShouldBe("The game can not be found");
         }
 
         [TestMethod]

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Domain.Dto.RequestDto;
+using Domain.Dto.Shared;
 
 namespace Domain.Domain
 {
@@ -28,6 +30,19 @@ namespace Domain.Domain
             HeightInPixels = dto.HeightInPixels;
             GridSizeInPixels = dto.GridSizeInPixels;
             Layers = new List<Layer> { new Layer("layer1") };
+        }
+
+        public Task Update(AddMapDto dto)
+        {
+            return Task.Run(() =>
+            {
+                CheckArguments(dto);
+
+                Name = dto.Name;
+                WidthInPixels = dto.WidthInPixels;
+                HeightInPixels = dto.HeightInPixels;
+                GridSizeInPixels = dto.GridSizeInPixels;
+            });
         }
 
         private static void CheckArguments(AddMapDto dto)

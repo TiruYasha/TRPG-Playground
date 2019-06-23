@@ -92,14 +92,14 @@ namespace Service
 
         public async Task<MapDto> AddMap(AddMapDto dto, Guid gameId)
         {
-            var playArea = await context.Games.FilterById(gameId).FirstOrDefaultAsync();
+            var game = await context.Games.FilterById(gameId).FirstOrDefaultAsync();
 
-            if (playArea == null)
+            if (game == null)
             {
-                throw new NotFoundException("The playarea can not be found");
+                throw new NotFoundException("The game can not be found");
             }
 
-            var map = await playArea.AddMap(dto);
+            var map = await game.AddMap(dto);
 
             await context.SaveChangesAsync();
 

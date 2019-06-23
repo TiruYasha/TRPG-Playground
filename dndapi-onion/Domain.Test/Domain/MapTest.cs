@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Domain.Domain;
 using Domain.Dto.RequestDto;
+using Domain.Dto.Shared;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 
@@ -175,6 +177,69 @@ namespace Domain.Test.Domain
 
             // Act
             var result = Should.Throw<ArgumentException>(() => new Map(dto));
+
+            // Assert
+            result.Message.ShouldBe(expectedErrorMessage);
+        }
+
+        [TestMethod]
+        public async Task UpdateMapSetsPropertiesFromDto()
+        {
+            // Arrange
+            var dto = new AddMapDto
+            {
+                Name = "test",
+                GridSizeInPixels = 10,
+                WidthInPixels = 1000,
+                HeightInPixels = 1000
+            };
+
+            var mapToUpdate = new Map(dto);
+
+            var updateDto = new AddMapDto
+            {
+                Name = "updated",
+                GridSizeInPixels = 100,
+                WidthInPixels = 100,
+                HeightInPixels = 100
+            };
+
+            // Act
+            await mapToUpdate.Update(updateDto);
+
+            // Assert
+            mapToUpdate.Name.ShouldBe(updateDto.Name);
+            mapToUpdate.WidthInPixels.ShouldBe(updateDto.WidthInPixels);
+            mapToUpdate.HeightInPixels.ShouldBe(updateDto.HeightInPixels);
+            mapToUpdate.GridSizeInPixels.ShouldBe(updateDto.GridSizeInPixels);
+        }
+
+        [TestMethod]
+        public async Task UpdateMapShouldCallCheckArguments()
+        {
+            // Arrange
+            var dto = new AddMapDto
+            {
+                Name = "test",
+                GridSizeInPixels = 10,
+                WidthInPixels = 1000,
+                HeightInPixels = 1000
+            };
+
+            var mapToUpdate = new Map(dto);
+
+            var updateDto = new AddMapDto
+            {
+                Name = "test",
+                GridSizeInPixels = -1,
+                WidthInPixels = 1000,
+                HeightInPixels = 100
+            };
+
+            var expectedErrorMessage = "Grid size may not be smaller than 0 pixels";
+
+            // Act
+            var result = await Should.ThrowAsync<ArgumentException>(mapToUpdate.Update(updateDto));
 
             // Assert
             result.Message.ShouldBe(expectedErrorMessage);
