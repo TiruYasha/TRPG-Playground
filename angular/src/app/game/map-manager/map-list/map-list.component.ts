@@ -7,8 +7,10 @@ import { PlayMap } from 'src/app/models/map/map.model';
   styleUrls: ['./map-list.component.scss']
 })
 export class MapListComponent implements OnInit {
+  selectedMap: PlayMap;
 
   @Output() addMap = new EventEmitter();
+  @Output() selectMap = new EventEmitter<PlayMap>();
 
   @Input() maps: PlayMap[] = [];
 
@@ -16,5 +18,11 @@ export class MapListComponent implements OnInit {
 
   ngOnInit() {
 
+  }
+
+  onSelectedMap(map: PlayMap) {
+    this.selectMap.emit(map);
+
+    this.selectedMap = map;
   }
 }

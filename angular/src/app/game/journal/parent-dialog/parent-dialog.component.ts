@@ -7,7 +7,7 @@ import { JournalItemType } from 'src/app/models/journal/journalitems/journal-ite
 import { JournalService } from '../../services/journal.service';
 import { AddJournalItemRequestModel } from 'src/app/models/journal/requests/add-journal-item-request.model';
 import { DestroySubscription } from 'src/app/shared/components/destroy-subscription.extendable';
-import { DialogState } from './dialog-state.enum';
+import { DialogState } from '../../../models/dialog-state.enum';
 import { takeUntil } from 'rxjs/operators';
 import { JournalCharacterSheet } from 'src/app/models/journal/journalitems/journal-character-sheet.model';
 

@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { DestroySubscription } from 'src/app/shared/components/destroy-subscription.extendable';
-import { DialogState } from '../parent-dialog/dialog-state.enum';
+import { DialogState } from '../../../models/dialog-state.enum';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ValidatorFunctions } from 'src/app/utilities/validator-functions';
 import { PermissionParser } from 'src/app/utilities/permission-parser.util';

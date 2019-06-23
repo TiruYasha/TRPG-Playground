@@ -3,12 +3,15 @@ import { HttpClient } from '@angular/common/http';
 import { AddMap } from 'src/app/models/map/requests/add-map.model';
 import { PlayMap } from 'src/app/models/map/map.model';
 import { environment } from 'src/environments/environment';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
 })
 export class MapService {
+    private changeMapSubject = new Subject<PlayMap>();
+    changeMapObservable = this.changeMapSubject.asObservable();
+
     constructor(private http: HttpClient) { }
 
     addMap(model: AddMap) {
@@ -17,5 +20,9 @@ export class MapService {
 
     getAllMaps(): Observable<PlayMap[]> {
         return this.http.get<PlayMap[]>(environment.apiUrl + `/game/map`);
+    }
+
+    changeMap(map: PlayMap){
+        this.changeMapSubject.next(map);
     }
 }

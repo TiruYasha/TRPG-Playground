@@ -1,5 +1,5 @@
 import { Player } from 'src/app/models/game/player.model';
-import { DialogState } from './dialog-state.enum';
+import { DialogState } from '../../../models/dialog-state.enum';
 import { JournalItemType } from 'src/app/models/journal/journalitems/journal-item-type.enum';
 
 export class ParentDialogModel {

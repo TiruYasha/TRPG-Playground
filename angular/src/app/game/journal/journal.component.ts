@@ -14,7 +14,7 @@ import { JournalDynamicDataSource } from './dynamic-data-source';
 import { environment } from 'src/environments/environment';
 import { DestroySubscription } from 'src/app/shared/components/destroy-subscription.extendable';
 import { takeUntil } from 'rxjs/operators';
-import { DialogState } from './parent-dialog/dialog-state.enum';
+import { DialogState } from '../../models/dialog-state.enum';
 import { JournalTreeItem } from 'src/app/models/journal/journal-tree-item.model';
 
 @Component({

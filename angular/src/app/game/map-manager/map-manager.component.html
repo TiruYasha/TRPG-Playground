@@ -1,6 +1,6 @@
 <div id="mapManager" class="mapManager">
   <div class="mapList">
-    <trpg-map-list (addMap)="addMap()" [maps]="maps"></trpg-map-list>
+    <trpg-map-list (addMap)="addMap()" (selectMap)="changeMap($event)" [maps]="maps"></trpg-map-list>
     <mat-divider></mat-divider>
   </div>
   <div class="layerManager">
