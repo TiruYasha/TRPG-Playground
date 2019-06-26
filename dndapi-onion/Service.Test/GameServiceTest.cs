@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Domain.Dto.RequestDto;
 using Domain.Exceptions;
 using Microsoft.EntityFrameworkCore;
+using Domain.Dto.Shared;
 
 namespace Service.Test
 {
@@ -34,7 +35,7 @@ namespace Service.Test
             await Context.AddAsync(game);
             await Context.SaveChangesAsync();
 
-            var addMapDto = new AddMapDto
+            var addMapDto = new MapDto
             {
                 GridSizeInPixels = 40,
                 HeightInPixels = 400,
@@ -58,10 +59,10 @@ namespace Service.Test
         public async Task AddMapThrowNotFoundExceptionWhenGameOrPlayAreaCantBeFound()
         {
             // Arrange
-            var addMapDto = new AddMapDto();
+            var MapDto = new MapDto();
 
             // Act
-            var result = await Should.ThrowAsync<NotFoundException>(Sut.AddMap(addMapDto, new Guid()));
+            var result = await Should.ThrowAsync<NotFoundException>(Sut.AddMap(MapDto, new Guid()));
 
             // Assert
             result.Message.ShouldBe("The game can not be found");

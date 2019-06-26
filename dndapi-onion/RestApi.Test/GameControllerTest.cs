@@ -119,16 +119,16 @@ namespace RestApi.Test
         public async Task AddMapToPlayAreaReturnsOkWithMap()
         {
             // Arrange
-            var addMapDto = new AddMapDto();
+            var MapDto = new MapDto();
             var mapToReturn = new MapDto();
             var gameId = Guid.NewGuid();
 
             jwtReader.Setup(j => j.GetGameId()).Returns(gameId);
 
-            gameService.Setup(p => p.AddMap(addMapDto, gameId)).ReturnsAsync(mapToReturn);
+            gameService.Setup(p => p.AddMap(MapDto, gameId)).ReturnsAsync(mapToReturn);
 
             // Act
-            var result = await sut.AddMapToPlayArea(addMapDto) as OkObjectResult;
+            var result = await sut.AddMapToPlayArea(MapDto) as OkObjectResult;
 
             // Assert
             result.StatusCode.ShouldBe((int)HttpStatusCode.OK);

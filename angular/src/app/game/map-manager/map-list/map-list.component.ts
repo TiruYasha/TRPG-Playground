@@ -12,6 +12,8 @@ export class MapListComponent implements OnInit {
 
   @Output() addMap = new EventEmitter();
   @Output() selectMap = new EventEmitter<PlayMap>();
+  @Output() editMap = new EventEmitter<PlayMap>();
+  @Output() deleteMap = new EventEmitter<PlayMap>();
 
   @Input() maps: PlayMap[] = [];
 
@@ -46,7 +48,12 @@ export class MapListComponent implements OnInit {
     });
   }
 
-  sendEditClick() {
+  sendEditClick(map: PlayMap) {
+    // TODO create map-list-item component
     //this.addJournalItem.emit(click);
+  }
+
+  deleteClick(map: PlayMap) {
+
   }
 }

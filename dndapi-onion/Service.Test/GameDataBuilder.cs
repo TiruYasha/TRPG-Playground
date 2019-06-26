@@ -101,7 +101,7 @@ namespace Service.Test
         {
             actions.Enqueue(async () =>
             {
-                var addMapDto = new AddMapDto
+                var MapDto = new MapDto
                 {
                     GridSizeInPixels = 40,
                     HeightInPixels = 400,
@@ -109,7 +109,7 @@ namespace Service.Test
                     WidthInPixels = 400
                 };
 
-                var addMapDto2 = new AddMapDto
+                var MapDto2 = new MapDto
                 {
                     GridSizeInPixels = 50,
                     HeightInPixels = 500,
@@ -117,8 +117,8 @@ namespace Service.Test
                     WidthInPixels = 500
                 };
 
-                await game.AddMap(addMapDto);
-                await game.AddMap(addMapDto2);
+                await game.AddMap(MapDto);
+                await game.AddMap(MapDto2);
             });
 
             return this;

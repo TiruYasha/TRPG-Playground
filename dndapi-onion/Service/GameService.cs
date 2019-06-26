@@ -90,7 +90,7 @@ namespace Service
             return result;
         }
 
-        public async Task<MapDto> AddMap(AddMapDto dto, Guid gameId)
+        public async Task<MapDto> AddMap(MapDto dto, Guid gameId)
         {
             var game = await context.Games.FilterById(gameId).FirstOrDefaultAsync();
 

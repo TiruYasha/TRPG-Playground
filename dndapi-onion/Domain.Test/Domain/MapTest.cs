@@ -16,7 +16,7 @@ namespace Domain.Test.Domain
         public void NewMapSetsPropertiesFromDto()
         {
             // Arrange
-            var dto = new AddMapDto
+            var dto = new MapDto
             {
                 Name = "test",
                 GridSizeInPixels = 10,
@@ -39,7 +39,7 @@ namespace Domain.Test.Domain
         public void NewMapCreatesStandardLayer()
         {
             // Arrange
-            var dto = new AddMapDto
+            var dto = new MapDto
             {
                 Name = "test",
                 GridSizeInPixels = 10,
@@ -60,7 +60,7 @@ namespace Domain.Test.Domain
         public void NewMapEmptyNameIsNotAllowed()
         {
             // Arrange
-            var dto = new AddMapDto
+            var dto = new MapDto
             {
                 Name = "",
                 GridSizeInPixels = 10,
@@ -81,7 +81,7 @@ namespace Domain.Test.Domain
         public void NewMapWidthInPixelsMayNotBeHigherThan4000()
         {
             // Arrange
-            var dto = new AddMapDto
+            var dto = new MapDto
             {
                 Name = "test",
                 GridSizeInPixels = 10,
@@ -102,7 +102,7 @@ namespace Domain.Test.Domain
         public void NewMapWidthInPixelsMayNotBeLowerThan0()
         {
             // Arrange
-            var dto = new AddMapDto
+            var dto = new MapDto
             {
                 Name = "test",
                 GridSizeInPixels = 10,
@@ -123,7 +123,7 @@ namespace Domain.Test.Domain
         public void NewMapHeightInPixelsMayNotBeHigherThan4000()
         {
             // Arrange
-            var dto = new AddMapDto
+            var dto = new MapDto
             {
                 Name = "test",
                 GridSizeInPixels = 10,
@@ -144,7 +144,7 @@ namespace Domain.Test.Domain
         public void NewMapHeightInPixelsMayNotBeLowerThan0()
         {
             // Arrange
-            var dto = new AddMapDto
+            var dto = new MapDto
             {
                 Name = "test",
                 GridSizeInPixels = 10,
@@ -165,7 +165,7 @@ namespace Domain.Test.Domain
         public void NewMapGridSizeInPixelsMayNotBeLowerThan0()
         {
             // Arrange
-            var dto = new AddMapDto
+            var dto = new MapDto
             {
                 Name = "test",
                 GridSizeInPixels = -1,
@@ -186,7 +186,7 @@ namespace Domain.Test.Domain
         public async Task UpdateMapSetsPropertiesFromDto()
         {
             // Arrange
-            var dto = new AddMapDto
+            var dto = new MapDto
             {
                 Name = "test",
                 GridSizeInPixels = 10,
@@ -196,7 +196,7 @@ namespace Domain.Test.Domain
 
             var mapToUpdate = new Map(dto);
 
-            var updateDto = new AddMapDto
+            var updateDto = new MapDto
             {
                 Name = "updated",
                 GridSizeInPixels = 100,
@@ -218,7 +218,7 @@ namespace Domain.Test.Domain
         public async Task UpdateMapShouldCallCheckArguments()
         {
             // Arrange
-            var dto = new AddMapDto
+            var dto = new MapDto
             {
                 Name = "test",
                 GridSizeInPixels = 10,
@@ -228,7 +228,7 @@ namespace Domain.Test.Domain
 
             var mapToUpdate = new Map(dto);
 
-            var updateDto = new AddMapDto
+            var updateDto = new MapDto
             {
                 Name = "test",
                 GridSizeInPixels = -1,

@@ -6,7 +6,6 @@ import { MapService } from '../services/map.service';
 import { takeUntil } from 'rxjs/operators';
 import { PlayMap } from 'src/app/models/map/map.model';
 
-
 @Component({
   selector: 'trpg-play-area',
   templateUrl: './play-area.component.html',

@@ -20,7 +20,7 @@ namespace Domain.Domain
             // for ef
         }
 
-        public Map(AddMapDto dto) : this()
+        public Map(MapDto dto) : this()
         {
             CheckArguments(dto);
 
@@ -32,7 +32,7 @@ namespace Domain.Domain
             Layers = new List<Layer> { new Layer("layer1") };
         }
 
-        public Task Update(AddMapDto dto)
+        public Task Update(MapDto dto)
         {
             return Task.Run(() =>
             {
@@ -45,7 +45,7 @@ namespace Domain.Domain
             });
         }
 
-        private static void CheckArguments(AddMapDto dto)
+        private static void CheckArguments(MapDto dto)
         {
             if (string.IsNullOrWhiteSpace(dto.Name))
             {

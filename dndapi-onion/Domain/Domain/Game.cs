@@ -99,7 +99,7 @@ namespace Domain.Domain
             });
         }
 
-        public Task<Map> AddMap(AddMapDto dto)
+        public Task<Map> AddMap(MapDto dto)
         {
             return Task.Run(() =>
             {

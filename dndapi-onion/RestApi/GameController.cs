@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Domain.Dto.RequestDto;
 using Domain.Dto.RequestDto.Game;
+using Domain.Dto.Shared;
 
 namespace RestApi
 {
@@ -86,7 +87,7 @@ namespace RestApi
 
         [HttpPost]
         [Route("map")]
-        public async Task<IActionResult> AddMapToPlayArea([FromBody] AddMapDto dto)
+        public async Task<IActionResult> AddMapToPlayArea([FromBody] MapDto dto)
         {
             var gameId = jwtReader.GetGameId();
 

@@ -22,7 +22,7 @@ namespace Domain.ServiceInterfaces
         Task<bool> IsOwnerOfGameAsync(Guid userId, Guid activeGameId);
         Task<bool> IsGamePlayerOrOwnerOfGameAsync(Guid userId, Guid activeGameId);
         Task<IEnumerable<GetPlayersModel>> GetPlayersAsync(Guid gameId);
-        Task<MapDto> AddMap(AddMapDto dto, Guid gameId);
+        Task<MapDto> AddMap(MapDto dto, Guid gameId);
         Task<IEnumerable<MapDto>> GetMaps(Guid gameId);
     }
 }

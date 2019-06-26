@@ -234,7 +234,7 @@ namespace Domain.Test.Domain
         public async Task AddMapAddsTheMapToTheList()
         {
             // arrange
-            var dto = new AddMapDto
+            var dto = new MapDto
             {
                 Name = "test",
                 GridSizeInPixels = 10,
