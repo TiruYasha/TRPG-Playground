@@ -6,8 +6,8 @@ import { FormsModule } from '@angular/forms';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTabsModule, MatCardModule } from '@angular/material';
 import { JournalModule } from './journal/journal.module';
-
-
+import { PlayAreaModule } from './play-area/play-area.module';
+import { MapManagerModule } from './map-manager/map-manager.module';
 
 @NgModule({
   imports: [
@@ -17,7 +17,9 @@ import { JournalModule } from './journal/journal.module';
     MatSidenavModule,
     MatTabsModule,
     JournalModule,
-    MatCardModule
+    MatCardModule,
+    PlayAreaModule,
+    MapManagerModule
   ],
   declarations: [GameComponent]
 })

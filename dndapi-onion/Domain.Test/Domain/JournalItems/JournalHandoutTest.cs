@@ -15,7 +15,6 @@ namespace Domain.Test.Domain.JournalItems
     {
         private readonly Guid userId = Guid.NewGuid();
         private JournalHandoutDto handoutModel;
-        private AddJournalItemDto model;
 
         private JournalHandout sut;
 

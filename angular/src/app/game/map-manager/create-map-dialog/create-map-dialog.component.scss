@@ -1,0 +1,30 @@
+.container{
+    width: 400px;
+    padding: 24px;
+}
+
+.formFieldContainer{
+    display: flex;
+    flex-flow: column;
+
+    .mapSize{
+        display: flex;
+        flex-flow: row;
+        justify-content: space-between;
+    }
+
+    .buttons{
+        display: flex;
+        flex-flow: row;
+        margin-top: 12px;
+
+        button:not(:first-child){
+            margin-left: 12px; 
+        }
+    }
+}
+
+::ng-deep .mat-dialog-container {
+    padding: 0;
+    overflow:hidden;
+  }

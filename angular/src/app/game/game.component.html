@@ -1,12 +1,18 @@
-<mat-sidenav-container class="side-container" *ngIf="joined">
-    <mat-sidenav opened class="right-nav" mode="side" position="end">
-        <mat-tab-group>
-            <mat-tab label="Chat">
-                <trpg-chat-window></trpg-chat-window>
-            </mat-tab>
-            <mat-tab label="Journal">
-                <trpg-journal></trpg-journal>
-            </mat-tab>
-        </mat-tab-group>
+<section class="mat-typography">
+  <mat-sidenav-container class="side-container" *ngIf="joined">
+    <mat-sidenav opened class="left-nav" mode="side" position="start">
+      <trpg-map-manager></trpg-map-manager>
     </mat-sidenav>
-</mat-sidenav-container>
+    <trpg-play-area></trpg-play-area>
+    <mat-sidenav opened class="right-nav" mode="side" position="end">
+      <mat-tab-group>
+        <mat-tab label="Chat">
+          <trpg-chat-window></trpg-chat-window>
+        </mat-tab>
+        <mat-tab label="Journal">
+          <trpg-journal></trpg-journal>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-sidenav>
+  </mat-sidenav-container>
+</section>

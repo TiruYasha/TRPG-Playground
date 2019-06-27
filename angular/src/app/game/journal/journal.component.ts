@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FlatTreeControl } from '@angular/cdk/tree';
-import { JournalService } from './journal.service';
+import { JournalService } from '../services/journal.service';
 import { MatDialog } from '@angular/material';
 import { AddedJournalItemModel } from 'src/app/models/journal/receives/added-journal-folder.model';
 import { ActiveGameService } from '../services/active-game.service';
@@ -14,7 +14,7 @@ import { JournalDynamicDataSource } from './dynamic-data-source';
 import { environment } from 'src/environments/environment';
 import { DestroySubscription } from 'src/app/shared/components/destroy-subscription.extendable';
 import { takeUntil } from 'rxjs/operators';
-import { DialogState } from './parent-dialog/dialog-state.enum';
+import { DialogState } from '../../models/dialog-state.enum';
 import { JournalTreeItem } from 'src/app/models/journal/journal-tree-item.model';
 
 @Component({
@@ -199,7 +199,7 @@ export class JournalComponent extends DestroySubscription implements OnInit {
       journalItemId: journalItemId,
       state: state,
       journalItemType: journalItemType,
-      canEdit: treeItem.item.canEdit
+      canEdit: state === DialogState.New ? true :  treeItem.item.canEdit
     };
     this.dialog.open(ParentDialogComponent, {
       width: 'auto',

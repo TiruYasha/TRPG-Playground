@@ -1,0 +1,21 @@
+<div class="mapListContainer">
+  <h3>
+    Maps
+  </h3>
+  <div class="listItemsContainer">
+    <mat-nav-list role="list">
+      <trpg-map-list-item  *ngFor="let map of maps"
+        [map]="map"
+        [selected]="map === selectedMap"
+        (deleteMap)="deleteMap.emit($event)"
+        (editMap)="editMap.emit($event)"
+        (selectMap)="onSelectedMap($event)"
+
+      ></trpg-map-list-item>
+    </mat-nav-list>
+  </div>
+
+  <button mat-fab class="addButton" (click)="addMap.emit()">
+    <mat-icon class="material-icons">add</mat-icon>
+  </button>
+</div>

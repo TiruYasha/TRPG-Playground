@@ -10,19 +10,22 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Domain;
+using Domain.Dto.RequestDto;
 using Domain.Dto.ReturnDto.Game;
+using Domain.Dto.Shared;
+using Domain.Exceptions;
 
 namespace Service
 {
     public class GameService : IGameService
     {
-        private readonly IRepository repository;
+        private readonly DndContext context;
         private readonly IMapper mapper;
         private readonly ILogger<GameService> logger;
 
-        public GameService(IRepository repository, IMapper mapper, ILogger<GameService> logger)
+        public GameService(DndContext context, IMapper mapper, ILogger<GameService> logger)
         {
-            this.repository = repository;
+            this.context = context;
             this.mapper = mapper;
             this.logger = logger;
         }
@@ -31,9 +34,9 @@ namespace Service
         {
             var game = new Game(gameName, ownerId);
 
-            await repository.Add(game);
+            await context.AddAsync(game);
 
-            await repository.Commit();
+            await context.SaveChangesAsync();
 
             logger.LogInformation("Game {0} has been created", game.Name);
 
@@ -42,12 +45,12 @@ namespace Service
 
         public async Task<IEnumerable<GameCatalogItemModel>> GetAllGames()
         {
-            return await repository.Games.ProjectTo<GameCatalogItemModel>(mapper.ConfigurationProvider).ToListAsync();
+            return await context.Games.ProjectTo<GameCatalogItemModel>(mapper.ConfigurationProvider).ToListAsync();
         }
 
         public async Task<bool> JoinGameAsync(Guid gameId, Guid userId)
         {
-            var game = await repository.Games.Include(g =>g.Players).Include(g => g.Owner).FilterById(gameId).FirstOrDefaultAsync();
+            var game = await context.Games.Include(g =>g.Players).Include(g => g.Owner).FilterById(gameId).FirstOrDefaultAsync();
 
             if (await game.HasPlayerJoined(userId))
             {
@@ -59,32 +62,58 @@ namespace Service
                 return true;
             }
 
-            var user = await repository.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            var user = await context.Users.FirstOrDefaultAsync(u => u.Id == userId);
 
-            game.Join(user);
+            await game.Join(user);
 
-            await repository.Commit();
+            await context.SaveChangesAsync();
 
             return false;
         }
 
         public Task<bool> IsGamePlayerOrOwnerOfGameAsync(Guid userId, Guid activeGameId)
         {
-            return repository.Games.AnyAsync(g =>
+            return context.Games.AnyAsync(g =>
                 g.Id == activeGameId && (g.Players.Any(p => p.UserId == userId) || g.Owner.Id == userId));
         }
 
         public Task<bool> IsOwnerOfGameAsync(Guid userId, Guid activeGameId)
         {
-            return repository.Games.AnyAsync(g => g.Id == activeGameId && g.Owner.Id == userId);
+            return context.Games.AnyAsync(g => g.Id == activeGameId && g.Owner.Id == userId);
         }
 
         public async Task<IEnumerable<GetPlayersModel>> GetPlayersAsync(Guid gameId)
         {
-            var result = await repository.GamePlayers.Where(g => g.GameId == gameId)
+            var result = await context.GamePlayers.Where(g => g.GameId == gameId)
                 .ProjectTo<GetPlayersModel>(mapper.ConfigurationProvider)
                 .ToListAsync();
             return result;
+        }
+
+        public async Task<MapDto> AddMap(MapDto dto, Guid gameId)
+        {
+            var game = await context.Games.FilterById(gameId).FirstOrDefaultAsync();
+
+            if (game == null)
+            {
+                throw new NotFoundException("The game can not be found");
+            }
+
+            var map = await game.AddMap(dto);
+
+            await context.SaveChangesAsync();
+
+            return mapper.Map<Map, MapDto>(map);
+        }
+
+        public async Task<IEnumerable<MapDto>> GetMaps(Guid gameId)
+        {
+            var query = context.Games
+                .Include(p => p.Maps)
+                .FilterById(gameId)
+                .SelectMany(p => p.Maps);
+
+            return await query.ProjectTo<MapDto>(mapper.ConfigurationProvider).ToListAsync();
         }
     }
 }

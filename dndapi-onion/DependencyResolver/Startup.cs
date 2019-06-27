@@ -21,10 +21,13 @@ using Service;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.Diagnostics;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Domain;
+using Domain.Exceptions;
 using Domain.Utilities;
+using Microsoft.AspNetCore.Diagnostics;
 using RestApi.AuthorizationRequirements;
 
 namespace DependencyResolver
@@ -154,6 +157,7 @@ namespace DependencyResolver
             services.AddTransient<IJournalService, JournalService>();
             services.AddTransient<IRepository, Repository>();
             services.AddTransient<ImageProcesser>();
+            services.AddTransient<IMapService, MapService>();
 
             services.AddScoped<IAuthorizationHandler, IsOwnerRequirementHandler>();
             services.AddScoped<IAuthorizationHandler, IsPlayerRequirementHandler>();
@@ -170,10 +174,24 @@ namespace DependencyResolver
             }
             else
             {
+                app.UseExceptionHandler(errorApp =>
+                {
+                    errorApp.Run(async httpContext =>
+                    {
+                        var exceptionHandlerPathFeature =
+                            httpContext.Features.Get<IExceptionHandlerPathFeature>();
+
+                        if (exceptionHandlerPathFeature?.Error is NotFoundException)
+                        {
+                            await httpContext.Response.WriteAsync(exceptionHandlerPathFeature.Error.Message);
+                            httpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                        }
+                    });
+                });
                 app.UseHsts();
             }
 
-            //context.Database.EnsureDeleted();
+            context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
             app.UseSwagger();

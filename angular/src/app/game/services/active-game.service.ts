@@ -28,6 +28,10 @@ export class ActiveGameService {
         this.registerOnServerEvents();
     }
 
+    dispose() {
+        this.hubConnection.stop();
+    }
+
     registerOnServerEvents() {
         this.hubConnection.on('ActivePlayerJoined', (data: string) => {
 

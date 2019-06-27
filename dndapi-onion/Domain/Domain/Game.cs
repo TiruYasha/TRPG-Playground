@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Domain.Dto.RequestDto.Journal;
+using Domain.Dto.RequestDto;
 using Domain.Dto.Shared;
 
 namespace Domain.Domain
@@ -18,6 +18,7 @@ namespace Domain.Domain
         public virtual ICollection<GamePlayer> Players { get; private set; }
         public virtual ICollection<ChatMessage> ChatMessages { get; private set; }
         public virtual ICollection<JournalItem> JournalItems { get; private set; }
+        public virtual  ICollection<Map> Maps { get; private set; }
 
         private Game()
         {
@@ -25,6 +26,7 @@ namespace Domain.Domain
             Players = new List<GamePlayer>();
             ChatMessages = new List<ChatMessage>();
             JournalItems = new List<JournalItem>();
+            Maps = new List<Map>();
         }
 
         public Game(string name, User owner) : this()
@@ -38,12 +40,10 @@ namespace Domain.Domain
         {
             Name = name;
             OwnerId = ownerId;
-            
         }
 
         public async Task Join(User user)
         {
-
             if (await HasPlayerJoined(user.Id) || await IsOwner(user.Id))
             {
                 throw new ArgumentException("The player cannot be added again");
@@ -96,6 +96,16 @@ namespace Domain.Domain
                 JournalItems.Add(journalItem);
 
                 return journalItem;
+            });
+        }
+
+        public Task<Map> AddMap(MapDto dto)
+        {
+            return Task.Run(() =>
+            {
+                var map = new Map(dto);
+                Maps.Add(map);
+                return map;
             });
         }
 

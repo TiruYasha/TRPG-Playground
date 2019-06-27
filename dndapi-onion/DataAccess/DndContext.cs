@@ -20,6 +20,7 @@ namespace DataAccess
         public DbSet<JournalHandout> JournalHandouts { get; set; }
         public DbSet<JournalCharacterSheet> JournalCharacterSheets { get; set; }
         public DbSet<Image> Images { get; set; }
+        public DbSet<Map> Maps { get; set; }
 
         public DndContext(DbContextOptions<DndContext> options) : base(options)
         {
@@ -34,6 +35,9 @@ namespace DataAccess
             SetupJournalItemPermission(modelBuilder);
 
             modelBuilder.Entity<JournalFolder>().HasMany(j => j.JournalItems).WithOne(j => j.ParentFolder)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Map>().HasMany(m => m.Layers).WithOne(l => l.Map)
                 .OnDelete(DeleteBehavior.Cascade);
         }
 

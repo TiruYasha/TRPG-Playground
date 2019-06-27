@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GameService } from '../shared/game.service';
 import { Player } from '../models/game/player.model';
@@ -9,17 +9,17 @@ import { ActiveGameService } from './services/active-game.service';
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.scss']
 })
-export class GameComponent implements OnInit {
+export class GameComponent implements OnInit, OnDestroy {
   players: Player[] = [];
   isOwner = false;
   gameId = '';
   joined = false;
 
-  constructor(private _activatedRoute: ActivatedRoute, private gameService: GameService, private activeGameService: ActiveGameService) {
+  constructor(private activatedRoute: ActivatedRoute, private gameService: GameService, private activeGameService: ActiveGameService) {
   }
 
   ngOnInit() {
-    const id = this._activatedRoute.snapshot.params['id'];
+    const id = this.activatedRoute.snapshot.params['id'];
 
     this.gameId = id;
     this.activeGameService.activeGameId = id;
@@ -31,6 +31,10 @@ export class GameComponent implements OnInit {
         this.activeGameService.updateIsOwner(isOwner);
         this.initializeGame();
       });
+  }
+
+  ngOnDestroy(){
+    this.activeGameService.dispose();
   }
 
   initializeGame() {

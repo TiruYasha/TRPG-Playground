@@ -4,10 +4,10 @@ import { fromEvent, Observable, Subscription } from 'rxjs';
 import { ParentDialogModel } from './parent-dialog.model';
 import { JournalItem } from 'src/app/models/journal/journalitems/journal-item.model';
 import { JournalItemType } from 'src/app/models/journal/journalitems/journal-item-type.enum';
-import { JournalService } from '../journal.service';
+import { JournalService } from '../../services/journal.service';
 import { AddJournalItemRequestModel } from 'src/app/models/journal/requests/add-journal-item-request.model';
 import { DestroySubscription } from 'src/app/shared/components/destroy-subscription.extendable';
-import { DialogState } from './dialog-state.enum';
+import { DialogState } from '../../../models/dialog-state.enum';
 import { takeUntil } from 'rxjs/operators';
 import { JournalCharacterSheet } from 'src/app/models/journal/journalitems/journal-character-sheet.model';
 
@@ -134,12 +134,12 @@ export class ParentDialogComponent extends DestroySubscription implements OnInit
 
     event.preventDefault();
     const minWidth = this.startPageX - event.pageX;
-    const minHeigth = this.startPageY - event.pageY;
+    const minHeight = this.startPageY - event.pageY;
 
     this.startPageX = event.pageX;
     this.startPageY = event.pageY;
 
-    element.style.height = (element.clientHeight - minHeigth) + 'px';
+    element.style.height = (element.clientHeight - minHeight) + 'px';
     element.style.width = (element.clientWidth - minWidth - 48) + 'px';
   }
 

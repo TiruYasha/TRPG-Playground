@@ -18,12 +18,11 @@ export class JournalNodeComponent {
   @Output() deleteItem = new EventEmitter<JournalTreeItem>();
 
   @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
-  @ViewChild('menuButton') button: ElementRef;
+  @ViewChild('journalItemMenuButton') button: ElementRef;
 
   type = JournalItemType;
 
   constructor() {
-
   }
 
   triggerMenu(event: MouseEvent) {
@@ -36,9 +35,9 @@ export class JournalNodeComponent {
     this.trigger.menu.hasBackdrop = true;
     this.trigger.openMenu();
     document.getElementsByClassName('cdk-overlay-backdrop')[0].addEventListener('contextmenu', (offEvent: MouseEvent) => {
+      offEvent.preventDefault();
       //Temporary right click fix
       this.trigger.closeMenu();
-      offEvent.preventDefault();
     });
   }
 

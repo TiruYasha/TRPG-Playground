@@ -6,7 +6,6 @@ namespace Domain.Dto.Shared
     {
         public string Description { get; set; }
         public string OwnerNotes { get; set; }
-        public Guid? ImageId { get; set; }
 
         public JournalCharacterSheetDto()
         {

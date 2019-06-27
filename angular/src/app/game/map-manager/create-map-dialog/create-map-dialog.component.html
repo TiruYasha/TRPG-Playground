@@ -1,0 +1,39 @@
+<div class="container">
+  <h1>Creating a map</h1>
+  <form class="dialogContent" [formGroup]="form" (ngSubmit)="saveMap()">
+    <div class="formFieldContainer">
+      <mat-form-field appearance="standard">
+        <mat-label>Name</mat-label>
+        <input matInput placeholder="Name" formControlName="name" required cdkFocusInitial>
+        <mat-error *ngIf="name.invalid">The name is required</mat-error>
+      </mat-form-field>
+      <div class="mapSize">
+        <mat-form-field appearance="standard">
+          <mat-label>Width</mat-label>
+          <input matInput type="number" placeholder="1080" formControlName="widthInPixels" required cdkFocusInitial>
+          <mat-error *ngIf="widthInPixels.hasError('max') || widthInPixels.hasError('min')">
+            The size of the map must be between 0 and 4000.
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="standard">
+          <mat-label>Height</mat-label>
+          <input matInput type="number" placeholder="1080" formControlName="heightInPixels" required cdkFocusInitial>
+          <mat-error *ngIf="heightInPixels.hasError('max') || heightInPixels.hasError('min')">
+            The size of the map must be between 0 and 4000.
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <mat-form-field appearance="standard">
+        <mat-label>Grid size</mat-label>
+        <input matInput type="number" placeholder="50" formControlName="gridSizeInPixels" required cdkFocusInitial>
+        <mat-error *ngIf="gridSizeInPixels.hasError('max') || gridSizeInPixels.hasError('min')">
+          The grid size must be between 0 and 4000.
+        </mat-error>
+      </mat-form-field>
+      <div class="buttons">
+        <button mat-raised-button (click)="exitDialog()">Close</button>
+        <button mat-raised-button type="submit" [disabled]="!form.valid">Save</button>
+      </div>
+    </div>
+  </form>
+</div>

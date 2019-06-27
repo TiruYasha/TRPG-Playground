@@ -2,7 +2,7 @@ import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { ValidatorFunctions } from 'src/app/utilities/validator-functions';
 import { JournalFolder } from 'src/app/models/journal/journalitems/journal-folder.model';
-import { DialogState } from '../parent-dialog/dialog-state.enum';
+import { DialogState } from '../../../models/dialog-state.enum';
 import { DestroySubscription } from 'src/app/shared/components/destroy-subscription.extendable';
 import { takeUntil } from 'rxjs/operators';
 

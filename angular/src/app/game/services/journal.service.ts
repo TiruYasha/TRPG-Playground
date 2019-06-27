@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 import { AddJournalItemRequestModel } from 'src/app/models/journal/requests/add-journal-item-request.model';
 import { AddedJournalItemModel } from 'src/app/models/journal/receives/added-journal-folder.model';
 import { JournalItem } from 'src/app/models/journal/journalitems/journal-item.model';
-import { ActiveGameService } from '../services/active-game.service';
+import { ActiveGameService } from './active-game.service';
 import { UploadedImage as UploadedJournalItemImage } from 'src/app/models/journal/receives/uploaded-image.model';
 import { JournalTreeItem } from 'src/app/models/journal/journal-tree-item.model';
 import { JournalEvents } from 'src/app/models/journal/journal-events.enum';
