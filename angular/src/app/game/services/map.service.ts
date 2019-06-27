@@ -22,7 +22,15 @@ export class MapService {
         return this.http.get<PlayMap[]>(environment.apiUrl + `/game/map`);
     }
 
-    changeMap(map: PlayMap){
+    deleteMap(mapId: string): Observable<void> {
+        return this.http.delete<void>(environment.apiUrl + `/map/${mapId}`);
+    }
+
+    updateMap(map: PlayMap): Observable<void>  {
+        return this.http.put<void>(environment.apiUrl + `/map`, map);
+    }
+
+    changeMap(map: PlayMap) {
         this.changeMapSubject.next(map);
     }
 }

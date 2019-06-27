@@ -13,6 +13,8 @@ namespace Domain.Domain
         public int WidthInPixels { get; private set; }
         public int HeightInPixels { get; private set; }
         public int GridSizeInPixels { get; private set; }
+        public Guid GameId { get; private set; }
+        public virtual Game Game { get; private set; }
         public virtual ICollection<Layer> Layers { get; private set; }
 
         private Map()

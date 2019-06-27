@@ -36,6 +36,9 @@ namespace DataAccess
 
             modelBuilder.Entity<JournalFolder>().HasMany(j => j.JournalItems).WithOne(j => j.ParentFolder)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Map>().HasMany(m => m.Layers).WithOne(l => l.Map)
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
         private void SetupJournalItemPermission(ModelBuilder modelBuilder)

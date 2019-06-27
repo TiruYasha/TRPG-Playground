@@ -7,6 +7,8 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ValidatorFunctions } from 'src/app/utilities/validator-functions';
 import { PlayMap } from 'src/app/models/map/map.model';
 import { AddMap } from 'src/app/models/map/requests/add-map.model';
+import { CreateMapDialogModel } from './create-map-dialog.model';
+import { DialogState } from 'src/app/models/dialog-state.enum';
 
 @Component({
   selector: 'trpg-create-map-dialog',
@@ -29,18 +31,49 @@ export class CreateMapDialogComponent extends DestroySubscription implements OnI
 
   constructor(
     public dialogRef: MatDialogRef<CreateMapDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: CreateMapDialogComponent,
+    @Inject(MAT_DIALOG_DATA) public data: CreateMapDialogModel,
     private mapService: MapService
   ) { super(); }
 
   ngOnInit() {
+    if (this.data.dialogState === DialogState.Edit) {
+      this.name.setValue(this.data.map.name);
+      this.gridSizeInPixels.setValue(this.data.map.gridSizeInPixels);
+      this.heightInPixels.setValue(this.data.map.heightInPixels);
+      this.widthInPixels.setValue(this.data.map.widthInPixels);
+    }
   }
 
-  addMap() {
+  saveMap() {
     if (!this.form.valid) {
       return;
     }
 
+    if (this.data.dialogState === DialogState.New) {
+      this.addMap();
+    } else if (this.data.dialogState === DialogState.Edit) {
+      this.updateMap();
+    }
+
+  }
+
+  updateMap() {
+    const map: PlayMap = {
+      id: this.data.map.id,
+      name: this.name.value,
+      gridSizeInPixels: this.gridSizeInPixels.value,
+      heightInPixels: this.heightInPixels.value,
+      widthInPixels: this.widthInPixels.value
+    };
+
+    this.mapService.updateMap(map)
+      .pipe(takeUntil(this.destroy))
+      .subscribe(() => {
+        this.dialogRef.close(map);
+      });
+  }
+
+  addMap() {
     const addMap: AddMap = {
       name: this.name.value,
       gridSizeInPixels: this.gridSizeInPixels.value,
@@ -56,6 +89,6 @@ export class CreateMapDialogComponent extends DestroySubscription implements OnI
   }
 
   exitDialog() {
-    this.dialogRef.close();
+    this.dialogRef.close(null);
   }
 }

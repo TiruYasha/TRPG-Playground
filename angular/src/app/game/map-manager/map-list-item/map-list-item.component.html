@@ -1,0 +1,13 @@
+<mat-menu #mapMenu="matMenu">
+  <button mat-menu-item (click)="editMap.emit(map)">Edit</button>
+  <button mat-menu-item (click)="deleteMap.emit(map)">Delete</button>
+</mat-menu>
+
+<mat-list-item (contextmenu)="triggerMenu($event)" role="listitem" [class.selected]="selected"
+  (click)="onSelectedMap(map)">
+  {{map.name}}
+  <div #menuButton style="position: absolute">
+    <button mat-button [matMenuTriggerFor]="mapMenu" style="display: hidden">
+    </button>
+  </div>
+</mat-list-item>

@@ -18,12 +18,11 @@ export class JournalNodeComponent {
   @Output() deleteItem = new EventEmitter<JournalTreeItem>();
 
   @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
-  @ViewChild('menuButton') button: ElementRef;
+  @ViewChild('journalItemMenuButton') button: ElementRef;
 
   type = JournalItemType;
 
   constructor() {
-
   }
 
   triggerMenu(event: MouseEvent) {

@@ -1,6 +1,5 @@
-import { Component, OnInit, Output, Input, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
 import { PlayMap } from 'src/app/models/map/map.model';
-import { MatMenuTrigger } from '@angular/material';
 
 @Component({
   selector: 'trpg-map-list',
@@ -17,9 +16,6 @@ export class MapListComponent implements OnInit {
 
   @Input() maps: PlayMap[] = [];
 
-  @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
-  @ViewChild('menuButton') button: ElementRef;
-
   constructor() { }
 
   ngOnInit() {
@@ -30,30 +26,5 @@ export class MapListComponent implements OnInit {
     this.selectMap.emit(map);
 
     this.selectedMap = map;
-  }
-
-  triggerMenu(event: MouseEvent) {
-    event.preventDefault();
-    const button = this.button.nativeElement as HTMLDivElement;
-    button.style.position = 'absolute';
-    button.style.left = `${event.offsetX - 64}px`;
-    button.style.top = `${event.pageY - 80}px`;
-
-    this.trigger.menu.hasBackdrop = true;
-    this.trigger.openMenu();
-    document.getElementsByClassName('cdk-overlay-backdrop')[0].addEventListener('contextmenu', (offEvent: MouseEvent) => {
-      offEvent.preventDefault();
-      //Temporary right click fix
-      this.trigger.closeMenu();
-    });
-  }
-
-  sendEditClick(map: PlayMap) {
-    // TODO create map-list-item component
-    //this.addJournalItem.emit(click);
-  }
-
-  deleteClick(map: PlayMap) {
-
   }
 }

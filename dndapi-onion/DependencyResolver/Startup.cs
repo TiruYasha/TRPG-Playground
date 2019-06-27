@@ -157,6 +157,7 @@ namespace DependencyResolver
             services.AddTransient<IJournalService, JournalService>();
             services.AddTransient<IRepository, Repository>();
             services.AddTransient<ImageProcesser>();
+            services.AddTransient<IMapService, MapService>();
 
             services.AddScoped<IAuthorizationHandler, IsOwnerRequirementHandler>();
             services.AddScoped<IAuthorizationHandler, IsPlayerRequirementHandler>();
@@ -190,7 +191,7 @@ namespace DependencyResolver
                 app.UseHsts();
             }
 
-            //context.Database.EnsureDeleted();
+            context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
             app.UseSwagger();

@@ -19,12 +19,6 @@
     height: calc(100% - 60px);
     overflow-y: scroll;
 
-    .selected {
-      background-color: $accent;
-    }
-
-    .mat-list-item{
-      height: 48px !important;
-    }
+   
   }
 }
