@@ -4,7 +4,10 @@ using Domain.Domain.JournalItems;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Security.Cryptography;
+using System.Threading.Tasks;
 using Domain.Domain.Layers;
+using Microsoft.AspNetCore.Identity;
 
 namespace DataAccess
 {
@@ -70,6 +73,28 @@ namespace DataAccess
                 .HasOne(gp => gp.User)
                 .WithMany(g => g.JoinedGames)
                 .HasForeignKey(gp => gp.UserId);
+        }
+
+        public async Task EnsureSeeded(UserManager<User> userManager)
+        {
+            var user = new User
+            {
+                Email = "test@test.nl",
+                UserName = "test@test.nl"
+            };
+
+            if (await this.Users.AnyAsync(u => u.Email == user.Email))
+            {
+                return;
+            }
+
+            var result = await userManager.CreateAsync(user, "test12");
+
+            var game = new Game("testGame", user.Id);
+
+            await this.AddAsync(game);
+
+            await this.SaveChangesAsync();
         }
     }
 }

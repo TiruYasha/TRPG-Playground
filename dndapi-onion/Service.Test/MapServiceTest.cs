@@ -231,7 +231,6 @@ namespace Service.Test
             layer.Name.ShouldBe(layer1.Name);
             layer.Type.ShouldBe(layer1.Type);
             layer.MapId.ShouldBe(layer1.MapId);
-
         }
     }
 }
