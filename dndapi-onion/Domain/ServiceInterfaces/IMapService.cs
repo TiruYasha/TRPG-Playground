@@ -11,5 +11,10 @@ namespace Domain.ServiceInterfaces
     {
         Task UpdateMap(MapDto dto, Guid gameId);
         Task DeleteMap(Guid mapId, Guid gameId);
+
+        Task<LayerDto> AddLayer(LayerDto dto, Guid mapId, Guid gameId);
+        Task<LayerDto> UpdateLayer(LayerDto dto, Guid mapId, Guid gameId);
+        Task DeleteLayer(Guid layerId, Guid mapId, Guid gameId);
+        Task<IEnumerable<LayerDto>> GetLayers(Guid mapId, Guid gameId);
     }
 }

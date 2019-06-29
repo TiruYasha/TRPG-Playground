@@ -30,7 +30,7 @@ namespace Service
             context.Maps.Remove(map);
             await context.SaveChangesAsync();
         }
-
+        
         public async Task UpdateMap(MapDto dto, Guid gameId)
         {
             var map = await context.Games.FilterById(gameId).SelectMany(g => g.Maps.Where(m => m.Id == dto.Id)).FirstOrDefaultAsync();
@@ -41,5 +41,34 @@ namespace Service
 
             await context.SaveChangesAsync();
         }
+
+        public async Task<LayerDto> AddLayer(LayerDto dto, Guid mapId, Guid gameId)
+        {
+            var map = await context.Maps.FirstOrDefaultAsync(m => m.GameId == gameId && m.Id == mapId);
+
+            var layer = await map.AddLayer(dto);
+
+            await context.SaveChangesAsync();
+
+            dto.Id = layer.Id;
+
+            return dto;
+        }
+
+        public Task<LayerDto> UpdateLayer(LayerDto dto, Guid mapId, Guid gameId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteLayer(Guid layerId, Guid mapId, Guid gameId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<LayerDto>> GetLayers(Guid mapId, Guid gameId)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

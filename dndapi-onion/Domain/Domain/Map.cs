@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Domain.Domain.Layers;
 using Domain.Dto.RequestDto;
 using Domain.Dto.Shared;
 
@@ -45,6 +46,14 @@ namespace Domain.Domain
                 HeightInPixels = dto.HeightInPixels;
                 GridSizeInPixels = dto.GridSizeInPixels;
             });
+        }
+
+        public async Task<Layer> AddLayer(LayerDto dto)
+        {
+            var layer = await LayerFactory.Create(dto);
+
+            Layers.Add(layer);
+            return layer;
         }
 
         private static void CheckArguments(MapDto dto)

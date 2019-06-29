@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Domain.Domain;
+using Domain.Domain.Layers;
 using Domain.Dto.RequestDto;
 using Domain.Dto.Shared;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -243,6 +244,61 @@ namespace Domain.Test.Domain
 
             // Assert
             result.Message.ShouldBe(expectedErrorMessage);
+        }
+
+        [TestMethod]
+        public async Task AddLayerAddsTheLayerToMap()
+        {
+            // Arrange
+            var validMap = CreateValidMap();
+            var dto = new LayerDto
+            {
+                MapId = validMap.Id,
+                Name = "testing",
+                Type = LayerType.Default
+            };
+
+            // Act
+            await validMap.AddLayer(dto);
+
+            // Assert
+            validMap.Layers.Count.ShouldBe(2);
+            var result = validMap.Layers.Last();
+            result.Type.ShouldBe(LayerType.Default);
+        }
+
+        [TestMethod]
+        public async Task AddLayerAddsTheLayerGroupToMap()
+        {
+            // Arrange
+            var validMap = CreateValidMap();
+            var dto = new LayerDto
+            {
+                MapId = validMap.Id,
+                Name = "testing",
+                Type = LayerType.Group
+            };
+
+            // Act
+            await validMap.AddLayer(dto);
+
+            // Assert
+            validMap.Layers.Count.ShouldBe(2);
+            var result = validMap.Layers.Last();
+            result.Type.ShouldBe(LayerType.Group);
+        }
+
+        private Map CreateValidMap()
+        {
+            var dto = new MapDto
+            {
+                Name = "test",
+                GridSizeInPixels = 10,
+                WidthInPixels = 1000,
+                HeightInPixels = 1000
+            };
+
+            return new Map(dto);
         }
     }
 }
