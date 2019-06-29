@@ -87,7 +87,7 @@ namespace RestApi
         [HttpDelete]
         [Authorize(Policy = "IsGameOwner")]
         [Route("{mapId}/layer/{layerId}")]
-        public async Task<IActionResult> GetLayers(Guid mapId, Guid layerId)
+        public async Task<IActionResult> DeleteLayer(Guid mapId, Guid layerId)
         {
             var gameId = jwtReader.GetGameId();
             await mapService.DeleteLayer(layerId, mapId, gameId);

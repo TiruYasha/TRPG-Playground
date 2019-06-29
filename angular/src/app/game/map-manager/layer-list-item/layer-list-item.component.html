@@ -1,0 +1,20 @@
+<mat-menu #mapMenu="matMenu">
+  <button mat-menu-item (click)="startRename()">Rename</button>
+  <button mat-menu-item (click)="delete.emit(layer)">Delete</button>
+</mat-menu>
+
+<mat-list-item role="listitem" (contextmenu)="triggerMenu($event)">
+  <div *ngIf="!edit">
+    {{layer.name}}
+  </div>
+  <div [hidden]="!edit">
+    <mat-form-field appearance="standard" cdkFocusInitial>
+      <input matInput (keyup.enter)="renameLayer()" (blur)="renameLayer()" [formControl]="name" required cdkFocusInitial #nameField>
+      <mat-error *ngIf="name.invalid">The name is required</mat-error>
+    </mat-form-field>
+  </div>
+  <div #menuButton style="position: absolute">
+    <button mat-button [matMenuTriggerFor]="mapMenu" style="display: hidden">
+    </button>
+  </div>
+</mat-list-item>

@@ -191,9 +191,9 @@ namespace DependencyResolver
                 app.UseHsts();
             }
 
-            context.Database.EnsureDeleted();
+            //context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
-            context.EnsureSeeded(userManager);
+            context.EnsureSeeded(userManager).Wait();
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>

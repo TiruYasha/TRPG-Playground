@@ -4,11 +4,14 @@
   flex-flow: column;
 
   .mapList {
-      max-height: 50%;
-      flex-basis: 50%;
+    min-height: 30%;
+    max-height: 50%;
+    flex-basis: calc(40% - 1px);
   }
 
   .layerManager {
-      flex-basis: 50%;
+    min-height: 30%;
+    max-height: 69%;
+    flex-basis: calc(60% - 1px);
   }
 }

@@ -1,5 +1,27 @@
 <div class="layerManagerContainer">
-  <h3>
-    Layers
-  </h3>
+  <div class="header">
+    <h3>
+      Layers
+    </h3>
+    <div class="actions">
+      <div class="action" (click)="addNewLayer()">
+        <mat-icon class="material-icons">add</mat-icon>
+      </div>
+      <div class="action">
+        <mat-icon class="material-icons">create_new_folder</mat-icon>
+      </div>
+    </div>
+  </div>
+  <div class="listItemsContainer">
+    <mat-nav-list role="list">
+      <trpg-layer-list-item 
+        (cancelAdd)="cancelLayerAdd($event)"
+        (completeAdd)="addLayer.emit($event)"
+        (completeEdit)="updateLayer.emit($event)"
+        (delete)="delete.emit($event)"
+        [edit]="layer === editLayer" 
+        *ngFor="let layer of layers" 
+        [layer]="layer"></trpg-layer-list-item>
+    </mat-nav-list>
+  </div>
 </div>

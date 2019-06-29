@@ -20,7 +20,7 @@ namespace Domain.Domain
 
         private Map()
         {
-            // for ef
+            Layers = new List<Layer>();
         }
 
         public Map(MapDto dto) : this()

@@ -7,9 +7,11 @@ import { LayerManagerComponent } from './layer-manager/layer-manager.component';
 import { CreateMapDialogComponent } from './create-map-dialog/create-map-dialog.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MapListItemComponent } from './map-list-item/map-list-item.component';
+import { LayerListComponent } from './layer-list/layer-list.component';
+import { LayerListItemComponent } from './layer-list-item/layer-list-item.component';
 
 @NgModule({
-  declarations: [MapManagerComponent, MapListComponent, LayerManagerComponent, CreateMapDialogComponent, MapListItemComponent],
+  declarations: [MapManagerComponent, MapListComponent, LayerManagerComponent, CreateMapDialogComponent, MapListItemComponent, LayerListComponent, LayerListItemComponent],
   imports: [
     CommonModule,
     MatIconModule,
