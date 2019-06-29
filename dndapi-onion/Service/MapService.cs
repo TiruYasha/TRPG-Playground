@@ -10,12 +10,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper.QueryableExtensions;
 
 namespace Service
 {
     public class MapService : IMapService
     {
-        private DndContext context;
+        private readonly DndContext context;
         private IMapper mapper;
 
         public MapService(DndContext context, IMapper mapper)
@@ -55,19 +56,34 @@ namespace Service
             return dto;
         }
 
-        public Task<LayerDto> UpdateLayer(LayerDto dto, Guid mapId, Guid gameId)
+        public async Task<LayerDto> UpdateLayer(LayerDto dto, Guid mapId, Guid gameId)
         {
-            throw new NotImplementedException();
+            var layer = await context.Maps.Where(m => m.GameId == gameId && m.Id == mapId).SelectMany(m => m.Layers)
+                .FirstOrDefaultAsync(l => l.Id == dto.Id);
+
+            await layer.Update(dto.Name);
+
+            await context.SaveChangesAsync();
+
+            dto.Name = layer.Name;
+
+            return dto;
         }
 
-        public Task DeleteLayer(Guid layerId, Guid mapId, Guid gameId)
+        public async Task DeleteLayer(Guid layerId, Guid mapId, Guid gameId)
         {
-            throw new NotImplementedException();
+            var layer = await context.Maps.Where(m => m.GameId == gameId && m.Id == mapId).SelectMany(m => m.Layers)
+                .FirstOrDefaultAsync(l => l.Id == layerId);
+            context.Layers.Remove(layer);
+            await context.SaveChangesAsync();
         }
 
-        public Task<IEnumerable<LayerDto>> GetLayers(Guid mapId, Guid gameId)
+        public async Task<IEnumerable<LayerDto>> GetLayers(Guid mapId, Guid gameId)
         {
-            throw new NotImplementedException();
+            var layers = await context.Maps.Where(m => m.GameId == gameId && m.Id == mapId).SelectMany(m => m.Layers)
+                .ProjectTo<LayerDto>(mapper.ConfigurationProvider).ToListAsync();
+
+            return layers;
         }
 
     }

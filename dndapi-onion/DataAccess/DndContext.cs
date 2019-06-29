@@ -4,6 +4,7 @@ using Domain.Domain.JournalItems;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
+using Domain.Domain.Layers;
 
 namespace DataAccess
 {
@@ -21,6 +22,7 @@ namespace DataAccess
         public DbSet<JournalCharacterSheet> JournalCharacterSheets { get; set; }
         public DbSet<Image> Images { get; set; }
         public DbSet<Map> Maps { get; set; }
+        public DbSet<Layer> Layers { get; set; }
 
         public DndContext(DbContextOptions<DndContext> options) : base(options)
         {
