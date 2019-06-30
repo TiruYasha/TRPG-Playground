@@ -5,4 +5,9 @@ export class Layer {
     name: string;
     type: LayerType;
     mapId: string;
+    parentId?: string;
+
+    constructor() {
+        this.type = LayerType.Default;
+    }
 }

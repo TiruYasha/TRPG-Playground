@@ -4,24 +4,24 @@
       Layers
     </h3>
     <div class="actions">
-      <div class="action" (click)="addNewLayer()">
+      <div class="action" (click)="addNewLayer(layerType.Default)">
         <mat-icon class="material-icons">add</mat-icon>
       </div>
-      <div class="action">
+      <div class="action" (click)="addNewLayer(layerType.LayerGroup)">
         <mat-icon class="material-icons">create_new_folder</mat-icon>
       </div>
     </div>
   </div>
   <div class="listItemsContainer">
     <mat-nav-list role="list">
-      <trpg-layer-list-item 
-        (cancelAdd)="cancelLayerAdd($event)"
-        (completeAdd)="addLayer.emit($event)"
-        (completeEdit)="updateLayer.emit($event)"
-        (delete)="delete.emit($event)"
-        [edit]="layer === editLayer" 
-        *ngFor="let layer of layers" 
-        [layer]="layer"></trpg-layer-list-item>
+      <div *ngFor="let layer of layers">
+        <trpg-layer-list-item *ngIf="layer.type === layerType.Default" (cancelAdd)="cancelLayerAdd($event)"
+          (completeAdd)="addLayer.emit($event)" (completeEdit)="updateLayer.emit($event)" (delete)="delete.emit($event)"
+          [edit]="layer === editLayer" [layer]="layer"></trpg-layer-list-item>
+        <trpg-layer-group-list-item *ngIf="layer.type === layerType.LayerGroup" (cancelAdd)="cancelLayerAdd($event)"
+          (completeAdd)="addLayer.emit($event)" (completeEdit)="updateLayer.emit($event)" (delete)="delete.emit($event)"
+          [edit]="layer === editLayer" [layer]="layer"></trpg-layer-group-list-item>
+      </div>
     </mat-nav-list>
   </div>
 </div>

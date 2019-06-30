@@ -1,29 +1,31 @@
-import { Component, OnInit, Input, ElementRef, ViewChild, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { Layer } from 'src/app/models/map/layer.model';
+import { MatMenuTrigger } from '@angular/material';
+import { LayerGroup } from 'src/app/models/map/layer-group.model';
 import { FormControl, Validators } from '@angular/forms';
 import { ValidatorFunctions } from 'src/app/utilities/validator-functions';
-import { MatMenuTrigger } from '@angular/material';
-import { LayerType } from 'src/app/models/map/layer-type.enum';
 
 @Component({
-  selector: 'trpg-layer-list-item',
-  templateUrl: './layer-list-item.component.html',
-  styleUrls: ['./layer-list-item.component.scss']
+  selector: 'trpg-layer-group-list-item',
+  templateUrl: './layer-group-list-item.component.html',
+  styleUrls: ['./layer-group-list-item.component.scss']
 })
-export class LayerListItemComponent implements OnInit {
+export class LayerGroupListItemComponent implements OnInit {
 
-  @Input() layer: Layer;
+  @Input() layer: LayerGroup;
   @Input() edit = false;
 
   @Output() cancelAdd = new EventEmitter<Layer>();
   @Output() completeEdit = new EventEmitter<Layer>();
   @Output() completeAdd = new EventEmitter<Layer>();
   @Output() delete = new EventEmitter<Layer>();
+  @Output() addSubLayer = new EventEmitter<Layer>();
 
   @ViewChild('nameField') nameField: ElementRef;
   @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
   @ViewChild('menuButton') button: ElementRef;
 
+  editLayer: Layer;
   name = new FormControl('', [Validators.required, ValidatorFunctions.noWhitespaceValidator]);
 
   constructor() { }
@@ -76,6 +78,22 @@ export class LayerListItemComponent implements OnInit {
       //Temporary right click fix
       this.trigger.closeMenu();
     });
+  }
+
+  onAddNewSubLayer() {
+    const layer = new Layer();
+
+    this.layer.layers.push(layer);
+    this.editLayer = layer;
+  }
+
+  completeAddSubLayer(layer: Layer) {
+    layer.parentId = this.layer.id;
+    this.addSubLayer.emit(layer);
+  }
+
+  cancelSubLayerAdd(layer: Layer){
+    //this.layer.layers = this.layer.layers.filter(l => l !== layer);
   }
 
   private isNew() {

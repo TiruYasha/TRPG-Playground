@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
+using Domain.Domain.Layers;
 
 namespace Service
 {
@@ -24,14 +25,14 @@ namespace Service
             this.context = context;
             this.mapper = mapper;
         }
-        
+
         public async Task DeleteMap(Guid mapId, Guid gameId)
         {
             var map = await context.Games.FilterById(gameId).SelectMany(g => g.Maps.Where(m => m.Id == mapId)).FirstOrDefaultAsync();
             context.Maps.Remove(map);
             await context.SaveChangesAsync();
         }
-        
+
         public async Task UpdateMap(MapDto dto, Guid gameId)
         {
             var map = await context.Games.FilterById(gameId).SelectMany(g => g.Maps.Where(m => m.Id == dto.Id)).FirstOrDefaultAsync();
@@ -45,15 +46,12 @@ namespace Service
 
         public async Task<LayerDto> AddLayer(LayerDto dto, Guid mapId, Guid gameId)
         {
-            var map = await context.Maps.FirstOrDefaultAsync(m => m.GameId == gameId && m.Id == mapId);
+            if (dto.ParentId.HasValue)
+            {
+                return await AddLayerToLayerGroup(dto, mapId, gameId);
+            }
 
-            var layer = await map.AddLayer(dto);
-
-            await context.SaveChangesAsync();
-
-            dto.Id = layer.Id;
-
-            return dto;
+            return await AddLayerToMap(dto, mapId, gameId);
         }
 
         public async Task<LayerDto> UpdateLayer(LayerDto dto, Guid mapId, Guid gameId)
@@ -84,6 +82,33 @@ namespace Service
                 .ProjectTo<LayerDto>(mapper.ConfigurationProvider).ToListAsync();
 
             return layers;
+        }
+
+        private async Task<LayerDto> AddLayerToMap(LayerDto dto, Guid mapId, Guid gameId)
+        {
+            var map = await context.Maps.FirstOrDefaultAsync(m => m.GameId == gameId && m.Id == mapId);
+
+            var layer = await map.AddLayer(dto);
+
+            await context.SaveChangesAsync();
+
+            dto.Id = layer.Id;
+
+            return dto;
+        }
+
+        private async Task<LayerDto> AddLayerToLayerGroup(LayerDto dto, Guid mapId, Guid gameId)
+        {
+            var layerGroup = await context.LayerGroups.FirstOrDefaultAsync(l =>
+                l.Id == dto.ParentId && l.MapId == mapId && l.Map.GameId == gameId);
+
+            var layer = await layerGroup.AddLayer(dto);
+
+            await context.SaveChangesAsync();
+
+            dto.Id = layer.Id;
+
+            return dto;
         }
     }
 }

@@ -1,13 +1,10 @@
-﻿using Domain.Dto.RequestDto;
-using Domain.Dto.Shared;
+﻿using Domain.Dto.Shared;
 using Domain.Exceptions;
 using Domain.ServiceInterfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Domain.Domain.Layers;
 using Microsoft.EntityFrameworkCore;
@@ -158,6 +155,35 @@ namespace Service.Test
             result.Id.ShouldBe(layer.Id);
             layer.Name.ShouldBe(layerToAdd.Name);
             layer.Type.ShouldBe(layerToAdd.Type);
+        }
+
+        [TestMethod]
+        public async Task AddLayerAddsTheLayerToTheLayerGroup()
+        {
+            // arrange
+            var game = await GameDataBuilder
+                .WithMaps(true)
+                .BuildGame();
+            await Context.AddAsync(game);
+            await Context.SaveChangesAsync();
+
+            var map = game.Maps.Last();
+            var layerGroup = map.Layers.Last();
+            var layerToAdd = new LayerDto
+            {
+                MapId = map.Id,
+                Name = "testGroup",
+                Type = LayerType.Default,
+                ParentId = layerGroup.Id
+            };
+
+            // Act
+            await Sut.AddLayer(layerToAdd, map.Id, game.Id);
+
+            // Assert
+            var result = await Context.LayerGroups.Include(l => l.Layers).FirstOrDefaultAsync(l => l.Id == layerGroup.Id);
+            result.Layers.Count.ShouldBe(1);
+            result.Layers.First().Name.ShouldBe(layerToAdd.Name);
         }
 
         [TestMethod]

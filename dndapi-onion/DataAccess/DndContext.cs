@@ -26,6 +26,7 @@ namespace DataAccess
         public DbSet<Image> Images { get; set; }
         public DbSet<Map> Maps { get; set; }
         public DbSet<Layer> Layers { get; set; }
+        public DbSet<LayerGroup> LayerGroups { get; set; }
 
         public DndContext(DbContextOptions<DndContext> options) : base(options)
         {
