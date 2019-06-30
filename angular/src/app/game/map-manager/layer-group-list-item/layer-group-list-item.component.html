@@ -4,16 +4,16 @@
   <button mat-menu-item (click)="delete.emit(layer)">Delete</button>
 </mat-menu>
 
-<div (contextmenu)="triggerMenu($event)">
+<div>
   <mat-expansion-panel>
-    <mat-expansion-panel-header>
+    <mat-expansion-panel-header  (contextmenu)="triggerMenu($event)">
       <mat-panel-title *ngIf="!edit">
         {{layer.name}}
       </mat-panel-title>
       <div [hidden]="!edit">
-        <mat-form-field appearance="standard" cdkFocusInitial>
+        <mat-form-field appearance="standard">
           <input matInput (keyup.enter)="$event.target.blur();" (blur)="renameLayer()" [formControl]="name" required
-            cdkFocusInitial #nameField>
+             #groupNameField>
           <mat-error *ngIf="name.invalid">The name is required</mat-error>
         </mat-form-field>
       </div>
@@ -27,7 +27,7 @@
       (cancelAdd)="cancelSubLayerAdd($event)"
       (completeAdd)="completeAddSubLayer($event)"
       (completeEdit)="completeEdit.emit($event)"
-      (delete)="delete.emit($event)"
+      (delete)="deleteSubLayer($event)"
       [edit]="subLayer === editLayer" 
       [layer]="subLayer"></trpg-layer-list-item>
   </mat-expansion-panel>

@@ -19,7 +19,7 @@ namespace Domain.Test.Domain.Layers
             var name = "test";
 
             // act
-            var result = new LayerGroup(name);
+            var result = new LayerGroup(name, Guid.NewGuid());
 
             //assert
             result.Name.ShouldBe(name);
@@ -32,7 +32,7 @@ namespace Domain.Test.Domain.Layers
         {
             //arrange
             var name = "test";
-            var layerGroup = new LayerGroup(name);
+            var layerGroup = new LayerGroup(name, Guid.NewGuid());
 
             var dto = new LayerDto
             {
@@ -41,7 +41,7 @@ namespace Domain.Test.Domain.Layers
             };
 
             // act
-            var layer = await layerGroup.AddLayer(dto);
+            var layer = await layerGroup.AddLayer(dto, Guid.NewGuid());
 
             //assert
             layerGroup.Layers.Count.ShouldBe(1);

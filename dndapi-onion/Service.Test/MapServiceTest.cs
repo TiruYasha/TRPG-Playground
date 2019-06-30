@@ -174,7 +174,7 @@ namespace Service.Test
                 MapId = map.Id,
                 Name = "testGroup",
                 Type = LayerType.Default,
-                ParentId = layerGroup.Id
+                LayerGroupId = layerGroup.Id
             };
 
             // Act

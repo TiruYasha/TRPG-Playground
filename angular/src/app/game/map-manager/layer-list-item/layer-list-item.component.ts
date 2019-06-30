@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ElementRef, ViewChild, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, ElementRef, ViewChild, Output, EventEmitter, AfterViewChecked, AfterViewInit } from '@angular/core';
 import { Layer } from 'src/app/models/map/layer.model';
 import { FormControl, Validators } from '@angular/forms';
 import { ValidatorFunctions } from 'src/app/utilities/validator-functions';
@@ -11,7 +11,6 @@ import { LayerType } from 'src/app/models/map/layer-type.enum';
   styleUrls: ['./layer-list-item.component.scss']
 })
 export class LayerListItemComponent implements OnInit {
-
   @Input() layer: Layer;
   @Input() edit = false;
 
@@ -84,6 +83,8 @@ export class LayerListItemComponent implements OnInit {
 
   private intializeEdit() {
     this.name.setValue(this.layer.name);
-    this.nameField.nativeElement.focus();
+    setTimeout(() => {
+      this.nameField.nativeElement.focus();
+    });
   }
 }

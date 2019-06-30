@@ -16,10 +16,10 @@
     <mat-nav-list role="list">
       <div *ngFor="let layer of layers">
         <trpg-layer-list-item *ngIf="layer.type === layerType.Default" (cancelAdd)="cancelLayerAdd($event)"
-          (completeAdd)="addLayer.emit($event)" (completeEdit)="updateLayer.emit($event)" (delete)="delete.emit($event)"
+          (completeAdd)="addLayer($event)" (completeEdit)="updateLayer($event)" (delete)="deleteLayer($event)"
           [edit]="layer === editLayer" [layer]="layer"></trpg-layer-list-item>
         <trpg-layer-group-list-item *ngIf="layer.type === layerType.LayerGroup" (cancelAdd)="cancelLayerAdd($event)"
-          (completeAdd)="addLayer.emit($event)" (completeEdit)="updateLayer.emit($event)" (delete)="delete.emit($event)"
+          (completeAdd)="addLayer($event)" (completeEdit)="updateLayer($event)" (delete)="deleteLayer($event)"
           [edit]="layer === editLayer" [layer]="layer"></trpg-layer-group-list-item>
       </div>
     </mat-nav-list>

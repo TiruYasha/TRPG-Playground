@@ -32,7 +32,7 @@ namespace Domain.Domain
             WidthInPixels = dto.WidthInPixels;
             HeightInPixels = dto.HeightInPixels;
             GridSizeInPixels = dto.GridSizeInPixels;
-            Layers = new List<Layer> { new Layer("layer1") };
+            Layers = new List<Layer> { new Layer("layer1", Guid.NewGuid()) };
         }
 
         public Task Update(MapDto dto)
@@ -50,7 +50,7 @@ namespace Domain.Domain
 
         public async Task<Layer> AddLayer(LayerDto dto)
         {
-            var layer = await LayerFactory.Create(dto);
+            var layer = await LayerFactory.Create(dto, Id);
 
             Layers.Add(layer);
             return layer;

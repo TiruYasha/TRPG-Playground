@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
 using Domain.Domain.Layers;
+using Remotion.Linq.Clauses;
 
 namespace Service
 {
@@ -46,7 +47,7 @@ namespace Service
 
         public async Task<LayerDto> AddLayer(LayerDto dto, Guid mapId, Guid gameId)
         {
-            if (dto.ParentId.HasValue)
+            if (dto.LayerGroupId.HasValue)
             {
                 return await AddLayerToLayerGroup(dto, mapId, gameId);
             }
@@ -78,8 +79,18 @@ namespace Service
 
         public async Task<IEnumerable<LayerDto>> GetLayers(Guid mapId, Guid gameId)
         {
-            var layers = await context.Maps.Where(m => m.GameId == gameId && m.Id == mapId).SelectMany(m => m.Layers)
-                .ProjectTo<LayerDto>(mapper.ConfigurationProvider).ToListAsync();
+            var test = from l in context.Layers
+                       where l.Type == LayerType.Default && l.MapId == mapId && l.Map.GameId == gameId && l.LayerGroupId == null
+                       select l;
+
+            var test2 = from lg in context.LayerGroups
+                        where lg.Type == LayerType.Group && lg.MapId == mapId && lg.Map.GameId == gameId
+                        select lg;
+
+            var layerDtos = await test.ProjectTo<LayerDto>(mapper.ConfigurationProvider).ToListAsync();
+            var layerGroupDtos = await test2.Include(lg => lg.Layers).ProjectTo<LayerDto>(mapper.ConfigurationProvider).ToListAsync();
+
+            var layers = layerDtos.Concat(layerGroupDtos);
 
             return layers;
         }
@@ -100,9 +111,9 @@ namespace Service
         private async Task<LayerDto> AddLayerToLayerGroup(LayerDto dto, Guid mapId, Guid gameId)
         {
             var layerGroup = await context.LayerGroups.FirstOrDefaultAsync(l =>
-                l.Id == dto.ParentId && l.MapId == mapId && l.Map.GameId == gameId);
+                l.Id == dto.LayerGroupId && l.MapId == mapId && l.Map.GameId == gameId);
 
-            var layer = await layerGroup.AddLayer(dto);
+            var layer = await layerGroup.AddLayer(dto, mapId);
 
             await context.SaveChangesAsync();
 

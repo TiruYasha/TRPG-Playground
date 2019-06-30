@@ -13,17 +13,18 @@ namespace Domain.Domain.Layers
         public Guid MapId { get; private set; }
         public virtual Map Map { get; private set; }
         public virtual LayerGroup LayerGroup { get; private set; }
-        public virtual Guid? LayerGroupId { get; private set; }
+        public Guid? LayerGroupId { get; private set; }
 
-        private Layer() { }
+        protected Layer() { }
 
-        public Layer(string name, LayerType type = LayerType.Default) : this()
+        public Layer(string name, Guid mapId, LayerType type = LayerType.Default) : this()
         {
             CheckArguments(name);
 
             Id = Guid.NewGuid();
             Name = name;
             Type = type;
+            MapId = mapId;
         }
 
         public Task Update(string name)

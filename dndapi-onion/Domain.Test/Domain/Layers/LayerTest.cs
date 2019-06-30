@@ -14,14 +14,16 @@ namespace Domain.Test.Domain.Layers
         {
             // Arrange
             var name = "test";
+            var mapId = Guid.NewGuid();
 
             // Act
-            var result = new Layer(name);
+            var result = new Layer(name, mapId);
 
             // Assert
             result.Name.ShouldBe(name);
             result.Id.ShouldNotBeNull();
             result.Type.ShouldBe(LayerType.Default);
+            result.MapId.ShouldBe(mapId);
         }
 
         [TestMethod]
@@ -31,7 +33,7 @@ namespace Domain.Test.Domain.Layers
             var expectedErrorMessage = "Name may not be empty";
 
             // Act
-            var result = Should.Throw<ArgumentException>(() => new Layer(""));
+            var result = Should.Throw<ArgumentException>(() => new Layer("", Guid.Empty));
 
             // Assert
             result.Message.ShouldBe(expectedErrorMessage);
@@ -42,7 +44,7 @@ namespace Domain.Test.Domain.Layers
         {
             // Arrange
             var name = "test";
-            var sut = new Layer(name);
+            var sut = new Layer(name, new Guid());
 
             var updatedName = "updated";
 
@@ -60,7 +62,7 @@ namespace Domain.Test.Domain.Layers
             var expectedErrorMessage = "Name may not be empty";
 
             var name = "test";
-            var sut = new Layer(name);
+            var sut = new Layer(name, new Guid());
 
             // Act
             var result = await Should.ThrowAsync<ArgumentException>(sut.Update(""));

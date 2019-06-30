@@ -45,6 +45,8 @@ namespace DataAccess
 
             modelBuilder.Entity<Map>().HasMany(m => m.Layers).WithOne(l => l.Map)
                 .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<LayerGroup>().HasMany(l => l.Layers).WithOne(l => l.LayerGroup)
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
         private void SetupJournalItemPermission(ModelBuilder modelBuilder)

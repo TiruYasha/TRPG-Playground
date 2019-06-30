@@ -19,9 +19,8 @@ export class LayerGroupListItemComponent implements OnInit {
   @Output() completeEdit = new EventEmitter<Layer>();
   @Output() completeAdd = new EventEmitter<Layer>();
   @Output() delete = new EventEmitter<Layer>();
-  @Output() addSubLayer = new EventEmitter<Layer>();
 
-  @ViewChild('nameField') nameField: ElementRef;
+  @ViewChild('groupNameField') nameField: ElementRef;
   @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
   @ViewChild('menuButton') button: ElementRef;
 
@@ -88,12 +87,17 @@ export class LayerGroupListItemComponent implements OnInit {
   }
 
   completeAddSubLayer(layer: Layer) {
-    layer.parentId = this.layer.id;
-    this.addSubLayer.emit(layer);
+    layer.LayerGroupId = this.layer.id;
+    this.completeAdd.emit(layer);
   }
 
-  cancelSubLayerAdd(layer: Layer){
-    //this.layer.layers = this.layer.layers.filter(l => l !== layer);
+  cancelSubLayerAdd(layer: Layer) {
+    this.layer.layers = this.layer.layers.filter(l => l !== layer);
+  }
+
+  deleteSubLayer(layer: Layer) {
+    this.delete.emit(layer);
+    this.layer.layers = this.layer.layers.filter(l => l !== layer);
   }
 
   private isNew() {

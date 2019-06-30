@@ -10,6 +10,7 @@ import { MapListItemComponent } from './map-list-item/map-list-item.component';
 import { LayerListComponent } from './layer-list/layer-list.component';
 import { LayerListItemComponent } from './layer-list-item/layer-list-item.component';
 import { LayerGroupListItemComponent } from './layer-group-list-item/layer-group-list-item.component';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [MapManagerComponent, MapListComponent, LayerManagerComponent, CreateMapDialogComponent, MapListItemComponent, LayerListComponent, LayerListItemComponent, LayerGroupListItemComponent],
@@ -25,7 +26,8 @@ import { LayerGroupListItemComponent } from './layer-group-list-item/layer-group
     MatInputModule,
     MatFormFieldModule,
     MatMenuModule,
-    MatExpansionModule
+    MatExpansionModule,
+    NoopAnimationsModule
   ],
   exports: [
     MapManagerComponent
