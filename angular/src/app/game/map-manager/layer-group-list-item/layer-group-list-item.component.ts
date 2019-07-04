@@ -27,6 +27,8 @@ export class LayerGroupListItemComponent implements OnInit {
   editLayer: Layer;
   name = new FormControl('', [Validators.required, ValidatorFunctions.noWhitespaceValidator]);
 
+  expanded = false;
+
   constructor() { }
 
   ngOnInit() {
@@ -80,6 +82,7 @@ export class LayerGroupListItemComponent implements OnInit {
   }
 
   onAddNewSubLayer() {
+    this.expanded = true;
     const layer = new Layer();
 
     this.layer.layers.push(layer);

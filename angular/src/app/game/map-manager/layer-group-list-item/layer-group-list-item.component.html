@@ -5,7 +5,7 @@
 </mat-menu>
 
 <div>
-  <mat-expansion-panel>
+  <mat-expansion-panel [expanded]="expanded">
     <mat-expansion-panel-header  (contextmenu)="triggerMenu($event)">
       <mat-panel-title *ngIf="!edit">
         {{layer.name}}
