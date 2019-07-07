@@ -2,6 +2,7 @@
 using Domain.Domain;
 using Domain.Domain.Commands;
 using Domain.Domain.JournalItems;
+using Domain.Domain.Layers;
 using Domain.Dto.ReturnDto.Chat;
 using Domain.Dto.ReturnDto.Chat.CommandResults;
 using Domain.Dto.ReturnDto.Game;
@@ -29,6 +30,9 @@ namespace Domain.MappingProfiles
 
             CreateMap<GamePlayer, GetPlayersModel>().ForMember(dest => dest.Username, opt => opt.MapFrom(from => from.User.UserName));
             CreateMap<User, GetPlayersModel>().ForMember(dest => dest.UserId, opt => opt.MapFrom(from => from.Id));
+
+            CreateMap<Layer, LayerDto>();
+            CreateMap<LayerGroup, LayerDto>();
         }
 
         private void JournalItemsMapConfig()

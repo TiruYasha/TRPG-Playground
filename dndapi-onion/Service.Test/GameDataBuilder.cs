@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Domain.Domain;
 using Domain.Domain.JournalItems;
+using Domain.Domain.Layers;
 using Domain.Dto.RequestDto;
 using Domain.Dto.RequestDto.Journal;
 using Domain.Dto.Shared;
@@ -97,11 +98,11 @@ namespace Service.Test
             return this;
         }
 
-        public GameDataBuilder WithMaps()
+        public GameDataBuilder WithMaps(bool withExtraLayers = false)
         {
             actions.Enqueue(async () =>
             {
-                var MapDto = new MapDto
+                var mapDto = new MapDto
                 {
                     GridSizeInPixels = 40,
                     HeightInPixels = 400,
@@ -109,7 +110,7 @@ namespace Service.Test
                     WidthInPixels = 400
                 };
 
-                var MapDto2 = new MapDto
+                var mapDto2 = new MapDto
                 {
                     GridSizeInPixels = 50,
                     HeightInPixels = 500,
@@ -117,8 +118,26 @@ namespace Service.Test
                     WidthInPixels = 500
                 };
 
-                await game.AddMap(MapDto);
-                await game.AddMap(MapDto2);
+                var map1 = await game.AddMap(mapDto);
+                var map2 = await game.AddMap(mapDto2);
+
+                if (withExtraLayers)
+                {
+                    var layer2 = new LayerDto
+                    {
+                        Name = "layer2",
+                        Type = LayerType.Default
+                    };
+
+                    var layer3 = new LayerDto
+                    {
+                        Name = "layer2",
+                        Type = LayerType.Group
+                    };
+
+                    await map1.AddLayer(layer2);
+                    await map2.AddLayer(layer3);
+                }
             });
 
             return this;

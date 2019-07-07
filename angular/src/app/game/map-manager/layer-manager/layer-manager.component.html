@@ -1,5 +1,27 @@
 <div class="layerManagerContainer">
-  <h3>
-    Layers
-  </h3>
+  <div class="header">
+    <h3>
+      Layers
+    </h3>
+    <div class="actions">
+      <div class="action" (click)="addNewLayer(layerType.Default)">
+        <mat-icon class="material-icons">add</mat-icon>
+      </div>
+      <div class="action" (click)="addNewLayer(layerType.LayerGroup)">
+        <mat-icon class="material-icons">create_new_folder</mat-icon>
+      </div>
+    </div>
+  </div>
+  <div class="listItemsContainer">
+    <mat-nav-list role="list">
+      <div *ngFor="let layer of layers">
+        <trpg-layer-list-item *ngIf="layer.type === layerType.Default" (cancelAdd)="cancelLayerAdd($event)"
+          (completeAdd)="addLayer($event)" (completeEdit)="updateLayer($event)" (delete)="deleteLayer($event)"
+          [edit]="layer === editLayer" [layer]="layer"></trpg-layer-list-item>
+        <trpg-layer-group-list-item *ngIf="layer.type === layerType.LayerGroup" (cancelAdd)="cancelLayerAdd($event)"
+          (completeAdd)="addLayer($event)" (completeEdit)="updateLayer($event)" (delete)="deleteLayer($event)"
+          [edit]="layer === editLayer" [layer]="layer"></trpg-layer-group-list-item>
+      </div>
+    </mat-nav-list>
+  </div>
 </div>

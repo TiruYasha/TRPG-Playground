@@ -29,7 +29,6 @@ namespace RestApi
             this.hubContext = hubContext;
         }
 
-
         [HttpPut]
         [Authorize(Policy = "IsGameOwner")]
         public async Task<IActionResult> UpdateMap([FromBody] MapDto map)
@@ -49,6 +48,50 @@ namespace RestApi
         {
             var gameId = jwtReader.GetGameId();
             await mapService.DeleteMap(mapId, gameId);
+            return Ok();
+        }
+
+        [HttpPost]
+        [Authorize(Policy = "IsGameOwner")]
+        [Route("{mapId}/layer")]
+        public async Task<IActionResult> AddLayer(Guid mapId, [FromBody] LayerDto dto)
+        {
+            var gameId = jwtReader.GetGameId();
+            var result = await mapService.AddLayer(dto, mapId, gameId);
+
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Authorize(Policy = "IsGameOwner")]
+        [Route("{mapId}/layer")]
+        public async Task<IActionResult> GetLayers(Guid mapId)
+        {
+            var gameId = jwtReader.GetGameId();
+            var result = await mapService.GetLayers(mapId, gameId);
+
+            return Ok(result);
+        }
+
+        [HttpPut]
+        [Authorize(Policy = "IsGameOwner")]
+        [Route("{mapId}/layer")]
+        public async Task<IActionResult> UpdateLayer(Guid mapId, [FromBody] LayerDto dto)
+        {
+            var gameId = jwtReader.GetGameId();
+            var result = await mapService.UpdateLayer(dto, mapId, gameId);
+
+            return Ok(result);
+        }
+
+        [HttpDelete]
+        [Authorize(Policy = "IsGameOwner")]
+        [Route("{mapId}/layer/{layerId}")]
+        public async Task<IActionResult> DeleteLayer(Guid mapId, Guid layerId)
+        {
+            var gameId = jwtReader.GetGameId();
+            await mapService.DeleteLayer(layerId, mapId, gameId);
+
             return Ok();
         }
     }
