@@ -166,7 +166,7 @@ namespace DependencyResolver
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, DndContext context)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, DndContext context, UserManager<User> userManager)
         {
             if (env.IsDevelopment())
             {
@@ -193,6 +193,7 @@ namespace DependencyResolver
 
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
+            context.EnsureSeeded(userManager).Wait();
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>

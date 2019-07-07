@@ -4,6 +4,10 @@ using Domain.Domain.JournalItems;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Security.Cryptography;
+using System.Threading.Tasks;
+using Domain.Domain.Layers;
+using Microsoft.AspNetCore.Identity;
 
 namespace DataAccess
 {
@@ -21,6 +25,8 @@ namespace DataAccess
         public DbSet<JournalCharacterSheet> JournalCharacterSheets { get; set; }
         public DbSet<Image> Images { get; set; }
         public DbSet<Map> Maps { get; set; }
+        public DbSet<Layer> Layers { get; set; }
+        public DbSet<LayerGroup> LayerGroups { get; set; }
 
         public DndContext(DbContextOptions<DndContext> options) : base(options)
         {
@@ -38,6 +44,8 @@ namespace DataAccess
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Map>().HasMany(m => m.Layers).WithOne(l => l.Map)
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<LayerGroup>().HasMany(l => l.Layers).WithOne(l => l.LayerGroup)
                 .OnDelete(DeleteBehavior.Cascade);
         }
 
@@ -68,6 +76,28 @@ namespace DataAccess
                 .HasOne(gp => gp.User)
                 .WithMany(g => g.JoinedGames)
                 .HasForeignKey(gp => gp.UserId);
+        }
+
+        public async Task EnsureSeeded(UserManager<User> userManager)
+        {
+            var user = new User
+            {
+                Email = "test@test.nl",
+                UserName = "test@test.nl"
+            };
+
+            if (await this.Users.AnyAsync(u => u.Email == user.Email))
+            {
+                return;
+            }
+
+            var result = await userManager.CreateAsync(user, "test12");
+
+            var game = new Game("testGame", user.Id);
+
+            await this.AddAsync(game);
+
+            await this.SaveChangesAsync();
         }
     }
 }

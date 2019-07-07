@@ -16,6 +16,7 @@ import { DialogState } from 'src/app/models/dialog-state.enum';
 export class MapManagerComponent extends DestroySubscription implements OnInit {
 
   maps: PlayMap[] = [];
+  selectedMap: PlayMap;
 
   constructor(private mapService: MapService, private dialog: MatDialog) {
     super();
@@ -30,6 +31,7 @@ export class MapManagerComponent extends DestroySubscription implements OnInit {
   }
 
   changeMap(map: PlayMap) {
+    this.selectedMap = map;
     this.mapService.changeMap(map);
   }
 

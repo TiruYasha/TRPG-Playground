@@ -1,14 +1,13 @@
-﻿using Domain.Dto.RequestDto;
-using Domain.Dto.Shared;
+﻿using Domain.Dto.Shared;
 using Domain.Exceptions;
 using Domain.ServiceInterfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using Domain.Domain.Layers;
+using Microsoft.EntityFrameworkCore;
 
 namespace Service.Test
 {
@@ -98,6 +97,166 @@ namespace Service.Test
             // Assert
             var map = Context.Maps.FirstOrDefault(f => f.Id == mapToDelete.Id);
             map.ShouldBeNull();
+        }
+
+        [TestMethod]
+        public async Task AddLayerAddsTheLayer()
+        {
+            // arrange
+            var game = await GameDataBuilder
+                .WithMaps()
+                .BuildGame();
+            await Context.AddAsync(game);
+            await Context.SaveChangesAsync();
+
+            var map = game.Maps.First();
+
+            var layerToAdd = new LayerDto
+            {
+                MapId = map.Id,
+                Name = "testing",
+                Type = LayerType.Default
+            };
+
+            // Act
+            var result = await Sut.AddLayer(layerToAdd, map.Id, game.Id);
+
+            // Assert
+            var layer = await Context.Maps.Include(m => m.Layers).SelectMany(m => m.Layers).FirstOrDefaultAsync(l => l.Id == result.Id);
+            result.Id.ShouldBe(layer.Id);
+            layer.Name.ShouldBe(layerToAdd.Name);
+            layer.Type.ShouldBe(layerToAdd.Type);
+        }
+
+        [TestMethod]
+        public async Task AddLayerAddsTheLayerGroup()
+        {
+            // arrange
+            var game = await GameDataBuilder
+                .WithMaps()
+                .BuildGame();
+            await Context.AddAsync(game);
+            await Context.SaveChangesAsync();
+
+            var map = game.Maps.First();
+
+            var layerToAdd = new LayerDto
+            {
+                MapId = map.Id,
+                Name = "testGroup",
+                Type = LayerType.Group
+            };
+
+            // Act
+            var result = await Sut.AddLayer(layerToAdd, map.Id, game.Id);
+
+            // Assert
+            var layer = await Context.Maps.Include(m => m.Layers).SelectMany(m => m.Layers).FirstOrDefaultAsync(l => l.Id == result.Id);
+            result.Id.ShouldBe(layer.Id);
+            layer.Name.ShouldBe(layerToAdd.Name);
+            layer.Type.ShouldBe(layerToAdd.Type);
+        }
+
+        [TestMethod]
+        public async Task AddLayerAddsTheLayerToTheLayerGroup()
+        {
+            // arrange
+            var game = await GameDataBuilder
+                .WithMaps(true)
+                .BuildGame();
+            await Context.AddAsync(game);
+            await Context.SaveChangesAsync();
+
+            var map = game.Maps.Last();
+            var layerGroup = map.Layers.Last();
+            var layerToAdd = new LayerDto
+            {
+                MapId = map.Id,
+                Name = "testGroup",
+                Type = LayerType.Default,
+                LayerGroupId = layerGroup.Id
+            };
+
+            // Act
+            await Sut.AddLayer(layerToAdd, map.Id, game.Id);
+
+            // Assert
+            var result = await Context.LayerGroups.Include(l => l.Layers).FirstOrDefaultAsync(l => l.Id == layerGroup.Id);
+            result.Layers.Count.ShouldBe(1);
+            result.Layers.First().Name.ShouldBe(layerToAdd.Name);
+        }
+
+        [TestMethod]
+        public async Task UpdateLayerUpdatesTheLayer()
+        {
+            // arrange
+            var game = await GameDataBuilder
+                .WithMaps()
+                .BuildGame();
+            await Context.AddAsync(game);
+            await Context.SaveChangesAsync();
+
+            var map = game.Maps.First();
+            var layerToUpdate = map.Layers.First();
+
+            var updateValues = new LayerDto
+            {
+                Id = layerToUpdate.Id,
+                Name = "updated",
+            };
+
+            // Act
+            await Sut.UpdateLayer(updateValues, map.Id, game.Id);
+
+            // Assert
+            var layer = await Context.Layers.FirstOrDefaultAsync(l => l.Id == updateValues.Id);
+            layer.Name.ShouldBe(updateValues.Name);
+        }
+
+        [TestMethod]
+        public async Task DeleteLayerDeletesTheLayer()
+        {
+            // arrange
+            var game = await GameDataBuilder
+                .WithMaps()
+                .BuildGame();
+            await Context.AddAsync(game);
+            await Context.SaveChangesAsync();
+
+            var map = game.Maps.First();
+            var layerToDelete = map.Layers.First();
+
+            // Act
+            await Sut.DeleteLayer(layerToDelete.Id, map.Id, game.Id);
+
+            // Assert
+            var layer = await Context.Layers.FirstOrDefaultAsync(l => l.Id == layerToDelete.Id);
+            layer.ShouldBeNull();
+        }
+
+        [TestMethod]
+        public async Task GetLayersGetsAllTheLayers()
+        {
+            // arrange
+            var game = await GameDataBuilder
+                .WithMaps(true)
+                .BuildGame();
+            await Context.AddAsync(game);
+            await Context.SaveChangesAsync();
+
+            var map = game.Maps.First();
+            var layer1 = map.Layers.First();
+
+            // Act
+            var result = await Sut.GetLayers(map.Id, game.Id);
+
+            // Assert
+            result.Count().ShouldBe(2);
+            var layer = result.First();
+            layer.Id.ShouldBe(layer1.Id);
+            layer.Name.ShouldBe(layer1.Name);
+            layer.Type.ShouldBe(layer1.Type);
+            layer.MapId.ShouldBe(layer1.MapId);
         }
     }
 }
