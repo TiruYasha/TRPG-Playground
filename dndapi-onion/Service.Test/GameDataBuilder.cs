@@ -126,12 +126,14 @@ namespace Service.Test
                     var layer2 = new LayerDto
                     {
                         Name = "layer2",
+                        Order = 1,
                         Type = LayerType.Default
                     };
 
                     var layer3 = new LayerDto
                     {
                         Name = "layer2",
+                        Order = 1,
                         Type = LayerType.Group
                     };
 

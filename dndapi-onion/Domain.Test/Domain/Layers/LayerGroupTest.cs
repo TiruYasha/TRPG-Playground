@@ -16,13 +16,17 @@ namespace Domain.Test.Domain.Layers
         public void LayerGroupInitialisesCorrectValues()
         {
             //arrange
-            var name = "test";
+            var dto = new LayerDto
+            {
+                Name = "test",
+                Order = 2
+            };
 
             // act
-            var result = new LayerGroup(name, Guid.NewGuid());
+            var result = new LayerGroup(dto, Guid.NewGuid());
 
             //assert
-            result.Name.ShouldBe(name);
+            result.Name.ShouldBe(dto.Name);
             result.Type.ShouldBe(LayerType.Group);
             result.Layers.ShouldNotBeNull();
         }
@@ -31,17 +35,21 @@ namespace Domain.Test.Domain.Layers
         public async Task AddLayerAddsTheLayerToMap()
         {
             //arrange
-            var name = "test";
-            var layerGroup = new LayerGroup(name, Guid.NewGuid());
-
             var dto = new LayerDto
+            {
+                Name = "test",
+                Order = 2
+            };
+            var layerGroup = new LayerGroup(dto, Guid.NewGuid());
+
+            var newLayerDto = new LayerDto
             {
                 Name = "testing",
                 Type = LayerType.Default
             };
 
             // act
-            var layer = await layerGroup.AddLayer(dto, Guid.NewGuid());
+            var layer = await layerGroup.AddLayer(newLayerDto, Guid.NewGuid());
 
             //assert
             layerGroup.Layers.Count.ShouldBe(1);

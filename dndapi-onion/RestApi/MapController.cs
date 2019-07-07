@@ -94,5 +94,16 @@ namespace RestApi
 
             return Ok();
         }
+
+        [HttpPut]
+        [Authorize(Policy = "IsGameOwner")]
+        [Route("{mapId}/layer/{layerId}/order")]
+        public async Task<IActionResult> UpdateOrder([FromBody] ChangeOrderDto dto, Guid mapId, Guid layerId)
+        {
+            var gameId = jwtReader.GetGameId();
+            await mapService.UpdateLayerOrder(dto, layerId, mapId, gameId);
+
+            return Ok();
+        }
     }
 }

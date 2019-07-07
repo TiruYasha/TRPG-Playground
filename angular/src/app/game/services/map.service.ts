@@ -5,6 +5,7 @@ import { PlayMap } from 'src/app/models/map/map.model';
 import { environment } from 'src/environments/environment';
 import { Observable, Subject } from 'rxjs';
 import { Layer } from 'src/app/models/map/layer.model';
+import { ChangeOrder } from 'src/app/models/map/requests/change-order.model';
 
 @Injectable({
     providedIn: 'root'
@@ -49,5 +50,9 @@ export class MapService {
 
     deleteLayer(mapId: string, layerId: string): Observable<void> {
         return this.http.delete<void>(environment.apiUrl + `/map/${mapId}/layer/${layerId}`);
+    }
+
+    updateLayerOrder(changeOrder: ChangeOrder, mapId: string, layerId: string){
+        return this.http.put<void>(environment.apiUrl + `/map/${mapId}/layer/${layerId}/order`, changeOrder);
     }
 }

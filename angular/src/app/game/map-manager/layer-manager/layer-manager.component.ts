@@ -6,6 +6,8 @@ import { MapService } from '../../services/map.service';
 import { PlayMap } from 'src/app/models/map/map.model';
 import { DestroySubscription } from 'src/app/shared/components/destroy-subscription.extendable';
 import { takeUntil } from 'rxjs/operators';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { ChangeOrder } from 'src/app/models/map/requests/change-order.model';
 
 @Component({
   selector: 'trpg-layer-manager',
@@ -48,6 +50,8 @@ export class LayerManagerComponent extends DestroySubscription implements OnInit
         break;
     }
 
+    layer.order = this.layers[this.layers.length - 1].order + 1;
+
     this.layers.push(layer);
     this.editLayer = layer;
   }
@@ -83,5 +87,40 @@ export class LayerManagerComponent extends DestroySubscription implements OnInit
       .subscribe(() => {
         this.layers = this.layers.filter(l => l !== layer);
       });
+  }
+
+  drop(event: CdkDragDrop<Layer[]>) {
+    console.log(event);
+
+    const layerToMove = this.layers[event.previousIndex];
+    const newOrder = this.layers[event.currentIndex].order;
+
+    console.log(layerToMove.order);
+    console.log(newOrder);
+
+    const changeOrder: ChangeOrder = {
+      PreviousPosition: layerToMove.order,
+      NewPosition: newOrder
+    };
+
+    if (changeOrder.PreviousPosition > changeOrder.NewPosition) {
+      this.layers.slice(event.currentIndex, event.previousIndex).forEach(l => {
+        l.order += 1;
+        console.log(l);
+      });
+    } else {
+      this.layers.slice(event.previousIndex + 1, event.currentIndex + 1).forEach(l => {
+        l.order -= 1;
+        console.log(l);
+      });
+    }
+
+    layerToMove.order = newOrder;
+
+    this.mapService.updateLayerOrder(changeOrder, this.map.id, layerToMove.id)
+      .pipe(takeUntil(this.destroy))
+      .subscribe(() => { });
+
+    moveItemInArray(this.layers, event.previousIndex, event.currentIndex);
   }
 }

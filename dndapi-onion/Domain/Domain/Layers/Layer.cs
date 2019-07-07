@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Domain.Dto.Shared;
 
 namespace Domain.Domain.Layers
 {
@@ -9,7 +10,7 @@ namespace Domain.Domain.Layers
 
         public string Name { get; private set; }
         public LayerType Type { get; private set; }
-
+        public int Order { get; set; }
         public Guid MapId { get; private set; }
         public virtual Map Map { get; private set; }
         public virtual LayerGroup LayerGroup { get; private set; }
@@ -17,12 +18,13 @@ namespace Domain.Domain.Layers
 
         protected Layer() { }
 
-        public Layer(string name, Guid mapId, LayerType type = LayerType.Default) : this()
+        public Layer(LayerDto dto, Guid mapId, LayerType type = LayerType.Default) : this()
         {
-            CheckArguments(name);
+            CheckArguments(dto.Name);
 
             Id = Guid.NewGuid();
-            Name = name;
+            Name = dto.Name;
+            Order = dto.Order;
             Type = type;
             MapId = mapId;
         }
@@ -33,6 +35,15 @@ namespace Domain.Domain.Layers
             {
                 CheckArguments(name);
                 Name = name;
+            });
+        }
+
+        public Task<Layer> UpdateOrder(int order)
+        {
+            return Task.Run(() =>
+            {
+                Order = order;
+                return this;
             });
         }
 

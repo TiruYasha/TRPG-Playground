@@ -32,7 +32,12 @@ namespace Domain.Domain
             WidthInPixels = dto.WidthInPixels;
             HeightInPixels = dto.HeightInPixels;
             GridSizeInPixels = dto.GridSizeInPixels;
-            Layers = new List<Layer> { new Layer("layer1", Guid.NewGuid()) };
+            var layerDto = new LayerDto
+            {
+                Name = "Layer1",
+                Order = 0
+            };
+            Layers = new List<Layer> { new Layer(layerDto, Guid.NewGuid()) };
         }
 
         public Task Update(MapDto dto)

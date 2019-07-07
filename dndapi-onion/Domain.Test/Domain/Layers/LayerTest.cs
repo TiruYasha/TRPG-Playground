@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Domain.Domain.Layers;
+using Domain.Dto.Shared;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 
@@ -13,14 +14,20 @@ namespace Domain.Test.Domain.Layers
         public void NewLayerSetsNameAndId()
         {
             // Arrange
-            var name = "test";
             var mapId = Guid.NewGuid();
 
+            var dto = new LayerDto
+            {
+                Name = "test",
+                Order = 2
+            };
+
             // Act
-            var result = new Layer(name, mapId);
+            var result = new Layer(dto, mapId);
 
             // Assert
-            result.Name.ShouldBe(name);
+            result.Name.ShouldBe(dto.Name);
+            result.Order.ShouldBe(dto.Order);
             result.Id.ShouldNotBeNull();
             result.Type.ShouldBe(LayerType.Default);
             result.MapId.ShouldBe(mapId);
@@ -32,8 +39,14 @@ namespace Domain.Test.Domain.Layers
             // Arrange
             var expectedErrorMessage = "Name may not be empty";
 
+            var dto = new LayerDto
+            {
+                Name = "",
+                Order = 2
+            };
+
             // Act
-            var result = Should.Throw<ArgumentException>(() => new Layer("", Guid.Empty));
+            var result = Should.Throw<ArgumentException>(() => new Layer(dto, Guid.Empty));
 
             // Assert
             result.Message.ShouldBe(expectedErrorMessage);
@@ -43,8 +56,12 @@ namespace Domain.Test.Domain.Layers
         public async Task UpdateUpdatesTheLayer()
         {
             // Arrange
-            var name = "test";
-            var sut = new Layer(name, new Guid());
+            var dto = new LayerDto
+            {
+                Name = "test",
+                Order = 2
+            };
+            var sut = new Layer(dto, new Guid());
 
             var updatedName = "updated";
 
@@ -60,15 +77,38 @@ namespace Domain.Test.Domain.Layers
         {
             // Arrange
             var expectedErrorMessage = "Name may not be empty";
-
-            var name = "test";
-            var sut = new Layer(name, new Guid());
+            var dto = new LayerDto
+            {
+                Name = "test",
+                Order = 2
+            };
+            var sut = new Layer(dto, new Guid());
 
             // Act
             var result = await Should.ThrowAsync<ArgumentException>(sut.Update(""));
 
             // Assert
             result.Message.ShouldBe(expectedErrorMessage);
+        }
+
+        [TestMethod]
+        public async Task UpdateOrderUpdatesTheOrder()
+        {
+            // Arrange
+            var name = "test";
+            var newOrder = 1;
+            var dto = new LayerDto
+            {
+                Name = "test",
+                Order = 2
+            };
+            var sut = new Layer(dto, new Guid());
+
+            // Act
+            await sut.UpdateOrder(newOrder);
+
+            // Assert
+            sut.Order.ShouldBe(newOrder);
         }
     }
 }

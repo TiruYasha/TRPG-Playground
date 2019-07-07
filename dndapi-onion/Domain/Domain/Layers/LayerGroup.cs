@@ -14,7 +14,8 @@ namespace Domain.Domain.Layers
         {
             Layers = new List<Layer>();
         }
-        public LayerGroup(string name, Guid mapId) : base(name, mapId, LayerType.Group)
+
+        public LayerGroup(LayerDto dto, Guid mapId) : base(dto, mapId, LayerType.Group)
         {
             Layers = new List<Layer>();
         }

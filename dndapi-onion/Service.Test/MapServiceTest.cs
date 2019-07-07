@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Domain.Domain.Layers;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Service.Test
 {
@@ -258,5 +259,36 @@ namespace Service.Test
             layer.Type.ShouldBe(layer1.Type);
             layer.MapId.ShouldBe(layer1.MapId);
         }
+
+        //[TestMethod]
+        //public async Task UpdateLayerOrder_OnHigherOrder_LowerTheOthers()
+        //{
+        //    // Arrange
+        //    var game = await GameDataBuilder
+        //        .WithMaps(true)
+        //        .BuildGame();
+        //    await Context.AddAsync(game);
+        //    await Context.SaveChangesAsync();
+
+        //    var map = game.Maps.First();
+        //    var layerToUpdate = map.Layers.Last();
+
+        //    var dto = new ChangeOrderDto
+        //    {
+        //        NewPosition = 0,
+        //        PreviousPosition = layerToUpdate.Order
+        //    };
+
+        //    //Act
+        //    await Sut.UpdateLayerOrder(dto, layerToUpdate.Id, map.Id, game.Id);
+
+        //    // Assert
+        //    var layerToUpdateUpdated = await Context.Layers.FindAsync(layerToUpdate.Id);
+        //    var secondLayer = await Context.Layers.Where(o => o.Order == 1).FirstOrDefaultAsync();
+
+        //    layerToUpdateUpdated.Order.ShouldBe(0);
+        //    secondLayer.ShouldNotBeNull();
+        //    secondLayer.Id.ShouldNotBe(layerToUpdate.Id);
+        //}
     }
 }

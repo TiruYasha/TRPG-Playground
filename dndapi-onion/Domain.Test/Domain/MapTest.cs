@@ -54,7 +54,7 @@ namespace Domain.Test.Domain
             // Assert
             result.Layers.Count.ShouldBe(1);
             var layer = result.Layers.First();
-            layer.Name.ShouldBe("layer1");
+            layer.Name.ShouldBe("Layer1");
         }
 
         [TestMethod]

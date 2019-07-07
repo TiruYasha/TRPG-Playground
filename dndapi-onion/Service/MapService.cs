@@ -7,19 +7,22 @@ using Domain.ServiceInterfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
 using Domain.Domain.Layers;
+using Npgsql;
 using Remotion.Linq.Clauses;
+using Z.EntityFramework.Plus;
 
 namespace Service
 {
     public class MapService : IMapService
     {
         private readonly DndContext context;
-        private IMapper mapper;
+        private readonly IMapper mapper;
 
         public MapService(DndContext context, IMapper mapper)
         {
@@ -93,6 +96,42 @@ namespace Service
             var layers = layerDtos.Concat(layerGroupDtos);
 
             return layers;
+        }
+
+        public async Task UpdateLayerOrder(ChangeOrderDto dto, Guid layerId, Guid mapId, Guid gameId)
+        {
+            var layer = await context.Maps.Where(m => m.GameId == gameId && m.Id == mapId).SelectMany(m => m.Layers)
+                .FirstOrDefaultAsync(l => l.Id == layerId);
+
+            if (dto.PreviousPosition > dto.NewPosition)
+            {
+                var query = @"UPDATE ""Layers""
+                SET ""Order"" = (""Order"" + 1)
+                WHERE ""Order"" <= @previousPosition
+                    AND ""Order"" >= @newPosition
+                AND ""MapId"" = @mapId";
+
+                await context.Database.ExecuteSqlCommandAsync(query,
+                    new NpgsqlParameter("@previousPosition", dto.PreviousPosition),
+                    new NpgsqlParameter("@newPosition", dto.NewPosition),
+                    new NpgsqlParameter("@mapId", mapId));
+            }
+            else if (dto.PreviousPosition < dto.NewPosition)
+            {
+                var query = @"UPDATE ""Layers""
+                SET ""Order"" = (""Order"" - 1)
+                WHERE ""Order"" >= @previousPosition
+                    AND ""Order"" <= @newPosition
+                AND ""MapId"" = @mapId";
+
+                await context.Database.ExecuteSqlCommandAsync(query,
+                    new NpgsqlParameter("@previousPosition", dto.PreviousPosition),
+                    new NpgsqlParameter("@newPosition", dto.NewPosition),
+                    new NpgsqlParameter("@mapId", mapId));
+            }
+
+            await layer.UpdateOrder(dto.NewPosition);
+            await context.SaveChangesAsync();
         }
 
         private async Task<LayerDto> AddLayerToMap(LayerDto dto, Guid mapId, Guid gameId)
