@@ -6,6 +6,8 @@ import { MapService } from '../../services/map.service';
 import { PlayMap } from 'src/app/models/map/map.model';
 import { DestroySubscription } from 'src/app/shared/components/destroy-subscription.extendable';
 import { takeUntil } from 'rxjs/operators';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { ChangeOrder } from 'src/app/models/map/requests/change-order.model';
 
 @Component({
   selector: 'trpg-layer-manager',
@@ -14,7 +16,7 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class LayerManagerComponent extends DestroySubscription implements OnInit {
 
-  @Input() layers: Layer[];
+  @Input() layers: Layer[] = [];
 
   map: PlayMap;
   editLayer: Layer;
@@ -46,6 +48,14 @@ export class LayerManagerComponent extends DestroySubscription implements OnInit
       case LayerType.LayerGroup:
         layer = new LayerGroup();
         break;
+    }
+
+    const lastLayer = this.layers[this.layers.length - 1];
+
+    if (lastLayer) {
+      layer.order = lastLayer.order + 1;
+    } else {
+      layer.order = 0;
     }
 
     this.layers.push(layer);
@@ -83,5 +93,33 @@ export class LayerManagerComponent extends DestroySubscription implements OnInit
       .subscribe(() => {
         this.layers = this.layers.filter(l => l !== layer);
       });
+  }
+
+  drop(event: CdkDragDrop<Layer[]>) {
+    const layerToMove = this.layers[event.previousIndex];
+    const newOrder = this.layers[event.currentIndex].order;
+
+    const changeOrder: ChangeOrder = {
+      PreviousPosition: layerToMove.order,
+      NewPosition: newOrder
+    };
+
+    if (changeOrder.PreviousPosition > changeOrder.NewPosition) {
+      this.layers.slice(event.currentIndex, event.previousIndex).forEach(l => {
+        l.order += 1;
+      });
+    } else {
+      this.layers.slice(event.previousIndex + 1, event.currentIndex + 1).forEach(l => {
+        l.order -= 1;
+      });
+    }
+
+    layerToMove.order = newOrder;
+
+    this.mapService.updateLayerOrder(changeOrder, this.map.id, layerToMove.id)
+      .pipe(takeUntil(this.destroy))
+      .subscribe(() => { });
+
+    moveItemInArray(this.layers, event.previousIndex, event.currentIndex);
   }
 }

@@ -54,7 +54,7 @@ namespace Domain.Test.Domain
             // Assert
             result.Layers.Count.ShouldBe(1);
             var layer = result.Layers.First();
-            layer.Name.ShouldBe("layer1");
+            layer.Name.ShouldBe("Layer1");
         }
 
         [TestMethod]
@@ -265,27 +265,6 @@ namespace Domain.Test.Domain
             validMap.Layers.Count.ShouldBe(2);
             var result = validMap.Layers.Last();
             result.Type.ShouldBe(LayerType.Default);
-        }
-
-        [TestMethod]
-        public async Task AddLayerAddsTheLayerGroupToMap()
-        {
-            // Arrange
-            var validMap = CreateValidMap();
-            var dto = new LayerDto
-            {
-                MapId = validMap.Id,
-                Name = "testing",
-                Type = LayerType.Group
-            };
-
-            // Act
-            await validMap.AddLayer(dto);
-
-            // Assert
-            validMap.Layers.Count.ShouldBe(2);
-            var result = validMap.Layers.Last();
-            result.Type.ShouldBe(LayerType.Group);
         }
 
         private Map CreateValidMap()

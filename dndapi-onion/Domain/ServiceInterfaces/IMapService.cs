@@ -16,5 +16,6 @@ namespace Domain.ServiceInterfaces
         Task<LayerDto> UpdateLayer(LayerDto dto, Guid mapId, Guid gameId);
         Task DeleteLayer(Guid layerId, Guid mapId, Guid gameId);
         Task<IEnumerable<LayerDto>> GetLayers(Guid mapId, Guid gameId);
+        Task UpdateLayerOrder(ChangeOrderDto dto, Guid layerId, Guid mapId, Guid gameId);
     }
 }

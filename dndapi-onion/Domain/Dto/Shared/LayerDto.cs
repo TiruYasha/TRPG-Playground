@@ -11,6 +11,7 @@ namespace Domain.Dto.Shared
         public Guid Id { get; set; }
 
         public string Name { get; set; }
+        public int Order { get; set; }
         public LayerType Type { get; set; }
         public Guid MapId { get; set; }
         public Guid? LayerGroupId { get; set; }
