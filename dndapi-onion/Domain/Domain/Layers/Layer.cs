@@ -13,8 +13,6 @@ namespace Domain.Domain.Layers
         public int Order { get; set; }
         public Guid MapId { get; private set; }
         public virtual Map Map { get; private set; }
-        public virtual LayerGroup LayerGroup { get; private set; }
-        public Guid? LayerGroupId { get; private set; }
 
         protected Layer() { }
 

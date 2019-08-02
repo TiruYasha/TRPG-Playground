@@ -14,8 +14,6 @@ namespace Domain.Domain.Layers
                 {
                     case LayerType.Default:
                         return new Layer(dto, mapId);
-                    case LayerType.Group:
-                        return new LayerGroup(dto, mapId);
                     default:
                         throw new ArgumentOutOfRangeException();
                 }

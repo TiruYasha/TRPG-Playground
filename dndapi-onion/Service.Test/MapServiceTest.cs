@@ -130,64 +130,6 @@ namespace Service.Test
         }
 
         [TestMethod]
-        public async Task AddLayerAddsTheLayerGroup()
-        {
-            // arrange
-            var game = await GameDataBuilder
-                .WithMaps()
-                .BuildGame();
-            await Context.AddAsync(game);
-            await Context.SaveChangesAsync();
-
-            var map = game.Maps.First();
-
-            var layerToAdd = new LayerDto
-            {
-                MapId = map.Id,
-                Name = "testGroup",
-                Type = LayerType.Group
-            };
-
-            // Act
-            var result = await Sut.AddLayer(layerToAdd, map.Id, game.Id);
-
-            // Assert
-            var layer = await Context.Maps.Include(m => m.Layers).SelectMany(m => m.Layers).FirstOrDefaultAsync(l => l.Id == result.Id);
-            result.Id.ShouldBe(layer.Id);
-            layer.Name.ShouldBe(layerToAdd.Name);
-            layer.Type.ShouldBe(layerToAdd.Type);
-        }
-
-        [TestMethod]
-        public async Task AddLayerAddsTheLayerToTheLayerGroup()
-        {
-            // arrange
-            var game = await GameDataBuilder
-                .WithMaps(true)
-                .BuildGame();
-            await Context.AddAsync(game);
-            await Context.SaveChangesAsync();
-
-            var map = game.Maps.Last();
-            var layerGroup = map.Layers.Last();
-            var layerToAdd = new LayerDto
-            {
-                MapId = map.Id,
-                Name = "testGroup",
-                Type = LayerType.Default,
-                LayerGroupId = layerGroup.Id
-            };
-
-            // Act
-            await Sut.AddLayer(layerToAdd, map.Id, game.Id);
-
-            // Assert
-            var result = await Context.LayerGroups.Include(l => l.Layers).FirstOrDefaultAsync(l => l.Id == layerGroup.Id);
-            result.Layers.Count.ShouldBe(1);
-            result.Layers.First().Name.ShouldBe(layerToAdd.Name);
-        }
-
-        [TestMethod]
         public async Task UpdateLayerUpdatesTheLayer()
         {
             // arrange
@@ -242,6 +184,7 @@ namespace Service.Test
             var game = await GameDataBuilder
                 .WithMaps(true)
                 .BuildGame();
+
             await Context.AddAsync(game);
             await Context.SaveChangesAsync();
 
@@ -259,36 +202,5 @@ namespace Service.Test
             layer.Type.ShouldBe(layer1.Type);
             layer.MapId.ShouldBe(layer1.MapId);
         }
-
-        //[TestMethod]
-        //public async Task UpdateLayerOrder_OnHigherOrder_LowerTheOthers()
-        //{
-        //    // Arrange
-        //    var game = await GameDataBuilder
-        //        .WithMaps(true)
-        //        .BuildGame();
-        //    await Context.AddAsync(game);
-        //    await Context.SaveChangesAsync();
-
-        //    var map = game.Maps.First();
-        //    var layerToUpdate = map.Layers.Last();
-
-        //    var dto = new ChangeOrderDto
-        //    {
-        //        NewPosition = 0,
-        //        PreviousPosition = layerToUpdate.Order
-        //    };
-
-        //    //Act
-        //    await Sut.UpdateLayerOrder(dto, layerToUpdate.Id, map.Id, game.Id);
-
-        //    // Assert
-        //    var layerToUpdateUpdated = await Context.Layers.FindAsync(layerToUpdate.Id);
-        //    var secondLayer = await Context.Layers.Where(o => o.Order == 1).FirstOrDefaultAsync();
-
-        //    layerToUpdateUpdated.Order.ShouldBe(0);
-        //    secondLayer.ShouldNotBeNull();
-        //    secondLayer.Id.ShouldNotBe(layerToUpdate.Id);
-        //}
     }
 }

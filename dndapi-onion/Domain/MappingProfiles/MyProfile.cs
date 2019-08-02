@@ -32,7 +32,6 @@ namespace Domain.MappingProfiles
             CreateMap<User, GetPlayersModel>().ForMember(dest => dest.UserId, opt => opt.MapFrom(from => from.Id));
 
             CreateMap<Layer, LayerDto>();
-            CreateMap<LayerGroup, LayerDto>();
         }
 
         private void JournalItemsMapConfig()

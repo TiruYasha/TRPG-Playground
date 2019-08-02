@@ -16,7 +16,7 @@ import { ChangeOrder } from 'src/app/models/map/requests/change-order.model';
 })
 export class LayerManagerComponent extends DestroySubscription implements OnInit {
 
-  @Input() layers: Layer[];
+  @Input() layers: Layer[] = [];
 
   map: PlayMap;
   editLayer: Layer;
@@ -50,7 +50,13 @@ export class LayerManagerComponent extends DestroySubscription implements OnInit
         break;
     }
 
-    layer.order = this.layers[this.layers.length - 1].order + 1;
+    const lastLayer = this.layers[this.layers.length - 1];
+
+    if (lastLayer) {
+      layer.order = lastLayer.order + 1;
+    } else {
+      layer.order = 0;
+    }
 
     this.layers.push(layer);
     this.editLayer = layer;
@@ -90,13 +96,8 @@ export class LayerManagerComponent extends DestroySubscription implements OnInit
   }
 
   drop(event: CdkDragDrop<Layer[]>) {
-    console.log(event);
-
     const layerToMove = this.layers[event.previousIndex];
     const newOrder = this.layers[event.currentIndex].order;
-
-    console.log(layerToMove.order);
-    console.log(newOrder);
 
     const changeOrder: ChangeOrder = {
       PreviousPosition: layerToMove.order,
@@ -106,12 +107,10 @@ export class LayerManagerComponent extends DestroySubscription implements OnInit
     if (changeOrder.PreviousPosition > changeOrder.NewPosition) {
       this.layers.slice(event.currentIndex, event.previousIndex).forEach(l => {
         l.order += 1;
-        console.log(l);
       });
     } else {
       this.layers.slice(event.previousIndex + 1, event.currentIndex + 1).forEach(l => {
         l.order -= 1;
-        console.log(l);
       });
     }
 

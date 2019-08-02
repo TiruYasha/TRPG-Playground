@@ -63,7 +63,6 @@ namespace Service.Test
         {
             actions.Enqueue(async () =>
             {
-
                 var journalHandout = new JournalHandoutDto()
                 {
                     Name = "TestingHandout",
@@ -132,9 +131,9 @@ namespace Service.Test
 
                     var layer3 = new LayerDto
                     {
-                        Name = "layer2",
+                        Name = "layer3",
                         Order = 1,
-                        Type = LayerType.Group
+                        Type = LayerType.Default
                     };
 
                     await map1.AddLayer(layer2);

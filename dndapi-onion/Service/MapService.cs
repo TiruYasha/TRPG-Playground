@@ -1,21 +1,16 @@
 ﻿using AutoMapper;
 using DataAccess;
-using Domain.Dto.RequestDto;
 using Domain.Dto.Shared;
 using Domain.Exceptions;
 using Domain.ServiceInterfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
 using Domain.Domain.Layers;
 using Npgsql;
-using Remotion.Linq.Clauses;
-using Z.EntityFramework.Plus;
 
 namespace Service
 {
@@ -50,11 +45,6 @@ namespace Service
 
         public async Task<LayerDto> AddLayer(LayerDto dto, Guid mapId, Guid gameId)
         {
-            if (dto.LayerGroupId.HasValue)
-            {
-                return await AddLayerToLayerGroup(dto, mapId, gameId);
-            }
-
             return await AddLayerToMap(dto, mapId, gameId);
         }
 
@@ -82,20 +72,13 @@ namespace Service
 
         public async Task<IEnumerable<LayerDto>> GetLayers(Guid mapId, Guid gameId)
         {
-            var test = from l in context.Layers
-                       where l.Type == LayerType.Default && l.MapId == mapId && l.Map.GameId == gameId && l.LayerGroupId == null
+            var normalLayers = from l in context.Layers
+                       where l.Type == LayerType.Default && l.MapId == mapId && l.Map.GameId == gameId
                        select l;
 
-            var test2 = from lg in context.LayerGroups
-                        where lg.Type == LayerType.Group && lg.MapId == mapId && lg.Map.GameId == gameId
-                        select lg;
+            var layerDtos = await normalLayers.ProjectTo<LayerDto>(mapper.ConfigurationProvider).ToListAsync();
 
-            var layerDtos = await test.ProjectTo<LayerDto>(mapper.ConfigurationProvider).ToListAsync();
-            var layerGroupDtos = await test2.Include(lg => lg.Layers).ProjectTo<LayerDto>(mapper.ConfigurationProvider).ToListAsync();
-
-            var layers = layerDtos.Concat(layerGroupDtos);
-
-            return layers;
+            return layerDtos.OrderBy(l => l.Order);
         }
 
         public async Task UpdateLayerOrder(ChangeOrderDto dto, Guid layerId, Guid mapId, Guid gameId)
@@ -139,20 +122,6 @@ namespace Service
             var map = await context.Maps.FirstOrDefaultAsync(m => m.GameId == gameId && m.Id == mapId);
 
             var layer = await map.AddLayer(dto);
-
-            await context.SaveChangesAsync();
-
-            dto.Id = layer.Id;
-
-            return dto;
-        }
-
-        private async Task<LayerDto> AddLayerToLayerGroup(LayerDto dto, Guid mapId, Guid gameId)
-        {
-            var layerGroup = await context.LayerGroups.FirstOrDefaultAsync(l =>
-                l.Id == dto.LayerGroupId && l.MapId == mapId && l.Map.GameId == gameId);
-
-            var layer = await layerGroup.AddLayer(dto, mapId);
 
             await context.SaveChangesAsync();
 

@@ -26,7 +26,6 @@ namespace DataAccess
         public DbSet<Image> Images { get; set; }
         public DbSet<Map> Maps { get; set; }
         public DbSet<Layer> Layers { get; set; }
-        public DbSet<LayerGroup> LayerGroups { get; set; }
 
         public DndContext(DbContextOptions<DndContext> options) : base(options)
         {
@@ -44,8 +43,6 @@ namespace DataAccess
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Map>().HasMany(m => m.Layers).WithOne(l => l.Map)
-                .OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<LayerGroup>().HasMany(l => l.Layers).WithOne(l => l.LayerGroup)
                 .OnDelete(DeleteBehavior.Cascade);
         }
 

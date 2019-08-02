@@ -267,27 +267,6 @@ namespace Domain.Test.Domain
             result.Type.ShouldBe(LayerType.Default);
         }
 
-        [TestMethod]
-        public async Task AddLayerAddsTheLayerGroupToMap()
-        {
-            // Arrange
-            var validMap = CreateValidMap();
-            var dto = new LayerDto
-            {
-                MapId = validMap.Id,
-                Name = "testing",
-                Type = LayerType.Group
-            };
-
-            // Act
-            await validMap.AddLayer(dto);
-
-            // Assert
-            validMap.Layers.Count.ShouldBe(2);
-            var result = validMap.Layers.Last();
-            result.Type.ShouldBe(LayerType.Group);
-        }
-
         private Map CreateValidMap()
         {
             var dto = new MapDto
