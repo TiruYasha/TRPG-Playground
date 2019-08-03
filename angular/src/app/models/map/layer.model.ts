@@ -6,7 +6,6 @@ export class Layer {
     order: number;
     type: LayerType;
     mapId: string;
-    LayerGroupId?: string;
 
     constructor() {
         this.type = LayerType.Default;

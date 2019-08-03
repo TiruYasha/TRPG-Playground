@@ -1,4 +1,3 @@
-export enum LayerType{
-    Default,
-    LayerGroup
+export enum LayerType {
+    Default
 }

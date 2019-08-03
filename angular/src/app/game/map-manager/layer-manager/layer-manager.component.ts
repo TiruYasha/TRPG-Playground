@@ -1,7 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Layer } from 'src/app/models/map/layer.model';
 import { LayerType } from 'src/app/models/map/layer-type.enum';
-import { LayerGroup } from 'src/app/models/map/layer-group.model';
 import { MapService } from '../../services/map.service';
 import { PlayMap } from 'src/app/models/map/map.model';
 import { DestroySubscription } from 'src/app/shared/components/destroy-subscription.extendable';
@@ -45,9 +44,6 @@ export class LayerManagerComponent extends DestroySubscription implements OnInit
       case LayerType.Default:
         layer = new Layer();
         break;
-      case LayerType.LayerGroup:
-        layer = new LayerGroup();
-        break;
     }
 
     const lastLayer = this.layers[this.layers.length - 1];
@@ -70,14 +66,8 @@ export class LayerManagerComponent extends DestroySubscription implements OnInit
     this.mapService.addLayer(this.map.id, layer)
       .pipe(takeUntil(this.destroy))
       .subscribe(newLayer => {
-        if (layer.LayerGroupId) {
-          const parent = this.layers.filter(l => l.id === layer.LayerGroupId)[0] as LayerGroup;
-          const index = parent.layers.findIndex(l => l === layer);
-          parent.layers[index].id = newLayer.id;
-        } else {
-          const index = this.layers.findIndex(l => l === layer);
-          this.layers[index].id = newLayer.id;
-        }
+        const index = this.layers.findIndex(l => l === layer);
+        this.layers[index].id = newLayer.id;
       });
   }
 
