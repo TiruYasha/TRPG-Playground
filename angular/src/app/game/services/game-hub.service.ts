@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Guid } from 'src/app/utilities/guid.util';
-import { BehaviorSubject } from 'rxjs';
 import { Player } from 'src/app/models/game/player.model';
 import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
 import { environment } from 'src/environments/environment';
@@ -8,17 +7,10 @@ import { environment } from 'src/environments/environment';
 @Injectable({
     providedIn: 'root'
 })
-export class ActiveGameService {
+export class GameHubService {
     private _hubConnection: HubConnection;
 
     public activeGameId = Guid.getEmptyGuid();
-
-    private playersSubject = new BehaviorSubject<Player[]>([]);
-
-    private isOwnerSubject = new BehaviorSubject<boolean>(false);
-
-    public playersObservable = this.playersSubject.asObservable();
-    public isOwnerObservable = this.isOwnerSubject.asObservable();
 
     constructor() { }
 
@@ -48,14 +40,6 @@ export class ActiveGameService {
 
     get hubConnection(): HubConnection {
         return this._hubConnection;
-    }
-
-    public updatePlayers(players: Player[]) {
-        this.playersSubject.next(players);
-    }
-
-    public updateIsOwner(isOwner: boolean) {
-        this.isOwnerSubject.next(isOwner);
     }
 
     private startConnection() {

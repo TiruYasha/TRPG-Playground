@@ -6,15 +6,14 @@ import { environment } from 'src/environments/environment';
 import { Observable, Subject } from 'rxjs';
 import { Layer } from 'src/app/models/map/layer.model';
 import { ChangeOrder } from 'src/app/models/map/requests/change-order.model';
+import { GameHubService } from './game-hub.service';
+import { GameEvents } from 'src/app/models/game/game-events.enum';
 
 @Injectable({
     providedIn: 'root'
 })
 export class MapService {
-    private changeMapSubject = new Subject<PlayMap>();
-    changeMapObservable = this.changeMapSubject.asObservable();
-
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient, private gameHubService: GameHubService) { }
 
     addMap(model: AddMap) {
         return this.http.post<PlayMap>(environment.apiUrl + `/game/map`, model);
@@ -32,8 +31,8 @@ export class MapService {
         return this.http.put<void>(environment.apiUrl + `/map`, map);
     }
 
-    changeMap(map: PlayMap) {
-        this.changeMapSubject.next(map);
+    makeMapVisible(mapId: string) {
+        return this.http.post(environment.apiUrl + `/game/map/${mapId}/visible`, {});
     }
 
     addLayer(mapId: string, layer: Layer) {
@@ -52,7 +51,7 @@ export class MapService {
         return this.http.delete<void>(environment.apiUrl + `/map/${mapId}/layer/${layerId}`);
     }
 
-    updateLayerOrder(changeOrder: ChangeOrder, mapId: string, layerId: string){
+    updateLayerOrder(changeOrder: ChangeOrder, mapId: string, layerId: string) {
         return this.http.put<void>(environment.apiUrl + `/map/${mapId}/layer/${layerId}/order`, changeOrder);
     }
 }

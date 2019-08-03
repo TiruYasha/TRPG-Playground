@@ -2,46 +2,58 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GameService } from '../shared/game.service';
 import { Player } from '../models/game/player.model';
-import { ActiveGameService } from './services/active-game.service';
+import { GameHubService } from './services/game-hub.service';
+import { takeUntil } from 'rxjs/operators';
+import { DestroySubscription } from '../shared/components/destroy-subscription.extendable';
+import { GameStateService } from './services/game-state.service';
 
 @Component({
   selector: 'trpg-game',
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.scss']
 })
-export class GameComponent implements OnInit, OnDestroy {
+export class GameComponent extends DestroySubscription implements OnInit, OnDestroy {
   players: Player[] = [];
   isOwner = false;
-  gameId = '';
   joined = false;
 
-  constructor(private activatedRoute: ActivatedRoute, private gameService: GameService, private activeGameService: ActiveGameService) {
+  constructor(private activatedRoute: ActivatedRoute,
+    private gameService: GameService,
+    private gameHubService: GameHubService,
+    private gameState: GameStateService) {
+    super();
   }
 
   ngOnInit() {
     const id = this.activatedRoute.snapshot.params['id'];
+    this.gameHubService.activeGameId = id;
 
-    this.gameId = id;
-    this.activeGameService.activeGameId = id;
-
-    this.activeGameService.setup();
+    this.gameHubService.setup();
 
     this.gameService.joinGame()
+      .pipe(takeUntil(this.destroy))
       .subscribe((isOwner) => {
-        this.activeGameService.updateIsOwner(isOwner);
         this.initializeGame();
       });
   }
 
-  ngOnDestroy(){
-    this.activeGameService.dispose();
+  ngOnDestroy() {
+    this.gameHubService.dispose();
   }
 
   initializeGame() {
     this.joined = true;
-    this.gameService.getPlayers()
-      .subscribe((players) => {
-        this.activeGameService.updatePlayers(players);
+    this.gameService.getInitialGameData()
+      .pipe(takeUntil(this.destroy))
+      .subscribe(gameData => {
+        this.isOwner = gameData.isOwner;
+        this.gameState.setup();
+        this.gameState.updateIsOwner(gameData.isOwner);
+        this.gameState.updatePlayers(gameData.players);
+
+        if (gameData.visibleMap) {
+          this.gameState.changeVisibleMap(gameData.visibleMap);
+        }
       });
   }
 }

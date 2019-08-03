@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked } from '@ang
 import { ReceiveMessageModel } from 'src/app/models/chat/receives/receive-message.model';
 import { SendMessageModel } from 'src/app/models/chat/requests/send-message.model';
 import { ChatService } from '../../services/chat.service';
-import { ActiveGameService } from '../../services/active-game.service';
+import { GameHubService } from '../../services/game-hub.service';
 
 @Component({
   selector: 'trpg-chat-window',
@@ -16,7 +16,7 @@ export class ChatWindowComponent implements OnInit, AfterViewChecked {
   chatMessage = '';
   scrolledToBottom = false;
 
-  constructor(private chatService: ChatService, private activeGameService: ActiveGameService) {
+  constructor(private chatService: ChatService, private activeGameService: GameHubService) {
   }
 
   ngOnInit() {

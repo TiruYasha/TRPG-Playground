@@ -14,7 +14,8 @@ namespace Domain.Domain
         public string Name { get; private set; }
         public virtual User Owner { get; private set; }
         public Guid OwnerId { get; private set; }
-        public Guid VisibleMapId { get; private set; }
+        public virtual Map VisibleMap { get; private set; }
+        public Guid? VisibleMapId { get; private set; }
         public virtual ICollection<GamePlayer> Players { get; private set; }
         public virtual ICollection<ChatMessage> ChatMessages { get; private set; }
         public virtual ICollection<JournalItem> JournalItems { get; private set; }

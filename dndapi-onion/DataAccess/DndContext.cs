@@ -44,6 +44,9 @@ namespace DataAccess
 
             modelBuilder.Entity<Map>().HasMany(m => m.Layers).WithOne(l => l.Map)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            //modelBuilder.Entity<Game>().HasOne(g => g.VisibleMap);
+            modelBuilder.Entity<Game>().HasMany(g => g.Maps).WithOne(m => m.Game);
         }
 
         private void SetupJournalItemPermission(ModelBuilder modelBuilder)

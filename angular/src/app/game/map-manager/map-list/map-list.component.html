@@ -4,18 +4,19 @@
   </h3>
   <div class="listItemsContainer">
     <mat-nav-list role="list">
-      <trpg-map-list-item  *ngFor="let map of maps"
+      <trpg-map-list-item *ngFor="let map of maps"
         [map]="map"
+        [visible]="map.id === visibleMap"
         [selected]="map === selectedMap"
-        (deleteMap)="deleteMap.emit($event)"
-        (editMap)="editMap.emit($event)"
-        (selectMap)="onSelectedMap($event)"
-
+        (deleteMap)="deleteMap(map)"
+        (editMap)="editMap(map)"
+        (selectMap)="changeMap(map)"
+        (makeVisible)="makeMapVisible(map)"
       ></trpg-map-list-item>
     </mat-nav-list>
   </div>
 
-  <button mat-fab class="addButton" (click)="addMap.emit()">
+  <button mat-fab class="addButton" (click)="addMap()">
     <mat-icon class="material-icons">add</mat-icon>
   </button>
 </div>

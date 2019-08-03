@@ -1,6 +1,6 @@
 <section class="mat-typography">
-  <mat-sidenav-container class="side-container" *ngIf="joined">
-    <mat-sidenav opened class="left-nav" mode="side" position="start">
+  <mat-sidenav-container class="side-container" >
+    <mat-sidenav opened class="left-nav" mode="side" position="start" *ngIf="joined && isOwner">
       <trpg-map-manager></trpg-map-manager>
     </mat-sidenav>
     <trpg-play-area></trpg-play-area>

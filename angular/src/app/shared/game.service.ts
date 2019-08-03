@@ -3,8 +3,7 @@ import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Player } from '../models/game/player.model';
-import { AddMap } from '../models/map/requests/add-map.model';
-import { PlayMap } from '../models/map/map.model';
+import { InitialGameData } from '../models/game/initial-game-data.model';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +13,10 @@ export class GameService {
 
   joinGame(): Observable<boolean> {
     return this.http.put<boolean>(environment.apiUrl + '/game/join', {});
+  }
+
+  getInitialGameData(): Observable<InitialGameData> {
+    return this.http.get<InitialGameData>(environment.apiUrl + '/game/initial', {});
   }
 
   getPlayers(): Observable<Player[]> {

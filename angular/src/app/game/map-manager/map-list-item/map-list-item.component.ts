@@ -15,7 +15,7 @@ export class MapListItemComponent implements OnInit {
   @Output() selectMap = new EventEmitter<PlayMap>();
   @Output() editMap = new EventEmitter<PlayMap>();
   @Output() deleteMap = new EventEmitter<PlayMap>();
-  @Output() visibillity = new EventEmitter();
+  @Output() makeVisible = new EventEmitter();
 
   @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
   @ViewChild('menuButton') button: ElementRef;
@@ -30,7 +30,7 @@ export class MapListItemComponent implements OnInit {
   }
 
   toggleVisibillity() {
-    this.visible = !this.visible;
+    this.makeVisible.emit();
   }
 
   triggerMenu(event: MouseEvent) {

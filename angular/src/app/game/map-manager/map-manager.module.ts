@@ -8,12 +8,16 @@ import { LayerManagerComponent } from './layer-manager/layer-manager.component';
 import { CreateMapDialogComponent } from './create-map-dialog/create-map-dialog.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MapListItemComponent } from './map-list-item/map-list-item.component';
-import { LayerListComponent } from './layer-list/layer-list.component';
 import { LayerListItemComponent } from './layer-list-item/layer-list-item.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
-  declarations: [MapManagerComponent, MapListComponent, LayerManagerComponent, CreateMapDialogComponent, MapListItemComponent, LayerListComponent, LayerListItemComponent],
+  declarations: [MapManagerComponent,
+    MapListComponent,
+    LayerManagerComponent,
+    CreateMapDialogComponent,
+    MapListItemComponent,
+    LayerListItemComponent],
   imports: [
     CommonModule,
     MatIconModule,
