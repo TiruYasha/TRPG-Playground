@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Domain.ServiceInterfaces;
+﻿using Domain.ServiceInterfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -8,10 +7,12 @@ using Shouldly;
 using System;
 using System.Net;
 using System.Threading.Tasks;
-using Domain.Dto.RequestDto;
 using Domain.Dto.RequestDto.Game;
 using Domain.Dto.ReturnDto.Game;
 using Domain.Dto.Shared;
+using Microsoft.AspNetCore.SignalR;
+using RestApi.Hubs;
+using Domain.Events;
 
 namespace RestApi.Test
 {
@@ -22,14 +23,16 @@ namespace RestApi.Test
 
         private Mock<IGameService> gameService;
         private Mock<IJwtReader> jwtReader;
+        private Mock<IHubContext<GameHub>> hubContext;
 
         [TestInitialize]
         public void Initialize()
         {
             gameService = new Mock<IGameService>();
             jwtReader = new Mock<IJwtReader>();
+            hubContext = new Mock<IHubContext<GameHub>>(MockBehavior.Strict);
 
-            sut = new GameController(gameService.Object, jwtReader.Object);
+            sut = new GameController(gameService.Object, jwtReader.Object, hubContext.Object);
         }
 
         [TestMethod]
@@ -119,16 +122,16 @@ namespace RestApi.Test
         public async Task AddMapToPlayAreaReturnsOkWithMap()
         {
             // Arrange
-            var MapDto = new MapDto();
+            var mapDto = new MapDto();
             var mapToReturn = new MapDto();
             var gameId = Guid.NewGuid();
 
             jwtReader.Setup(j => j.GetGameId()).Returns(gameId);
 
-            gameService.Setup(p => p.AddMap(MapDto, gameId)).ReturnsAsync(mapToReturn);
+            gameService.Setup(p => p.AddMap(mapDto, gameId)).ReturnsAsync(mapToReturn);
 
             // Act
-            var result = await sut.AddMapToPlayArea(MapDto) as OkObjectResult;
+            var result = await sut.AddMapToPlayArea(mapDto) as OkObjectResult;
 
             // Assert
             result.StatusCode.ShouldBe((int)HttpStatusCode.OK);

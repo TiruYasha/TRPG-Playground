@@ -18,6 +18,7 @@ namespace Service.Test
     public class GameServiceTest : ServiceTest<IGameService>
     {
         private Mock<ILogger<GameService>> logger;
+
         [TestInitialize]
         public override void Initialize()
         {
@@ -83,121 +84,47 @@ namespace Service.Test
             result.Count().ShouldBe(2);
         }
 
-        //private IGameService sut;
+        [TestMethod]
+        public async Task SetMapVisible_SetsTheMapVisibleByMapId()
+        {
+            // Arrange
+            var game = await GameDataBuilder.WithMaps().BuildGame();
+            await Context.AddAsync(game);
+            await Context.SaveChangesAsync();
 
-        //private Mock<IRepository> gameRepository;
-        //private Mock<ILogger<GameService>> logger;
-        //private Mock<IUserRepository> userRepository;
+            var map = game.Maps.First();
 
-        //[TestInitialize]
-        //public void Initialize()
-        //{
-        //    gameRepository = new Mock<IRepository>();
-        //    logger = new Mock<ILogger<GameService>>();
-        //    userRepository = new Mock<IUserRepository>();
+            // Act
+            var result = await Sut.SetMapVisible(game.Id, map.Id);
 
-        //    sut = new GameService(userRepository.Object, logger.Object);
-        //}
+            // Assert
+            var updatedGame = await Context.Games.FirstAsync(g  => g.Id == game.Id);
+            result.Id.ShouldBe(map.Id);
+        }
 
-        //[TestMethod]
-        //public async Task CreateGameCreatesTheGame()
-        //{
-        //    var gameName = "testing";
-        //    var ownerId = new Guid("ce95484d-8ea5-4437-b649-29c4be63ae33");
+        [TestMethod]
+        public async Task SetMapVisible_ThrowsNotFoundExceptionIfMapDoesNotExist()
+        {
+            // Arrange
+            var game = await GameDataBuilder.WithMaps().BuildGame();
+            await Context.AddAsync(game);
+            await Context.SaveChangesAsync();
 
-        //    var user = new User
-        //    {
-        //        Id = ownerId,
-        //        Email = "test@test.nl",
-        //    };
+            // Act
+            var result = await Should.ThrowAsync<NotFoundException>(Sut.SetMapVisible(game.Id, Guid.NewGuid()));
 
-        //    userRepository.Setup(s => s.GetUserByIdAsync(ownerId)).ReturnsAsync(user);
-        //    gameRepository.Setup(s => s.CreateGameAsync(It.Is<Game>(g => g.Owner == user && g.Name == gameName)))
-        //        .Returns(Task.CompletedTask).Verifiable();
+            // Assert
+            result.Message.ShouldBe("The game or map can not be found");
+        }
 
-        //    var result = await sut.CreateGameAsync(gameName, ownerId);
+        [TestMethod]
+        public async Task SetMapVisible_ThrowsNotFoundExceptionIfGameDoesNotExist()
+        {
+            // Act
+            var result = await Should.ThrowAsync<NotFoundException>(Sut.SetMapVisible(Guid.NewGuid(), Guid.NewGuid()));
 
-        //    result.ShouldNotBe(Guid.Empty);
-        //    gameRepository.VerifyAll();
-        //}
-
-        //[TestMethod]
-        //public async Task JoinGameAddsThePlayerToTheGameAndReturnsFalse()
-        //{
-        //    // Arrange
-        //    var userId = new Guid("65a5b497-75b8-4729-9ca7-69152e319380");
-
-        //    var user = new User
-        //    {
-        //        Id = userId,
-        //        Email = "test@test.nl",
-        //    };
-
-        //    var game = new Game("name", new User());
-
-        //    userRepository.Setup(s => s.GetUserByIdAsync(userId)).ReturnsAsync(user);
-        //    gameRepository.Setup(s => s.GetGameByIdAsync(game.Id)).ReturnsAsync(game);
-        //    gameRepository.Setup(s => s.UpdateGameAsync(It.Is<Game>(g => g.Id == game.Id && g.Players.Any(p => p.UserId == userId)))).Returns(Task.CompletedTask).Verifiable();
-
-        //    // Action
-        //    var result = await sut.JoinGameAsync(game.Id, userId);
-
-        //    // Assert
-        //    result.ShouldBeFalse();
-        //    gameRepository.VerifyAll();
-        //}
-
-        //[TestMethod]
-        //public async Task JoinGameDoesNothingWhenThePlayerHasAlreadyJoinedAndReturnsFalse()
-        //{
-        //    // Arrange
-        //    var userId = new Guid("65a5b497-75b8-4729-9ca7-69152e319380");
-
-        //    var user = new User
-        //    {
-        //        Id = userId,
-        //        Email = "test@test.nl",
-        //    };
-
-        //    var game = new Game("name", new User());
-
-        //    userRepository.Setup(s => s.GetUserByIdAsync(userId)).ReturnsAsync(user);
-        //    gameRepository.Setup(s => s.GetGameByIdAsync(game.Id)).ReturnsAsync(game).Verifiable();
-
-        //    await sut.JoinGameAsync(game.Id, userId);
-
-        //    // Action
-        //    var result = await sut.JoinGameAsync(game.Id, userId);
-
-        //    // Assert
-        //    result.ShouldBeFalse();
-        //    gameRepository.VerifyAll();
-        //    gameRepository.Verify(s => s.UpdateGameAsync(It.Is<Game>(g => g.Id == game.Id && g.Players.Any(p => p.UserId == userId))), Times.Once);
-        //}
-
-        //[TestMethod]
-        //public async Task JoinGameDoesNothingWhenTheOwnerHasAlreadyJoinedAndReturnsTrue()
-        //{
-        //    // Arrange
-        //    var userId = new Guid();
-
-        //    var user = new User
-        //    {
-        //        Id = userId,
-        //        Email = "test@test.nl",
-        //    };
-
-        //    var game = new Game("name", new User());
-
-        //    gameRepository.Setup(s => s.GetGameByIdAsync(game.Id)).ReturnsAsync(game).Verifiable();
-
-        //    // Action
-        //    var result = await sut.JoinGameAsync(game.Id, userId);
-
-        //    // Assert
-        //    result.ShouldBeTrue();
-        //    gameRepository.VerifyAll();
-        //    gameRepository.Verify(s => s.UpdateGameAsync(It.Is<Game>(g => g.Id == game.Id && g.Players.Any(p => p.UserId == userId))), Times.Never);
-        //}
+            // Assert
+            result.Message.ShouldBe("The game or map can not be found");
+        }
     }
 }

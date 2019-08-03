@@ -24,5 +24,6 @@ namespace Domain.ServiceInterfaces
         Task<IEnumerable<GetPlayersModel>> GetPlayersAsync(Guid gameId);
         Task<MapDto> AddMap(MapDto dto, Guid gameId);
         Task<IEnumerable<MapDto>> GetMaps(Guid gameId);
+        Task<MapDto> SetMapVisible(Guid gameId, Guid mapId);
     }
 }

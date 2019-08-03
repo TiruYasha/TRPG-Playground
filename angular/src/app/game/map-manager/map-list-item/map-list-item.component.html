@@ -3,9 +3,14 @@
   <button mat-menu-item (click)="deleteMap.emit(map)">Delete</button>
 </mat-menu>
 
-<mat-list-item (contextmenu)="triggerMenu($event)" role="listitem" [class.selected]="selected"
-  (click)="onSelectedMap(map)">
-  {{map.name}}
+<mat-list-item (contextmenu)="triggerMenu($event)" role="listitem" [class.selected]="selected">
+  <div matLine  class="mapName" (click)="onSelectedMap(map)">
+    {{map.name}}
+  </div>
+  <button mat-icon-button class="visibleAction" (click)="toggleVisibillity()">
+    <mat-icon [class.material-icons]="visible" [class.material-icons-outlined]="!visible">remove_red_eye</mat-icon>
+  </button>
+
   <div #menuButton style="position: absolute">
     <button mat-button [matMenuTriggerFor]="mapMenu" style="display: hidden">
     </button>

@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Domain.Dto.RequestDto;
 using Domain.Dto.Shared;
 
 namespace Domain.Domain
@@ -15,10 +14,11 @@ namespace Domain.Domain
         public string Name { get; private set; }
         public virtual User Owner { get; private set; }
         public Guid OwnerId { get; private set; }
+        public Guid VisibleMapId { get; private set; }
         public virtual ICollection<GamePlayer> Players { get; private set; }
         public virtual ICollection<ChatMessage> ChatMessages { get; private set; }
         public virtual ICollection<JournalItem> JournalItems { get; private set; }
-        public virtual  ICollection<Map> Maps { get; private set; }
+        public virtual ICollection<Map> Maps { get; private set; }
 
         private Game()
         {
@@ -109,6 +109,15 @@ namespace Domain.Domain
             });
         }
 
+        public Task SetMapVisible(Guid mapId)
+        {
+            return Task.Run(() =>
+            {
+                VisibleMapId = mapId;
+            });
+            
+        }
+
         private void CheckParameters(string name, User owner)
         {
             if (string.IsNullOrEmpty(name))
@@ -121,5 +130,7 @@ namespace Domain.Domain
                 throw new ArgumentException("The argument for parameter owner was invalid");
             }
         }
+
+       
     }
 }

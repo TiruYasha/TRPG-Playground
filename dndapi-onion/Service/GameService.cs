@@ -115,5 +115,22 @@ namespace Service
 
             return await query.ProjectTo<MapDto>(mapper.ConfigurationProvider).ToListAsync();
         }
+
+        public async Task<MapDto> SetMapVisible(Guid gameId, Guid mapId)
+        {
+            var game = await context.Games.FilterById(gameId).FirstOrDefaultAsync();
+            var map = await context.Maps.FirstOrDefaultAsync(m => m.GameId == gameId && m.Id == mapId);
+
+            if (game == null || map == null)
+            {
+                throw new NotFoundException("The game or map can not be found");
+            }
+
+            await game.SetMapVisible(map.Id);
+
+            await context.SaveChangesAsync();
+
+            return mapper.Map<Map, MapDto>(map);
+        }
     }
 }
