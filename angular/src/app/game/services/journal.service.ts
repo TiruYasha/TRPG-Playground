@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 import { AddJournalItemRequestModel } from 'src/app/models/journal/requests/add-journal-item-request.model';
 import { AddedJournalItemModel } from 'src/app/models/journal/receives/added-journal-folder.model';
 import { JournalItem } from 'src/app/models/journal/journalitems/journal-item.model';
-import { ActiveGameService } from './active-game.service';
+import { GameHubService } from './game-hub.service';
 import { UploadedImage as UploadedJournalItemImage } from 'src/app/models/journal/receives/uploaded-image.model';
 import { JournalTreeItem } from 'src/app/models/journal/journal-tree-item.model';
 import { JournalEvents } from 'src/app/models/journal/journal-events.enum';
@@ -26,7 +26,7 @@ export class JournalService {
     private journalItemDeletedSubject = new Subject<string>();
     journalItemDeleted = this.journalItemDeletedSubject.asObservable();
 
-    constructor(private http: HttpClient, private activeGameService: ActiveGameService) { }
+    constructor(private http: HttpClient, private activeGameService: GameHubService) { }
 
     setup() {
         this.registerOnServerEvents();

@@ -48,9 +48,34 @@ namespace Service
             return await context.Games.ProjectTo<GameCatalogItemModel>(mapper.ConfigurationProvider).ToListAsync();
         }
 
+        public async Task<InitialGameDto> GetInitialGameData(Guid gameId, Guid userId)
+        {
+            var game = await context.Games.Include(g => g.Players).Include(g => g.VisibleMap).Include(g => g.Owner).FilterById(gameId).FirstOrDefaultAsync();
+
+            var dto = new InitialGameDto();
+            dto.Id = game.Id;
+            dto.Name = game.Name;
+            dto.VisibleMap = mapper.Map<Map, MapDto>(game.VisibleMap);
+            dto.Players = await context.GamePlayers.Where(g => g.GameId == gameId)
+               .ProjectTo<GetPlayersModel>(mapper.ConfigurationProvider)
+               .ToListAsync();
+
+            if (await game.IsOwner(userId))
+            {
+                dto.IsOwner = true;
+            }
+
+            if (await game.HasPlayerJoined(userId))
+            {
+                dto.IsOwner = false;
+            }
+
+            return dto;
+        }
+
         public async Task<bool> JoinGameAsync(Guid gameId, Guid userId)
         {
-            var game = await context.Games.Include(g =>g.Players).Include(g => g.Owner).FilterById(gameId).FirstOrDefaultAsync();
+            var game = await context.Games.Include(g => g.Players).Include(g => g.Owner).FilterById(gameId).FirstOrDefaultAsync();
 
             if (await game.HasPlayerJoined(userId))
             {
@@ -115,5 +140,24 @@ namespace Service
 
             return await query.ProjectTo<MapDto>(mapper.ConfigurationProvider).ToListAsync();
         }
+
+        public async Task<MapDto> SetMapVisible(Guid gameId, Guid mapId)
+        {
+            var game = await context.Games.FilterById(gameId).FirstOrDefaultAsync();
+            var map = await context.Maps.FirstOrDefaultAsync(m => m.GameId == gameId && m.Id == mapId);
+
+            if (game == null || map == null)
+            {
+                throw new NotFoundException("The game or map can not be found");
+            }
+
+            await game.SetMapVisible(map.Id);
+
+            await context.SaveChangesAsync();
+
+            return mapper.Map<Map, MapDto>(map);
+        }
+
+
     }
 }

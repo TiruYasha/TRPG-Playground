@@ -3,7 +3,7 @@ import { FlatTreeControl } from '@angular/cdk/tree';
 import { JournalService } from '../services/journal.service';
 import { MatDialog } from '@angular/material';
 import { AddedJournalItemModel } from 'src/app/models/journal/receives/added-journal-folder.model';
-import { ActiveGameService } from '../services/active-game.service';
+import { GameHubService } from '../services/game-hub.service';
 import { Player } from 'src/app/models/game/player.model';
 import { ParentDialogComponent } from './parent-dialog/parent-dialog.component';
 import { ParentDialogModel } from './parent-dialog/parent-dialog.model';
@@ -16,6 +16,7 @@ import { DestroySubscription } from 'src/app/shared/components/destroy-subscript
 import { takeUntil } from 'rxjs/operators';
 import { DialogState } from '../../models/dialog-state.enum';
 import { JournalTreeItem } from 'src/app/models/journal/journal-tree-item.model';
+import { GameStateService } from '../services/game-state.service';
 
 @Component({
   selector: 'trpg-journal',
@@ -38,7 +39,7 @@ export class JournalComponent extends DestroySubscription implements OnInit {
 
   hasChild = (_: number, node: DynamicFlatNode<JournalTreeItem>) => this.IsExpandable(node);
 
-  constructor(private journalService: JournalService, private activeGameService: ActiveGameService, public dialog: MatDialog) {
+  constructor(private journalService: JournalService, private gameState: GameStateService, public dialog: MatDialog) {
     super();
     this.treeControl = new FlatTreeControl<DynamicFlatNode<JournalTreeItem>>(this.getLevel, this.IsExpandable);
     this.dataSource = new JournalDynamicDataSource(this.treeControl, journalService);
@@ -59,13 +60,13 @@ export class JournalComponent extends DestroySubscription implements OnInit {
         this.dataSource.data = nodes;
       });
 
-    this.activeGameService.isOwnerObservable
+    this.gameState.isOwnerObservable
       .pipe(takeUntil(this.destroy))
       .subscribe((isOwner) => {
         this.isOwner = isOwner;
       });
 
-    this.activeGameService.playersObservable
+    this.gameState.playersObservable
       .pipe(takeUntil(this.destroy))
       .subscribe((players) => {
         this.players = players;

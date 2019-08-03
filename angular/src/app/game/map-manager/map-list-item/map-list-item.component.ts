@@ -10,10 +10,12 @@ import { MatMenuTrigger } from '@angular/material';
 export class MapListItemComponent implements OnInit {
   @Input() map: PlayMap;
   @Input() selected: boolean;
+  @Input() visible = false;
 
   @Output() selectMap = new EventEmitter<PlayMap>();
   @Output() editMap = new EventEmitter<PlayMap>();
   @Output() deleteMap = new EventEmitter<PlayMap>();
+  @Output() makeVisible = new EventEmitter();
 
   @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
   @ViewChild('menuButton') button: ElementRef;
@@ -25,6 +27,10 @@ export class MapListItemComponent implements OnInit {
 
   onSelectedMap(map: PlayMap) {
     this.selectMap.emit(map);
+  }
+
+  toggleVisibillity() {
+    this.makeVisible.emit();
   }
 
   triggerMenu(event: MouseEvent) {

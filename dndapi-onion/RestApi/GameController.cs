@@ -1,15 +1,14 @@
-﻿using AutoMapper;
-using Domain.Domain;
-using Domain.ServiceInterfaces;
+﻿using Domain.ServiceInterfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RestApi.Utilities;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using Domain.Dto.RequestDto;
 using Domain.Dto.RequestDto.Game;
 using Domain.Dto.Shared;
+using Microsoft.AspNetCore.SignalR;
+using RestApi.Hubs;
+using Domain.Events;
 
 namespace RestApi
 {
@@ -20,11 +19,13 @@ namespace RestApi
     {
         private readonly IGameService gameService;
         private readonly IJwtReader jwtReader;
+        private readonly IHubContext<GameHub> hubContext;
 
-        public GameController(IGameService gameService, IJwtReader jwtReader)
+        public GameController(IGameService gameService, IJwtReader jwtReader, IHubContext<GameHub> hubContext)
         {
             this.gameService = gameService;
             this.jwtReader = jwtReader;
+            this.hubContext = hubContext;
         }
 
         [HttpPost]
@@ -52,6 +53,17 @@ namespace RestApi
             var games = await gameService.GetAllGames();
 
             return Ok(games);
+        }
+
+        [HttpGet]
+        [Route("initial")]
+        public async Task<IActionResult> GetInitialGameData()
+        {
+            var userId = jwtReader.GetUserId();
+            var gameId = jwtReader.GetGameId();
+            var gameData = await gameService.GetInitialGameData(gameId, userId);
+
+            return Ok(gameData);
         }
 
         [HttpPut]
@@ -105,6 +117,20 @@ namespace RestApi
             var maps = await gameService.GetMaps(gameId);
 
             return Ok(maps);
+        }
+
+        [HttpPost]
+        [Route("map/{mapId}/visible")]
+        public async Task<IActionResult> SetMapVisible(Guid mapId)
+        {
+            var gameId = jwtReader.GetGameId();
+            var userId = jwtReader.GetUserId();
+
+            var map = await gameService.SetMapVisible(gameId, mapId);
+
+            await hubContext.Clients.GroupExcept(gameId.ToString(), userId.ToString()).SendAsync(GameEvents.MapVisibilityChanged, map);
+
+            return Ok();
         }
     }
 }

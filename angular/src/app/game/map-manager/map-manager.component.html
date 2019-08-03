@@ -1,10 +1,9 @@
 <div id="mapManager" class="mapManager">
   <div class="mapList">
-    <trpg-map-list (addMap)="addMap()" (deleteMap)="deleteMap($event)" (editMap)="editMap($event)" (selectMap)="changeMap($event)" [maps]="maps">
-    </trpg-map-list>
+    <trpg-map-list></trpg-map-list>
     <mat-divider></mat-divider>
   </div>
   <div class="layerManager">
-    <trpg-layer-manager (addLayer)="addLayer($event)" (updateLayer)="updateLayer($event)" (delete)="deleteLayer($event)" [layers]="layers"></trpg-layer-manager>
+    <trpg-layer-manager></trpg-layer-manager>
   </div>
 </div>

@@ -18,11 +18,13 @@ namespace Domain.ServiceInterfaces
         /// <param name="userId"></param>
         /// <returns>Returns a boolean. When the boolean is true it is the owner of the game. If it is false it is a player</returns>
         Task<bool> JoinGameAsync(Guid gameId, Guid userId);
+        Task<InitialGameDto> GetInitialGameData(Guid gameId, Guid userId);
         Task<IEnumerable<GameCatalogItemModel>> GetAllGames();
         Task<bool> IsOwnerOfGameAsync(Guid userId, Guid activeGameId);
         Task<bool> IsGamePlayerOrOwnerOfGameAsync(Guid userId, Guid activeGameId);
         Task<IEnumerable<GetPlayersModel>> GetPlayersAsync(Guid gameId);
         Task<MapDto> AddMap(MapDto dto, Guid gameId);
         Task<IEnumerable<MapDto>> GetMaps(Guid gameId);
+        Task<MapDto> SetMapVisible(Guid gameId, Guid mapId);
     }
 }

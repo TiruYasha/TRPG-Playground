@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Subject } from 'rxjs';
 import { ReceiveMessageModel } from 'src/app/models/chat/receives/receive-message.model';
-import { ActiveGameService } from './active-game.service';
+import { GameHubService } from './game-hub.service';
 import { SendMessageModel } from 'src/app/models/chat/requests/send-message.model';
 
 @Injectable({
@@ -14,7 +14,7 @@ export class ChatService {
 
   chatMessageSent = this.chatMessageSentSubject.asObservable();
 
-  constructor(private http: HttpClient, private activeGameService: ActiveGameService) { }
+  constructor(private http: HttpClient, private activeGameService: GameHubService) { }
 
   setup() {
     this.registerOnServerEvents();

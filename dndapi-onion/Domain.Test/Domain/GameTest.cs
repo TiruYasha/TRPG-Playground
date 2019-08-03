@@ -252,5 +252,27 @@ namespace Domain.Test.Domain
             sut.Maps.Count.ShouldBe(1);
             sut.Maps.ShouldContain(result);
         }
+
+        [TestMethod]
+        public async Task SetMapVisible_GivenMapIsSetAsVisible()
+        {
+            // arrange
+            var dto = new MapDto
+            {
+                Name = "test",
+                GridSizeInPixels = 10,
+                WidthInPixels = 1000,
+                HeightInPixels = 1000
+            };
+
+            var sut = new Game("name", new User());
+            var map = await sut.AddMap(dto);
+
+            // Act
+            await sut.SetMapVisible(map.Id);
+
+            // Assert
+            sut.VisibleMapId.ShouldBe(map.Id);
+        }
     }
 }

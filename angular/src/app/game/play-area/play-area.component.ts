@@ -5,6 +5,7 @@ import { DestroySubscription } from 'src/app/shared/components/destroy-subscript
 import { MapService } from '../services/map.service';
 import { takeUntil } from 'rxjs/operators';
 import { PlayMap } from 'src/app/models/map/map.model';
+import { GameStateService } from '../services/game-state.service';
 
 @Component({
   selector: 'trpg-play-area',
@@ -12,11 +13,12 @@ import { PlayMap } from 'src/app/models/map/map.model';
   styleUrls: ['./play-area.component.scss']
 })
 export class PlayAreaComponent extends DestroySubscription implements OnInit, AfterViewInit {
+  private isOwner = false;
 
   @ViewChild('canvasContainer') canvasContainer: ElementRef;
   application: Application;
 
-  constructor(private mapService: MapService) { super(); }
+  constructor(private gameState: GameStateService, private mapService: MapService) { super(); }
 
   ngOnInit() {
     const div = this.canvasContainer.nativeElement as HTMLDivElement;
@@ -27,8 +29,17 @@ export class PlayAreaComponent extends DestroySubscription implements OnInit, Af
 
     div.appendChild(this.application.view);
 
-    this.mapService.changeMapObservable.pipe(takeUntil(this.destroy))
-      .subscribe(map => this.changeMap(map));
+    this.gameState.isOwnerObservable.pipe(takeUntil(this.destroy))
+      .subscribe(isOwner => {
+        this.isOwner = isOwner;
+        if (this.isOwner) {
+          this.gameState.changeMapObservable.pipe(takeUntil(this.destroy))
+            .subscribe(map => this.changeMap(map));
+        } else {
+          this.gameState.mapVisibilityChangedObservable.pipe(takeUntil(this.destroy))
+            .subscribe(map => this.changeMap(map));
+        }
+      });
   }
 
   private changeMap(map: PlayMap): void {
