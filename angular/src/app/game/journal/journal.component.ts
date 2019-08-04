@@ -17,6 +17,7 @@ import { takeUntil } from 'rxjs/operators';
 import { DialogState } from '../../models/dialog-state.enum';
 import { JournalTreeItem } from 'src/app/models/journal/journal-tree-item.model';
 import { GameStateService } from '../services/game-state.service';
+import { DragService } from '../services/drag.service';
 
 @Component({
   selector: 'trpg-journal',
@@ -39,7 +40,8 @@ export class JournalComponent extends DestroySubscription implements OnInit {
 
   hasChild = (_: number, node: DynamicFlatNode<JournalTreeItem>) => this.IsExpandable(node);
 
-  constructor(private journalService: JournalService, private gameState: GameStateService, public dialog: MatDialog) {
+  constructor(private journalService: JournalService, private gameState: GameStateService, public dialog: MatDialog,
+    private dragService: DragService) {
     super();
     this.treeControl = new FlatTreeControl<DynamicFlatNode<JournalTreeItem>>(this.getLevel, this.IsExpandable);
     this.dataSource = new JournalDynamicDataSource(this.treeControl, journalService);
@@ -175,6 +177,10 @@ export class JournalComponent extends DestroySubscription implements OnInit {
       .subscribe();
   }
 
+  startDrag($event: DragEvent, node: DynamicFlatNode<JournalTreeItem>) {
+    this.dragService.itemBeingDragged = node.item;
+  }
+
   private addJournalItemToTree(journalItem: JournalTreeItem) {
     let node = new DynamicFlatNode<JournalTreeItem>(journalItem, 0);
     if (journalItem.parentFolderId) {
@@ -200,7 +206,7 @@ export class JournalComponent extends DestroySubscription implements OnInit {
       journalItemId: journalItemId,
       state: state,
       journalItemType: journalItemType,
-      canEdit: state === DialogState.New ? true :  treeItem.item.canEdit
+      canEdit: state === DialogState.New ? true : treeItem.item.canEdit
     };
     this.dialog.open(ParentDialogComponent, {
       width: 'auto',

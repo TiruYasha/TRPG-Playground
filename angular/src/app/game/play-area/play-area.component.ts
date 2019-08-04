@@ -6,19 +6,21 @@ import { MapService } from '../services/map.service';
 import { takeUntil } from 'rxjs/operators';
 import { PlayMap } from 'src/app/models/map/map.model';
 import { GameStateService } from '../services/game-state.service';
+import { DragService } from '../services/drag.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'trpg-play-area',
   templateUrl: './play-area.component.html',
   styleUrls: ['./play-area.component.scss']
 })
-export class PlayAreaComponent extends DestroySubscription implements OnInit, AfterViewInit {
+export class PlayAreaComponent extends DestroySubscription implements OnInit {
   private isOwner = false;
 
   @ViewChild('canvasContainer') canvasContainer: ElementRef;
   application: Application;
 
-  constructor(private gameState: GameStateService, private mapService: MapService) { super(); }
+  constructor(private gameState: GameStateService, private dragService: DragService) { super(); }
 
   ngOnInit() {
     const div = this.canvasContainer.nativeElement as HTMLDivElement;
@@ -42,6 +44,22 @@ export class PlayAreaComponent extends DestroySubscription implements OnInit, Af
       });
   }
 
+  dragOver(event: DragEvent ) {
+    event.preventDefault();
+    //console.log(event);
+  }
+
+  drop(event: DragEvent) {
+    event.preventDefault();
+    console.log(event);
+    const item = this.dragService.itemBeingDragged;
+    let sprite = Sprite.from(`${environment.apiUrl}/journal/${item.id}/image`);
+    sprite.x = event.layerX;
+    sprite.y = event.layerY;
+    sprite.zIndex = 200;
+    this.application.stage.addChild(sprite);
+  }
+
   private changeMap(map: PlayMap): void {
     this.application.stage.removeChildren();
     const canvasWidth = map.widthInPixels;
@@ -51,35 +69,7 @@ export class PlayAreaComponent extends DestroySubscription implements OnInit, Af
     this.draw_grid(map.gridSizeInPixels);
   }
 
-  ngAfterViewInit(): void {
-    // const div = this.canvasContainer.nativeElement as HTMLDivElement;
-    // this.application = new Application(
-    // );
-    // this.application.renderer.backgroundColor = 0xFFFFFF;
-
-    // div.appendChild(this.application.view);
-
-    // const testing = new Loader();
-
-    // testing
-    //   .add('/assets/images/Canvas_test_map.jpg')
-    //   .load(() => {
-    //     const background = new Sprite(testing.resources['/assets/images/Canvas_test_map.jpg'].texture);
-    //     this.application.stage.sortableChildren = true;
-    //     background.zIndex = -1;
-
-    //     const canvasWidth = background.width > 4000 ? 4000 : background.width;
-    //     const canvasHeight = background.height > 4000 ? 4000 : background.height;
-
-    //     this.application.renderer.resize(canvasWidth, canvasHeight);
-    //     this.application.stage.addChild(background);
-    //     this.draw_grid(100);
-    //     this.addDraggableRectangle();
-    //   });
-  }
-
   private draw_grid(gridSizeInPixels: number) {
-
     const width = this.application.renderer.width;
     const height = this.application.renderer.height;
 
@@ -105,6 +95,8 @@ export class PlayAreaComponent extends DestroySubscription implements OnInit, Af
       this.application.stage.addChild(verticalLine);
     }
   }
+
+  
 
   rectangle: Graphics;
 
