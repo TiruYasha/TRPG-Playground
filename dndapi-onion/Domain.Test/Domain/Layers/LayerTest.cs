@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Domain.Domain.Layers;
+using Domain.Domain.PlayArea;
 using Domain.Dto.Shared;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
@@ -95,7 +96,6 @@ namespace Domain.Test.Domain.Layers
         public async Task UpdateOrderUpdatesTheOrder()
         {
             // Arrange
-            var name = "test";
             var newOrder = 1;
             var dto = new LayerDto
             {
@@ -109,6 +109,31 @@ namespace Domain.Test.Domain.Layers
 
             // Assert
             sut.Order.ShouldBe(newOrder);
+        }
+
+        [TestMethod]
+        public async Task AddToken_AddsTheTokenToTheLayer()
+        {
+            // Arrange
+            var dto = new LayerDto
+            {
+                Name = "test",
+            };
+            var sut = new Layer(dto, new Guid());
+
+            var tokenDto = new TokenDto
+            {
+                Y = 10,
+                X = 20,
+                ImageId = Guid.NewGuid(),
+                Type = TokenType.Default
+            };
+
+            // Act
+            var token = await sut.AddToken(tokenDto);
+
+            //Assert
+            sut.Tokens.ShouldContain(token);
         }
     }
 }

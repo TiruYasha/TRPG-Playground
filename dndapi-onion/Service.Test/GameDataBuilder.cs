@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Domain.Domain;
 using Domain.Domain.JournalItems;
 using Domain.Domain.Layers;
-using Domain.Dto.RequestDto;
-using Domain.Dto.RequestDto.Journal;
 using Domain.Dto.Shared;
 
 namespace Service.Test
@@ -17,8 +14,14 @@ namespace Service.Test
         private readonly Queue<Func<Task>> actions;
         private Game game;
 
+        public User Owner { get; private set; }
         public User Player1 { get; private set; }
         public User Player2 { get; private set; }
+
+        public JournalHandout JournalHandout1 { get; private set; }
+
+        public Layer Layer2 { get; private set; }
+        public Layer Layer3 { get; private set; }
 
         public GameDataBuilder()
         {
@@ -91,7 +94,7 @@ namespace Service.Test
                         });
                 }
 
-                await game.AddJournalItem(journalHandout);
+                JournalHandout1 = await game.AddJournalItem(journalHandout) as JournalHandout;
             });
 
             return this;
@@ -136,8 +139,8 @@ namespace Service.Test
                         Type = LayerType.Default
                     };
 
-                    await map1.AddLayer(layer2);
-                    await map2.AddLayer(layer3);
+                    Layer2 = await map1.AddLayer(layer2);
+                    Layer3 = await map2.AddLayer(layer3);
                 }
             });
 
@@ -148,13 +151,13 @@ namespace Service.Test
         {
             return Task.Run(async () =>
             {
-                var user = new User
+                Owner = new User
                 {
                     Id = Guid.NewGuid(),
                     UserName = "owner",
                 };
 
-                game = new Game("testgame", user);
+                game = new Game("testgame", Owner);
 
                 foreach (var action in actions)
                 {

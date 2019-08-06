@@ -1,5 +1,4 @@
-﻿using Domain.Domain;
-using Domain.ServiceInterfaces;
+﻿using Domain.ServiceInterfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -7,7 +6,6 @@ using Shouldly;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Domain.Dto.RequestDto;
 using Domain.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Domain.Dto.Shared;

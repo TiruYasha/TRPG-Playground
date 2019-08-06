@@ -36,8 +36,6 @@ namespace RestApi
             var gameId = jwtReader.GetGameId();
             await mapService.UpdateMap(map, gameId);
 
-            //TODO send event if the map is visible to players
-
             return Ok();
         }
 

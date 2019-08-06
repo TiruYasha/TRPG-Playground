@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Domain.Domain.PlayArea;
 using Domain.Dto.Shared;
 
 namespace Domain.Domain.Layers
@@ -7,14 +9,17 @@ namespace Domain.Domain.Layers
     public class Layer
     {
         public Guid Id { get; private set; }
-
         public string Name { get; private set; }
         public LayerType Type { get; private set; }
         public int Order { get; set; }
         public Guid MapId { get; private set; }
         public virtual Map Map { get; private set; }
+        public virtual ICollection<Token> Tokens { get; private set; }
 
-        protected Layer() { }
+        protected Layer()
+        {
+            Tokens = new List<Token>();
+        }
 
         public Layer(LayerDto dto, Guid mapId, LayerType type = LayerType.Default) : this()
         {
@@ -42,6 +47,16 @@ namespace Domain.Domain.Layers
             {
                 Order = order;
                 return this;
+            });
+        }
+
+        public Task<Token> AddToken(TokenDto tokenDto)
+        {
+            return Task.Run(() =>
+            {
+                var token = new Token(tokenDto);
+                Tokens.Add(token);
+                return token;
             });
         }
 
