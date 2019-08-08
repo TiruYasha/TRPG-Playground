@@ -52,9 +52,10 @@ namespace Domain.Domain.Layers
 
         public Task<Token> AddToken(TokenDto tokenDto)
         {
+
             return Task.Run(() =>
             {
-                var token = new Token(tokenDto);
+                var token = TokenFactory.Create(tokenDto);
                 Tokens.Add(token);
                 return token;
             });

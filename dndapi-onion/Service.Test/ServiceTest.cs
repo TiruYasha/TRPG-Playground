@@ -29,5 +29,10 @@ namespace Service.Test
             Context = new DndContext(options);
             GameDataBuilder = new GameDataBuilder();
         }
+
+        public virtual void Cleanup()
+        {
+            Context.Database.EnsureDeleted();
+        }
     }
 }

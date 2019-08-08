@@ -8,6 +8,7 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Domain.Domain.Layers;
 using Microsoft.AspNetCore.Identity;
+using Domain.Domain.PlayArea;
 
 namespace DataAccess
 {
@@ -26,6 +27,8 @@ namespace DataAccess
         public DbSet<Image> Images { get; set; }
         public DbSet<Map> Maps { get; set; }
         public DbSet<Layer> Layers { get; set; }
+        public DbSet<Token> Tokens { get; set; }
+        public DbSet<CharacterToken> CharacterTokens { get; set; }
 
         public DndContext(DbContextOptions<DndContext> options) : base(options)
         {

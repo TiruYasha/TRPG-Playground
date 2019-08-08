@@ -26,6 +26,12 @@ namespace Service.Test
             Sut = new GameService(Context, Mapper, logger.Object);
         }
 
+        [TestCleanup]
+        public override void Cleanup()
+        {
+            base.Cleanup();
+        }
+
         [TestMethod]
         public async Task AddMapAddsTheMapToThePlayArea()
         {
@@ -49,7 +55,7 @@ namespace Service.Test
             var map = await Context.Maps.FirstAsync();
             result.Id.ShouldBe(map.Id);
             result.GridSizeInPixels.ShouldBe(addMapDto.GridSizeInPixels);
-            result.HeightInPixels.ShouldBe(addMapDto.HeightInPixels);
+             result.HeightInPixels.ShouldBe(addMapDto.HeightInPixels);
             result.Name.ShouldBe(addMapDto.Name);
             result.WidthInPixels.ShouldBe(addMapDto.WidthInPixels);
         }

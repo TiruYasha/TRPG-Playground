@@ -3,24 +3,21 @@ using System;
 
 namespace Domain.Domain.PlayArea
 {
-    public class Token
+    public abstract class Token
     {
         public Guid Id { get; private set; }
         public int Y { get; private set; }
         public int X { get; private set; }
         public TokenType Type { get; private set; }
-        public Guid ImageId { get; private set; }
-        public virtual Image Image { get; private set; }
         
-        private Token() { }
+        protected Token() { }
 
-        public Token(TokenDto dto) : this()
+        public Token(TokenDto dto, TokenType type) : this()
         {
             Id = Guid.NewGuid();
             Y = dto.Y;
             X = dto.X;
-            Type = dto.Type;
-            ImageId = dto.ImageId;
+            Type = type;
         }
     }
 }

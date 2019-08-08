@@ -6,6 +6,7 @@ namespace Domain.Domain.PlayArea
 {
     public enum TokenType
     {
-        Default
+        Default,
+        Character
     }
 }

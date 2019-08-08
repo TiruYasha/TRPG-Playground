@@ -34,12 +34,12 @@ namespace Service.Test
             await Context.AddAsync(game);
             await Context.SaveChangesAsync();
 
-            var tokenDto = new TokenDto
+            var tokenDto = new CharacterTokenDto
             {
                 Y = 10,
                 X = 20,
-                ImageId = Guid.NewGuid(),
-                Type = TokenType.Default
+                Type = TokenType.Character,
+                CharacterSheetId = Guid.Empty
             };
 
             // Act

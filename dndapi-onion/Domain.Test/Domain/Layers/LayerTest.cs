@@ -125,7 +125,6 @@ namespace Domain.Test.Domain.Layers
             {
                 Y = 10,
                 X = 20,
-                ImageId = Guid.NewGuid(),
                 Type = TokenType.Default
             };
 
