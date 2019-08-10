@@ -1,4 +1,4 @@
-import { JournalItemPermission } from '../shared/models/journal/journalitems/journal-item-permission.model';
+import { JournalItemPermission } from '../models/journal/journalitems/journal-item-permission.model';
 
 export class PermissionParser {
     public static createPermissions(canEdit: string[], canSee: string[]) {

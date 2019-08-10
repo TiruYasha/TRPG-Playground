@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { GameService } from '../shared/game.service';
+import { GameService } from '../shared/services/game.service';
 import { Player } from '../shared/models/game/player.model';
 import { GameHubService } from '../shared/services/game-hub.service';
 import { takeUntil } from 'rxjs/operators';

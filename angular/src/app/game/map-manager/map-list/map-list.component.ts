@@ -39,7 +39,7 @@ export class MapListComponent extends DestroySubscription implements OnInit {
 
   changeMap(map: PlayMap) {
     this.selectedMap = map;
-    this.gameState.changeMap(map);
+    this.gameState.selectMap(map);
   }
 
   addMap() {
@@ -88,5 +88,4 @@ export class MapListComponent extends DestroySubscription implements OnInit {
         }
       });
   }
-
 }

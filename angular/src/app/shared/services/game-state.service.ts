@@ -4,6 +4,7 @@ import { GameHubService } from './game-hub.service';
 import { Player } from '../models/game/player.model';
 import { PlayMap } from '../models/map/map.model';
 import { GameEvents } from '../models/game/game-events.enum';
+import { Layer } from '../models/map/layer.model';
 
 @Injectable({
     providedIn: 'root'
@@ -15,8 +16,11 @@ export class GameStateService {
     private isOwnerSubject = new BehaviorSubject<boolean>(false);
     isOwnerObservable = this.isOwnerSubject.asObservable();
 
-    private changeMapSubject = new Subject<PlayMap>();
-    changeMapObservable = this.changeMapSubject.asObservable();
+    private selectMapSubject = new Subject<PlayMap>();
+    selectMapObservable = this.selectMapSubject.asObservable();
+
+    private selectLayerSubject = new Subject<Layer>();
+    selectLayerObservable = this.selectLayerSubject.asObservable();
 
     private mapVisibilityChangedSubject = new BehaviorSubject<PlayMap>(new PlayMap());
     mapVisibilityChangedObservable = this.mapVisibilityChangedSubject.asObservable();
@@ -37,8 +41,12 @@ export class GameStateService {
         this.isOwnerSubject.next(isOwner);
     }
 
-    changeMap(map: PlayMap) {
-        this.changeMapSubject.next(map);
+    selectMap(map: PlayMap) {
+        this.selectMapSubject.next(map);
+    }
+
+    selectLayer(layer: Layer) {
+        this.selectLayerSubject.next(layer);
     }
 
     changeVisibleMap(map: PlayMap) {

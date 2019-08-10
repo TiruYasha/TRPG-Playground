@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, ElementRef, ViewChild, Output, EventEmitter, AfterViewChecked, AfterViewInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { ValidatorFunctions } from 'src/app/utilities/validator-functions';
+import { ValidatorFunctions } from 'src/app/shared/utilities/validator-functions';
 import { MatMenuTrigger } from '@angular/material';
 import { Layer } from 'src/app/shared/models/map/layer.model';
 
@@ -12,7 +12,9 @@ import { Layer } from 'src/app/shared/models/map/layer.model';
 export class LayerListItemComponent implements OnInit {
   @Input() layer: Layer;
   @Input() edit = false;
+  @Input() selected = false;
 
+  @Output() select = new EventEmitter<Layer>();
   @Output() cancelAdd = new EventEmitter<Layer>();
   @Output() completeEdit = new EventEmitter<Layer>();
   @Output() completeAdd = new EventEmitter<Layer>();

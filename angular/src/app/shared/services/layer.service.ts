@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { Token } from '../models/play-area/token.model';
+import { DefaultToken } from '../models/play-area/default-token.model';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +9,7 @@ import { Token } from '../models/play-area/token.model';
 export class LayerService {
   constructor(private http: HttpClient) { }
 
-  addToken(token: Token, layerId: string) {
-    return this.http.post<Token>(environment.apiUrl + `/layer/${layerId}/token`, token);
+  addToken(token: DefaultToken, layerId: string) {
+    return this.http.post<DefaultToken>(environment.apiUrl + `/layer/${layerId}/token`, token);
   }
 }

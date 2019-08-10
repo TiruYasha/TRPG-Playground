@@ -1,6 +1,6 @@
 import { TokenType } from './token-type.enum';
 
-export abstract class Token {
+export abstract class DefaultToken {
     private _id: string;
     private _x: number;
     private _y: number;
@@ -12,9 +12,8 @@ export abstract class Token {
         this._type = type;
     }
 
+    get id(): string { return this._id; }
     get x(): number { return this._x; }
-
     get y(): number { return this._y; }
-
     get type(): TokenType { return this._type; }
 }

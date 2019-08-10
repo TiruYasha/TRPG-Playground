@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Guid } from 'src/app/utilities/guid.util';
+import { Guid } from 'src/app/shared/utilities/guid.util';
 import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
 import { environment } from 'src/environments/environment';
 import { Player } from '../models/game/player.model';

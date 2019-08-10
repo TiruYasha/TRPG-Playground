@@ -13,8 +13,8 @@
     <mat-nav-list id="root-layers" role="list" cdkDrop cdkDropList (cdkDropListDropped)="drop($event)">
       <div *ngFor="let layer of layers" cdkDrag>
         <trpg-layer-list-item *ngIf="layer.type === layerType.Default" (cancelAdd)="cancelLayerAdd($event)"
-          (completeAdd)="addLayer($event)" (completeEdit)="updateLayer($event)" (delete)="deleteLayer($event)"
-          [edit]="layer === editLayer" [layer]="layer"></trpg-layer-list-item>
+          (completeAdd)="addLayer($event)" (completeEdit)="updateLayer($event)" (delete)="deleteLayer($event)" (select)="selectLayer(layer)"
+          [edit]="layer === editLayer" [layer]="layer" [selected]="selectedLayer === layer"></trpg-layer-list-item>
       </div>
     </mat-nav-list>
   </div>

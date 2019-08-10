@@ -1,13 +1,13 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { Player } from 'src/app/shared/models/game/player.model';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
-import { ValidatorFunctions } from 'src/app/utilities/validator-functions';
+import { ValidatorFunctions } from 'src/app/shared/utilities/validator-functions';
 import { JournalHandout } from 'src/app/shared/models/journal/journalitems/journal-handout.model';
 import { DialogState } from '../../../shared/models/dialog-state.enum';
 import { environment } from 'src/environments/environment';
 import { takeUntil } from 'rxjs/operators';
 import { DestroySubscription } from 'src/app/shared/components/destroy-subscription.extendable';
-import { PermissionParser } from 'src/app/utilities/permission-parser.util';
+import { PermissionParser } from 'src/app/shared/utilities/permission-parser.util';
 
 @Component({
   selector: 'trpg-create-handout-dialog',

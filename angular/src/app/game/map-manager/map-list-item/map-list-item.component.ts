@@ -7,7 +7,7 @@ import { MatMenuTrigger } from '@angular/material';
   templateUrl: './map-list-item.component.html',
   styleUrls: ['./map-list-item.component.scss']
 })
-export class MapListItemComponent implements OnInit {
+export class MapListItemComponent {
   @Input() map: PlayMap;
   @Input() selected: boolean;
   @Input() visible = false;
@@ -21,9 +21,6 @@ export class MapListItemComponent implements OnInit {
   @ViewChild('menuButton') button: ElementRef;
 
   constructor() { }
-
-  ngOnInit() {
-  }
 
   onSelectedMap(map: PlayMap) {
     this.selectMap.emit(map);

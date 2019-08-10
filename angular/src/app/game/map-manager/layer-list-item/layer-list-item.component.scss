@@ -1,3 +1,9 @@
+@import "~src/styles/variables.scss";
+
 .mat-list-item {
-    height: 48px !important;
-  }
+  height: 48px !important;
+}
+
+.selected {
+  background-color: $accent;
+}

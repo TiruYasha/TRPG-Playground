@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { ValidatorFunctions } from 'src/app/utilities/validator-functions';
+import { ValidatorFunctions } from 'src/app/shared/utilities/validator-functions';
 import { DestroySubscription } from 'src/app/shared/components/destroy-subscription.extendable';
 import { takeUntil } from 'rxjs/operators';
 import { JournalFolder } from 'src/app/shared/models/journal/journalitems/journal-folder.model';

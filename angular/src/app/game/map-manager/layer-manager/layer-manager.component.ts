@@ -19,13 +19,14 @@ export class LayerManagerComponent extends DestroySubscription implements OnInit
 
   map: PlayMap;
   editLayer: Layer;
+  selectedLayer: Layer;
 
   layerType = LayerType;
 
   constructor(private mapService: MapService, private gameState: GameStateService) { super(); }
 
   ngOnInit() {
-    this.gameState.changeMapObservable
+    this.gameState.selectMapObservable
       .pipe(takeUntil(this.destroy))
       .subscribe(map => {
         this.map = map;
@@ -37,14 +38,14 @@ export class LayerManagerComponent extends DestroySubscription implements OnInit
       });
   }
 
-  addNewLayer(layerType: LayerType) {
-    let layer: Layer;
+  selectLayer(layer: Layer) {
+    this.selectedLayer = layer;
+    this.gameState.selectLayer(layer);
+  }
 
-    switch (layerType) {
-      case LayerType.Default:
-        layer = new Layer();
-        break;
-    }
+  addNewLayer() {
+    let layer: Layer;
+    layer = new Layer();
 
     const lastLayer = this.layers[this.layers.length - 1];
 
