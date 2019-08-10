@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Subject } from 'rxjs';
-import { ReceiveMessageModel } from 'src/app/models/chat/receives/receive-message.model';
 import { GameHubService } from './game-hub.service';
-import { SendMessageModel } from 'src/app/models/chat/requests/send-message.model';
+import { ReceiveMessageModel } from '../models/chat/receives/receive-message.model';
+import { SendMessageModel } from '../models/chat/requests/send-message.model';
 
 @Injectable({
   providedIn: 'root'

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { GameCatalogService } from '../services/game-catalog.service';
-import { CreateGameModel } from 'src/app/models/game-catalog/creategame.model';
+import { CreateGameModel } from 'src/app/shared/models/game-catalog/creategame.model';
 
 @Component({
   selector: 'trpg-create-game',

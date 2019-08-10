@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { GameCatalogService } from './services/game-catalog.service';
 import { Observable } from 'rxjs';
-import { GameCatalogItem } from '../models/game-catalog/game-catalog-item.model';
+import { GameCatalogItem } from '../shared/models/game-catalog/game-catalog-item.model';
 import { Router } from '@angular/router';
 
 @Component({

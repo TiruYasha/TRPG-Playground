@@ -4,7 +4,7 @@ import {
 } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
-import { GameHubService } from '../game/services/game-hub.service';
+import { GameHubService } from '../shared/services/game-hub.service';
 
 /** Pass untouched request through to the next request handler. */
 @Injectable()

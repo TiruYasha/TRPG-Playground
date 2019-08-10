@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { Player } from 'src/app/models/game/player.model';
-import { PlayMap } from 'src/app/models/map/map.model';
 import { GameHubService } from './game-hub.service';
-import { GameEvents } from 'src/app/models/game/game-events.enum';
+import { Player } from '../models/game/player.model';
+import { PlayMap } from '../models/map/map.model';
+import { GameEvents } from '../models/game/game-events.enum';
 
 @Injectable({
     providedIn: 'root'

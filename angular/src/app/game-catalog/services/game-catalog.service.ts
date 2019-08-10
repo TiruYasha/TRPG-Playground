@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { CreateGameModel } from 'src/app/models/game-catalog/creategame.model';
-import { GameCatalogItem } from 'src/app/models/game-catalog/game-catalog-item.model';
+import { CreateGameModel } from 'src/app/shared/models/game-catalog/creategame.model';
+import { GameCatalogItem } from 'src/app/shared/models/game-catalog/game-catalog-item.model';
 
 @Injectable({
   providedIn: 'root'

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { GameCatalogItem } from 'src/app/models/game-catalog/game-catalog-item.model';
+import { GameCatalogItem } from 'src/app/shared/models/game-catalog/game-catalog-item.model';
 
 @Component({
   selector: 'trpg-game-catalog-item',

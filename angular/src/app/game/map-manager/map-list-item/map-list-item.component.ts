@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, EventEmitter, Input, ViewChild, ElementRef } from '@angular/core';
-import { PlayMap } from 'src/app/models/map/map.model';
+import { PlayMap } from 'src/app/shared/models/map/map.model';
 import { MatMenuTrigger } from '@angular/material';
 
 @Component({

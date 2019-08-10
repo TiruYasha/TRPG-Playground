@@ -1,23 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { FlatTreeControl } from '@angular/cdk/tree';
-import { JournalService } from '../services/journal.service';
+import { JournalService } from '../../shared/services/journal.service';
 import { MatDialog } from '@angular/material';
-import { AddedJournalItemModel } from 'src/app/models/journal/receives/added-journal-folder.model';
-import { GameHubService } from '../services/game-hub.service';
-import { Player } from 'src/app/models/game/player.model';
 import { ParentDialogComponent } from './parent-dialog/parent-dialog.component';
 import { ParentDialogModel } from './parent-dialog/parent-dialog.model';
-import { JournalItemType } from 'src/app/models/journal/journalitems/journal-item-type.enum';
 import { JournalNodeContextMenuAddClick } from './journal-node/journal-node-context-menu-click.model';
-import { DynamicFlatNode } from 'src/app/models/journal/dynamic-flat-node';
 import { JournalDynamicDataSource } from './dynamic-data-source';
 import { environment } from 'src/environments/environment';
 import { DestroySubscription } from 'src/app/shared/components/destroy-subscription.extendable';
 import { takeUntil } from 'rxjs/operators';
-import { DialogState } from '../../models/dialog-state.enum';
-import { JournalTreeItem } from 'src/app/models/journal/journal-tree-item.model';
-import { GameStateService } from '../services/game-state.service';
-import { DragService } from '../services/drag.service';
+import { DialogState } from '../../shared/models/dialog-state.enum';
+import { GameStateService } from '../../shared/services/game-state.service';
+import { DragService } from '../../shared/services/drag.service';
+import { DynamicFlatNode } from 'src/app/shared/models/journal/dynamic-flat-node';
+import { JournalTreeItem } from 'src/app/shared/models/journal/journal-tree-item.model';
+import { JournalItemType } from 'src/app/shared/models/journal/journalitems/journal-item-type.enum';
+import { AddedJournalItemModel } from 'src/app/shared/models/journal/receives/added-journal-folder.model';
+import { Player } from 'src/app/shared/models/game/player.model';
 
 @Component({
   selector: 'trpg-journal',

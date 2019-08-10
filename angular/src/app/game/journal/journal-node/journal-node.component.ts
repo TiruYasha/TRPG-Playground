@@ -1,8 +1,8 @@
 import { Component, Input, ViewChild, ElementRef, Output, EventEmitter, OnInit } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material';
 import { JournalNodeContextMenuAddClick } from './journal-node-context-menu-click.model';
-import { JournalItemType } from 'src/app/models/journal/journalitems/journal-item-type.enum';
-import { JournalTreeItem } from 'src/app/models/journal/journal-tree-item.model';
+import { JournalTreeItem } from 'src/app/shared/models/journal/journal-tree-item.model';
+import { JournalItemType } from 'src/app/shared/models/journal/journalitems/journal-item-type.enum';
 
 @Component({
   selector: 'trpg-journal-node',

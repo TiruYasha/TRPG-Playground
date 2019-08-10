@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { AddMap } from 'src/app/models/map/requests/add-map.model';
-import { PlayMap } from 'src/app/models/map/map.model';
+import { AddMap } from 'src/app/shared/models/map/requests/add-map.model';
+import { PlayMap } from 'src/app/shared/models/map/map.model';
 import { environment } from 'src/environments/environment';
 import { Observable, Subject } from 'rxjs';
-import { Layer } from 'src/app/models/map/layer.model';
-import { ChangeOrder } from 'src/app/models/map/requests/change-order.model';
+import { Layer } from 'src/app/shared/models/map/layer.model';
+import { ChangeOrder } from 'src/app/shared/models/map/requests/change-order.model';
 import { GameHubService } from './game-hub.service';
-import { GameEvents } from 'src/app/models/game/game-events.enum';
+import { GameEvents } from 'src/app/shared/models/game/game-events.enum';
 
 @Injectable({
     providedIn: 'root'

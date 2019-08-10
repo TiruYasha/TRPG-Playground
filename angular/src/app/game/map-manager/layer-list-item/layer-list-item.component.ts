@@ -1,9 +1,8 @@
 import { Component, OnInit, Input, ElementRef, ViewChild, Output, EventEmitter, AfterViewChecked, AfterViewInit } from '@angular/core';
-import { Layer } from 'src/app/models/map/layer.model';
 import { FormControl, Validators } from '@angular/forms';
 import { ValidatorFunctions } from 'src/app/utilities/validator-functions';
 import { MatMenuTrigger } from '@angular/material';
-import { LayerType } from 'src/app/models/map/layer-type.enum';
+import { Layer } from 'src/app/shared/models/map/layer.model';
 
 @Component({
   selector: 'trpg-layer-list-item',

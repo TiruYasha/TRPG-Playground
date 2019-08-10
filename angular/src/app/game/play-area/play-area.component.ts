@@ -1,13 +1,13 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
-
-import { Application, utils, Sprite, Loader, Graphics, interaction } from 'pixi.js';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Application, Sprite, Graphics, interaction } from 'pixi.js';
 import { DestroySubscription } from 'src/app/shared/components/destroy-subscription.extendable';
-import { MapService } from '../services/map.service';
 import { takeUntil } from 'rxjs/operators';
-import { PlayMap } from 'src/app/models/map/map.model';
-import { GameStateService } from '../services/game-state.service';
-import { DragService } from '../services/drag.service';
+import { GameStateService } from '../../shared/services/game-state.service';
+import { DragService } from '../../shared/services/drag.service';
 import { environment } from 'src/environments/environment';
+import { LayerService } from '../../shared/services/layer.service';
+import { CharacterToken } from 'src/app/shared/models/play-area/character-token.model';
+import { PlayMap } from 'src/app/shared/models/map/map.model';
 
 @Component({
   selector: 'trpg-play-area',
@@ -20,7 +20,9 @@ export class PlayAreaComponent extends DestroySubscription implements OnInit {
   @ViewChild('canvasContainer') canvasContainer: ElementRef;
   application: Application;
 
-  constructor(private gameState: GameStateService, private dragService: DragService) { super(); }
+  constructor(private gameState: GameStateService,
+    private layerSerivce: LayerService,
+    private dragService: DragService) { super(); }
 
   ngOnInit() {
     const div = this.canvasContainer.nativeElement as HTMLDivElement;
@@ -44,9 +46,8 @@ export class PlayAreaComponent extends DestroySubscription implements OnInit {
       });
   }
 
-  dragOver(event: DragEvent ) {
+  dragOver(event: DragEvent) {
     event.preventDefault();
-    //console.log(event);
   }
 
   drop(event: DragEvent) {
@@ -96,26 +97,7 @@ export class PlayAreaComponent extends DestroySubscription implements OnInit {
     }
   }
 
-  
-
   rectangle: Graphics;
-
-  private addDraggableRectangle() {
-    this.rectangle = new Graphics();
-    this.rectangle.beginFill(0x66CCFF);
-    this.rectangle.zIndex = 10;
-    this.rectangle.drawRect(0, 0, 50, 50);
-    this.rectangle.endFill();
-    this.rectangle.interactive = true;
-    this.rectangle.buttonMode = true;
-    this.rectangle
-      .on('pointerdown', (event) => this.onDragStart(event))
-      .on('pointerup', () => this.onDragEnd())
-      .on('pointerupoutside', () => this.onDragEnd())
-      .on('pointermove', () => this.onDragMove());
-
-    this.application.stage.addChild(this.rectangle);
-  }
 
   data: interaction.InteractionData;
   alpha = 0.5;

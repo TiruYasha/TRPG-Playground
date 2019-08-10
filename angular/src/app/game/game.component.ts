@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GameService } from '../shared/game.service';
-import { Player } from '../models/game/player.model';
-import { GameHubService } from './services/game-hub.service';
+import { Player } from '../shared/models/game/player.model';
+import { GameHubService } from '../shared/services/game-hub.service';
 import { takeUntil } from 'rxjs/operators';
 import { DestroySubscription } from '../shared/components/destroy-subscription.extendable';
-import { GameStateService } from './services/game-state.service';
+import { GameStateService } from '../shared/services/game-state.service';
 
 @Component({
   selector: 'trpg-game',

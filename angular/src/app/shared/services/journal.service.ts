@@ -2,13 +2,13 @@ import { Subject, Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Injectable } from '@angular/core';
-import { AddJournalItemRequestModel } from 'src/app/models/journal/requests/add-journal-item-request.model';
-import { AddedJournalItemModel } from 'src/app/models/journal/receives/added-journal-folder.model';
-import { JournalItem } from 'src/app/models/journal/journalitems/journal-item.model';
 import { GameHubService } from './game-hub.service';
-import { UploadedImage as UploadedJournalItemImage } from 'src/app/models/journal/receives/uploaded-image.model';
-import { JournalTreeItem } from 'src/app/models/journal/journal-tree-item.model';
-import { JournalEvents } from 'src/app/models/journal/journal-events.enum';
+import { AddedJournalItemModel } from '../models/journal/receives/added-journal-folder.model';
+import { JournalTreeItem } from '../models/journal/journal-tree-item.model';
+import { AddJournalItemRequestModel } from '../models/journal/requests/add-journal-item-request.model';
+import { JournalItem } from '../models/journal/journalitems/journal-item.model';
+import { JournalEvents } from '../models/journal/journal-events.enum';
+import { UploadedJournalItemImage } from '../models/journal/receives/uploaded-image.model';
 
 @Injectable({
     providedIn: 'root'

@@ -2,13 +2,13 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { takeUntil } from 'rxjs/operators';
 import { DestroySubscription } from 'src/app/shared/components/destroy-subscription.extendable';
-import { MapService } from '../../services/map.service';
+import { MapService } from '../../../shared/services/map.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ValidatorFunctions } from 'src/app/utilities/validator-functions';
-import { PlayMap } from 'src/app/models/map/map.model';
-import { AddMap } from 'src/app/models/map/requests/add-map.model';
 import { CreateMapDialogModel } from './create-map-dialog.model';
-import { DialogState } from 'src/app/models/dialog-state.enum';
+import { DialogState } from 'src/app/shared/models/dialog-state.enum';
+import { PlayMap } from 'src/app/shared/models/map/map.model';
+import { AddMap } from 'src/app/shared/models/map/requests/add-map.model';
 
 @Component({
   selector: 'trpg-create-map-dialog',

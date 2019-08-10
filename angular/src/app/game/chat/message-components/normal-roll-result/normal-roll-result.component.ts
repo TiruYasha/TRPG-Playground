@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ReceiveMessageModel } from 'src/app/models/chat/receives/receive-message.model';
-import { NormalDiceRollCommandResult } from 'src/app/models/chat/command-results/normal-dice-roll-command-result.model';
+import { ReceiveMessageModel } from 'src/app/shared/models/chat/receives/receive-message.model';
+import { NormalDiceRollCommandResult } from 'src/app/shared/models/chat/command-results/normal-dice-roll-command-result.model';
 
 @Component({
   selector: 'trpg-normal-roll-result',
@@ -17,7 +17,7 @@ export class NormalRollResultComponent implements OnInit {
 
   getResult(): number {
     const normalDiceRollCommandResult = this.chatMessage.commandResult as NormalDiceRollCommandResult;
-    
+
     return normalDiceRollCommandResult.rollResult;
   }
 }

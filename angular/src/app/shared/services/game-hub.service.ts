@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Guid } from 'src/app/utilities/guid.util';
-import { Player } from 'src/app/models/game/player.model';
 import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
 import { environment } from 'src/environments/environment';
+import { Player } from '../models/game/player.model';
 
 @Injectable({
     providedIn: 'root'

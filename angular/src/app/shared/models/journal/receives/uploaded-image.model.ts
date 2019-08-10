@@ -1,4 +1,4 @@
-export class UploadedImage {
+export class UploadedJournalItemImage {
     journalItemId: string;
     imageId: string;
 }

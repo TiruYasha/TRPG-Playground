@@ -1,6 +1,6 @@
-import { Player } from 'src/app/models/game/player.model';
-import { DialogState } from '../../../models/dialog-state.enum';
-import { JournalItemType } from 'src/app/models/journal/journalitems/journal-item-type.enum';
+import { DialogState } from '../../../shared/models/dialog-state.enum';
+import { Player } from 'src/app/shared/models/game/player.model';
+import { JournalItemType } from 'src/app/shared/models/journal/journalitems/journal-item-type.enum';
 
 export class ParentDialogModel {
     players: Player[];

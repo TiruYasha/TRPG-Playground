@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ReceiveMessageModel } from 'src/app/models/chat/receives/receive-message.model';
+import { ReceiveMessageModel } from 'src/app/shared/models/chat/receives/receive-message.model';
 
 @Component({
   selector: 'trpg-error-message',
