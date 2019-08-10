@@ -27,6 +27,7 @@ namespace Service
             var layer = await context.Layers.FirstOrDefaultAsync(l => l.Id == layerId);
 
             var token = await layer.AddToken(dto);
+            await context.SaveChangesAsync();
 
             return mapper.Map<Token, TokenDto>(token);
         }

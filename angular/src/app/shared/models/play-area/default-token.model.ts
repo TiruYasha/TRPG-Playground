@@ -1,4 +1,5 @@
 import { TokenType } from './token-type.enum';
+import { DefaultTokenDto } from './backend/default-token.dto';
 
 export abstract class DefaultToken {
     private _id: string;
@@ -6,9 +7,10 @@ export abstract class DefaultToken {
     private _y: number;
     private _type: TokenType;
 
-    constructor(x: number, y: number, type: TokenType) {
-        this._x = x;
-        this._y = y;
+    constructor(dto: DefaultTokenDto, type: TokenType) {
+        this._id = dto.id;
+        this._x = dto.x;
+        this._y = dto.y;
         this._type = type;
     }
 

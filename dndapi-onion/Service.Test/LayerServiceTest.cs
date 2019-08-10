@@ -46,9 +46,9 @@ namespace Service.Test
             var result = await Sut.AddTokenToLayer(tokenDto, game.Id, GameDataBuilder.Owner.Id, GameDataBuilder.Layer2.Id);
 
             // Assert
-            var token = Context.Layers.Include(l => l.Tokens).First(l => l.Id == GameDataBuilder.Layer2.Id).Tokens.FirstOrDefault();
-            token.ShouldNotBeNull();
-            result.Id.ShouldBe(token.Id);
+            var tokens = Context.Layers.Include(l => l.Tokens).First(l => l.Id == GameDataBuilder.Layer2.Id).Tokens;
+            tokens.Count.ShouldBe(1);
+            result.Id.ShouldBe(tokens.First().Id);
         }
     }
 }

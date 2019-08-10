@@ -1,8 +1,11 @@
 ﻿using Domain.Domain.PlayArea;
+using Domain.JsonConverter;
+using Newtonsoft.Json;
 using System;
 
 namespace Domain.Dto.Shared
 {
+    [JsonConverter(typeof(TokenModelConverter))]
     public class TokenDto
     {
         public Guid Id { get; set; }

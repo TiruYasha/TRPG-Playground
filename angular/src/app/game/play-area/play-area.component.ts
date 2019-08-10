@@ -60,6 +60,10 @@ export class PlayAreaComponent extends DestroySubscription implements OnInit {
     const token = TokenFactory.create(event.layerX, event.layerY, item);
     const sprite = SpriteFactory.create(token, this.layer.order);
     this.application.stage.addChild(sprite);
+
+    this.layerSerivce.addToken(token, this.layer.id)
+      .pipe(takeUntil(this.destroy))
+      .subscribe(res => console.log(res));
   }
 
   private initializeCanvas() {
