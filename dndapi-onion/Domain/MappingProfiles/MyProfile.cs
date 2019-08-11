@@ -34,6 +34,7 @@ namespace Domain.MappingProfiles
 
             CreateMap<Layer, LayerDto>();
             CreateMap<Token, TokenDto>();
+            CreateMap<CharacterToken, CharacterTokenDto>();
         }
 
         private void JournalItemsMapConfig()

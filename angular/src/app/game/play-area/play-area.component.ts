@@ -11,6 +11,8 @@ import { GridDrawer } from 'src/app/shared/utilities/grid-drawer.util';
 import { SpriteFactory } from 'src/app/shared/utilities/sprite-factory';
 import { TokenFactory } from 'src/app/shared/models/play-area/token-factory';
 import { Layer } from 'src/app/shared/models/map/layer.model';
+import { MapService } from 'src/app/shared/services/map.service';
+import { CharacterToken } from 'src/app/shared/models/play-area/character-token.model';
 
 @Component({
   selector: 'trpg-play-area',
@@ -26,6 +28,7 @@ export class PlayAreaComponent extends DestroySubscription implements OnInit {
 
   constructor(private gameState: GameStateService,
     private layerSerivce: LayerService,
+    private mapService: MapService,
     private dragService: DragService) { super(); }
 
   ngOnInit() {
@@ -76,10 +79,25 @@ export class PlayAreaComponent extends DestroySubscription implements OnInit {
 
   private changeMap(map: PlayMap): void {
     this.application.stage.removeChildren();
+    this.mapService.getLayers(map.id)
+      .pipe(takeUntil(this.destroy))
+      .subscribe(layers => {
+        layers.forEach(layer => {
+          this.renderTokens(layer);
+        });
+
+      });
     const canvasWidth = map.widthInPixels;
     const canvasHeight = map.heightInPixels;
 
     this.application.renderer.resize(canvasWidth, canvasHeight);
     GridDrawer.drawGrid(map.gridSizeInPixels, this.application);
+  }
+
+  private renderTokens(layer: Layer) {
+    layer.tokens.forEach(token => {
+      const sprite = SpriteFactory.create(<CharacterToken>token, layer.order);
+      this.application.stage.addChild(sprite);
+    });
   }
 }

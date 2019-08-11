@@ -22,7 +22,7 @@ export class GameStateService {
     private selectLayerSubject = new Subject<Layer>();
     selectLayerObservable = this.selectLayerSubject.asObservable();
 
-    private mapVisibilityChangedSubject = new BehaviorSubject<PlayMap>(new PlayMap());
+    private mapVisibilityChangedSubject = new Subject<PlayMap>();
     mapVisibilityChangedObservable = this.mapVisibilityChangedSubject.asObservable();
 
     constructor(private gameHubService: GameHubService) {

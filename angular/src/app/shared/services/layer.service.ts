@@ -15,11 +15,7 @@ export class LayerService {
   constructor(private http: HttpClient) { }
 
   addToken(token: DefaultToken, layerId: string): Observable<DefaultToken> {
-    console.log(`token: `, token);
-
-
     const dto = DtoTokenFactory.create(token);
-    console.log(`dtotoken: `, dto);
     return this.http.post<DefaultTokenDto>(environment.apiUrl + `/layer/${layerId}/token`, dto)
       .pipe(map(res => TokenFactory.createFromDto(res)));
   }

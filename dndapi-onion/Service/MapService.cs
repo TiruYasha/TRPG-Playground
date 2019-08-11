@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
 using Domain.Domain.Layers;
 using Npgsql;
+using Domain.Domain.PlayArea;
 
 namespace Service
 {
@@ -73,10 +74,29 @@ namespace Service
         public async Task<IEnumerable<LayerDto>> GetLayers(Guid mapId, Guid gameId)
         {
             var normalLayers = from l in context.Layers
-                       where l.Type == LayerType.Default && l.MapId == mapId && l.Map.GameId == gameId
-                       select l;
+                               where l.Type == LayerType.Default && l.MapId == mapId && l.Map.GameId == gameId
+                               select l;
 
-            var layerDtos = await normalLayers.ProjectTo<LayerDto>(mapper.ConfigurationProvider).ToListAsync();
+            //var layerDtos = await normalLayers.Include(l => l.Tokens).ProjectTo<LayerDto>(mapper.ConfigurationProvider).ToListAsync();
+
+            var layerDtos = await normalLayers.Include(l => l.Tokens)
+                .Select(l => new LayerDto
+                {
+                    Id = l.Id,
+                    MapId = l.MapId,
+                    Order = l.Order,
+                    Name = l.Name,
+                    Type = l.Type,
+                    Tokens = l.Tokens.Select(t => t is CharacterToken ? new CharacterTokenDto
+                    {
+                        Id = t.Id,
+                        X = t.X,
+                        Y = t.Y,
+                        Type = t.Type,
+                        CharacterSheetId = ((CharacterToken)t).CharacterSheetId
+                    } : null)
+                })
+                .ToListAsync();
 
             return layerDtos.OrderBy(l => l.Order);
         }

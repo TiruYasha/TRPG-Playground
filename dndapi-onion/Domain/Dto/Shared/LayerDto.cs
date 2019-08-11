@@ -14,12 +14,10 @@ namespace Domain.Dto.Shared
         public int Order { get; set; }
         public LayerType Type { get; set; }
         public Guid MapId { get; set; }
-        public Guid? LayerGroupId { get; set; }
-        public ICollection<LayerDto> Layers { get; set; }
+        public IEnumerable<TokenDto> Tokens { get; set; }
 
         public LayerDto()
         {
-            Layers = new List<LayerDto>();
         }
     }
 }

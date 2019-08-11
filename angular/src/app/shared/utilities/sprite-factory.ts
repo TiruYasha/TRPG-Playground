@@ -5,11 +5,10 @@ import { CharacterToken } from '../models/play-area/character-token.model';
 
 export abstract class SpriteFactory {
     static create(token: CharacterToken, order: number): Sprite {
-        console.log(token);
         const sprite = Sprite.from(`${environment.apiUrl}/journal/${token.characterSheetId}/token`);
         sprite.x = token.x;
         sprite.y = token.y;
-        sprite.zIndex = 200;
+        sprite.zIndex = order;
 
         return sprite;
     }
