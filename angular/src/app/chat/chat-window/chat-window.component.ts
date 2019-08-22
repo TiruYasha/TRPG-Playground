@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
-import { ChatService } from '../../../shared/services/chat.service';
-import { GameHubService } from '../../../shared/services/game-hub.service';
 import { ReceiveMessageModel } from 'src/app/shared/models/chat/receives/receive-message.model';
 import { SendMessageModel } from 'src/app/shared/models/chat/requests/send-message.model';
+import { ChatService } from 'src/app/shared/services/chat.service';
+import { GameHubService } from 'src/app/shared/services/game-hub.service';
 
 @Component({
   selector: 'trpg-chat-window',

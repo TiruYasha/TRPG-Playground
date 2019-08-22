@@ -1,31 +1,34 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { Player } from 'src/app/shared/models/game/player.model';
-import { FormControl, Validators, FormGroup } from '@angular/forms';
-import { ValidatorFunctions } from 'src/app/shared/utilities/validator-functions';
-import { JournalHandout } from 'src/app/shared/models/journal/journalitems/journal-handout.model';
-import { DialogState } from '../../../shared/models/dialog-state.enum';
-import { environment } from 'src/environments/environment';
-import { takeUntil } from 'rxjs/operators';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { DestroySubscription } from 'src/app/shared/components/destroy-subscription.extendable';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { ValidatorFunctions } from 'src/app/shared/utilities/validator-functions';
 import { PermissionParser } from 'src/app/shared/utilities/permission-parser.util';
+import { takeUntil } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
+import { Player } from 'src/app/shared/models/game/player.model';
+import { JournalCharacterSheet } from 'src/app/shared/models/journal/journalitems/journal-character-sheet.model';
+import { DialogState } from 'src/app/shared/models/dialog-state.enum';
 
 @Component({
-  selector: 'trpg-create-handout-dialog',
-  templateUrl: './create-handout-dialog.component.html',
-  styleUrls: ['./create-handout-dialog.component.scss']
+  selector: 'trpg-character-sheet-dialog',
+  templateUrl: './character-sheet-dialog.component.html',
+  styleUrls: ['./character-sheet-dialog.component.scss']
 })
-export class CreateHandoutDialogComponent extends DestroySubscription implements OnInit {
+export class CharacterSheetDialogComponent extends DestroySubscription implements OnInit {
+
   @Input() players: Player[];
-  @Input() data: JournalHandout;
+  @Input() data: JournalCharacterSheet;
   @Input() isOwner: boolean;
   @Input() dialogState: DialogState;
 
   @Output() isValid = new EventEmitter<boolean>();
   @Output() changeImage = new EventEmitter<File>();
+  @Output() changeToken = new EventEmitter<File>();
 
   states = DialogState;
 
   imageToUpload: string = null;
+  tokenToUpload: string = null;
 
   form = new FormGroup({
     name: new FormControl('', [Validators.required, ValidatorFunctions.noWhitespaceValidator]),
@@ -33,7 +36,8 @@ export class CreateHandoutDialogComponent extends DestroySubscription implements
     canEdit: new FormControl([]),
     description: new FormControl(''),
     ownerNotes: new FormControl(''),
-    image: new FormControl(null)
+    image: new FormControl(null),
+    token: new FormControl(null)
   });
 
   get name() { return this.form.get('name'); }
@@ -42,12 +46,13 @@ export class CreateHandoutDialogComponent extends DestroySubscription implements
   get canSee() { return this.form.get('canSee'); }
   get canEdit() { return this.form.get('canEdit'); }
   get image() { return this.form.get('image'); }
+  get token() { return this.form.get('token'); }
 
   constructor() {
     super();
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.name.setValue(this.data.name);
     this.setPermissionInputValues();
     this.description.setValue(this.data.description);
@@ -63,6 +68,7 @@ export class CreateHandoutDialogComponent extends DestroySubscription implements
           this.data.ownerNotes = this.ownerNotes.value;
           this.data.permissions = PermissionParser.createPermissions(this.canEdit.value, this.canSee.value);
           this.data.image = this.image.value;
+          this.data.token = this.token.value;
         }
       });
   }
@@ -83,8 +89,28 @@ export class CreateHandoutDialogComponent extends DestroySubscription implements
     }
   }
 
+  onTokenChange(event: Event) {
+    const target = event.target as HTMLInputElement;
+
+    if (target.files && target.files.length) {
+      const file = target.files[0];
+      this.token.setValue(file);
+      this.changeToken.emit(file);
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+
+      reader.onload = () => {
+        this.tokenToUpload = reader.result.toString();
+      };
+    }
+  }
+
   getImageLink(journalItemId: string) {
     return `${environment.apiUrl}/journal/${journalItemId}/image`;
+  }
+
+  getTokenLink(journalItemId: string) {
+    return `${environment.apiUrl}/journal/${journalItemId}/token`;
   }
 
   private setPermissionInputValues() {

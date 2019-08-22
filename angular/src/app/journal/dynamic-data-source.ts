@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, merge } from 'rxjs';
 import { FlatTreeControl } from '@angular/cdk/tree';
-import { JournalService } from '../../shared/services/journal.service';
 import { CollectionViewer, SelectionChange } from '@angular/cdk/collections';
 import { map } from 'rxjs/operators';
 import { DynamicFlatNode } from 'src/app/shared/models/journal/dynamic-flat-node';
 import { JournalTreeItem } from 'src/app/shared/models/journal/journal-tree-item.model';
 import { JournalItemType } from 'src/app/shared/models/journal/journalitems/journal-item-type.enum';
+import { JournalService } from '../shared/services/journal.service';
 
 @Injectable()
 export class JournalDynamicDataSource {

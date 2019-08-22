@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FlatTreeControl } from '@angular/cdk/tree';
-import { JournalService } from '../../shared/services/journal.service';
 import { MatDialog } from '@angular/material';
 import { ParentDialogComponent } from './parent-dialog/parent-dialog.component';
 import { ParentDialogModel } from './parent-dialog/parent-dialog.model';
@@ -9,14 +8,15 @@ import { JournalDynamicDataSource } from './dynamic-data-source';
 import { environment } from 'src/environments/environment';
 import { DestroySubscription } from 'src/app/shared/components/destroy-subscription.extendable';
 import { takeUntil } from 'rxjs/operators';
-import { DialogState } from '../../shared/models/dialog-state.enum';
-import { GameStateService } from '../../shared/services/game-state.service';
-import { DragService } from '../../shared/services/drag.service';
 import { DynamicFlatNode } from 'src/app/shared/models/journal/dynamic-flat-node';
 import { JournalTreeItem } from 'src/app/shared/models/journal/journal-tree-item.model';
 import { JournalItemType } from 'src/app/shared/models/journal/journalitems/journal-item-type.enum';
 import { AddedJournalItemModel } from 'src/app/shared/models/journal/receives/added-journal-folder.model';
 import { Player } from 'src/app/shared/models/game/player.model';
+import { JournalService } from '../shared/services/journal.service';
+import { GameStateService } from '../shared/services/game-state.service';
+import { DragService } from '../shared/services/drag.service';
+import { DialogState } from '../shared/models/dialog-state.enum';
 
 @Component({
   selector: 'trpg-journal',

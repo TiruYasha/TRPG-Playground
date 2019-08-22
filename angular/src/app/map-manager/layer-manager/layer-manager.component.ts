@@ -1,13 +1,13 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { MapService } from '../../../shared/services/map.service';
 import { DestroySubscription } from 'src/app/shared/components/destroy-subscription.extendable';
 import { takeUntil } from 'rxjs/operators';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { GameStateService } from '../../../shared/services/game-state.service';
 import { Layer } from 'src/app/shared/models/map/layer.model';
 import { PlayMap } from 'src/app/shared/models/map/map.model';
 import { LayerType } from 'src/app/shared/models/map/layer-type.enum';
 import { ChangeOrder } from 'src/app/shared/models/map/requests/change-order.model';
+import { MapService } from 'src/app/shared/services/map.service';
+import { GameStateService } from 'src/app/shared/services/game-state.service';
 
 @Component({
   selector: 'trpg-layer-manager',

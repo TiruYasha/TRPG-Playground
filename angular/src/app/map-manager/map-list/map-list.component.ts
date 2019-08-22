@@ -1,6 +1,4 @@
-import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
-import { GameStateService } from '../../../shared/services/game-state.service';
-import { MapService } from '../../../shared/services/map.service';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { takeUntil } from 'rxjs/operators';
 import { CreateMapDialogModel } from '../create-map-dialog/create-map-dialog.model';
@@ -8,6 +6,8 @@ import { CreateMapDialogComponent } from '../create-map-dialog/create-map-dialog
 import { DestroySubscription } from 'src/app/shared/components/destroy-subscription.extendable';
 import { PlayMap } from 'src/app/shared/models/map/map.model';
 import { DialogState } from 'src/app/shared/models/dialog-state.enum';
+import { GameStateService } from 'src/app/shared/services/game-state.service';
+import { MapService } from 'src/app/shared/services/map.service';
 
 @Component({
   selector: 'trpg-map-list',

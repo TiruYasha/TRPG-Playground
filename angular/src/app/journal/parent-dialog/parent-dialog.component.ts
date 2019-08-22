@@ -2,14 +2,14 @@ import { Component, OnInit, Inject, ViewChild, ElementRef } from '@angular/core'
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { fromEvent, Observable, Subscription } from 'rxjs';
 import { ParentDialogModel } from './parent-dialog.model';
-import { JournalService } from '../../../shared/services/journal.service';
 import { DestroySubscription } from 'src/app/shared/components/destroy-subscription.extendable';
-import { DialogState } from '../../../shared/models/dialog-state.enum';
 import { takeUntil } from 'rxjs/operators';
 import { JournalItemType } from 'src/app/shared/models/journal/journalitems/journal-item-type.enum';
 import { JournalItem } from 'src/app/shared/models/journal/journalitems/journal-item.model';
 import { AddJournalItemRequestModel } from 'src/app/shared/models/journal/requests/add-journal-item-request.model';
 import { JournalCharacterSheet } from 'src/app/shared/models/journal/journalitems/journal-character-sheet.model';
+import { DialogState } from 'src/app/shared/models/dialog-state.enum';
+import { JournalService } from 'src/app/shared/services/journal.service';
 
 @Component({
   selector: 'trpg-journal-parent-dialog',
