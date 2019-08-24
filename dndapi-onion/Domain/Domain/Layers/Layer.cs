@@ -12,6 +12,7 @@ namespace Domain.Domain.Layers
         public string Name { get; private set; }
         public LayerType Type { get; private set; }
         public int Order { get; set; }
+        public bool IsVisible { get; set; }
         public bool IsVisibleToPlayers { get; set; }
         public Guid MapId { get; private set; }
         public virtual Map Map { get; private set; }
@@ -30,6 +31,7 @@ namespace Domain.Domain.Layers
             Name = dto.Name;
             Order = dto.Order;
             Type = type;
+            IsVisible = false;
             IsVisibleToPlayers = false;
             MapId = mapId;
         }
@@ -76,6 +78,14 @@ namespace Domain.Domain.Layers
             return Task.Run(() =>
             {
                 this.IsVisibleToPlayers = !IsVisibleToPlayers;
+            });
+        }
+
+        public Task ToggleVisible()
+        {
+            return Task.Run(() =>
+            {
+                this.IsVisible = !IsVisible;
             });
         }
     }

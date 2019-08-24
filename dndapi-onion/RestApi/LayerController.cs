@@ -48,6 +48,19 @@ namespace RestApi
 
             await layerService.ToggleVisibleForPlayers(gameId, layerId);
 
+            await hubContext.Clients.Group(gameId.ToString()).SendAsync(LayerEvents.LayerVisibilityPlayersChanged, layerId);
+
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("{layerId}/visible")]
+        public async Task<IActionResult> ToggleVisibility(Guid layerId)
+        {
+            var gameId = jwtReader.GetGameId();
+
+            await layerService.ToggleVisible(gameId, layerId);
+
             await hubContext.Clients.Group(gameId.ToString()).SendAsync(LayerEvents.LayerVisibilityChanged, layerId);
 
             return Ok();

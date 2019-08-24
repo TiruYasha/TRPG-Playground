@@ -38,5 +38,14 @@ namespace Service
 
             await context.SaveChangesAsync();
         }
+
+        public async Task ToggleVisible(Guid gameId, Guid layerId)
+        {
+            var layer = await context.Layers.FirstOrDefaultAsync(l => l.Id == layerId && l.Map.GameId == gameId);
+
+            await layer.ToggleVisible();
+
+            await context.SaveChangesAsync();
+        }
     }
 }
