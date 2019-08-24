@@ -3,6 +3,8 @@ using Domain.ServiceInterfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using RestApi.AuthorizationRequirements;
+using RestApi.Events;
 using RestApi.Hubs;
 using RestApi.Utilities;
 using System;
@@ -12,7 +14,7 @@ namespace RestApi
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Policy = "IsGameOwner")]
+    [Authorize(Policy = AuthorizationRequirement.IsGameOwner)]
     public class LayerController : ControllerBase
     {
         private readonly IHubContext<GameHub> hubContext;
@@ -36,6 +38,19 @@ namespace RestApi
             var token = await layerService.AddTokenToLayer(tokenDto, gameId, userId, layerId);
 
             return Ok(token);
+        }
+
+        [HttpPost]
+        [Route("{layerId}/visible")]
+        public async Task<IActionResult> ToggleVisibility(Guid layerId)
+        {
+            var gameId = jwtReader.GetGameId();
+
+            await layerService.ToggleLayerVisible(gameId, layerId);
+
+            await hubContext.Clients.Group(gameId.ToString()).SendAsync(LayerEvents.LayerVisibilityChanged, layerId);
+
+            return Ok();
         }
     }
 }

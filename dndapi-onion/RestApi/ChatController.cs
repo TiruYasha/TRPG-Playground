@@ -12,12 +12,13 @@ using System.Threading.Tasks;
 using Domain.Dto.RequestDto.Chat;
 using Domain.Dto.ReturnDto.Chat;
 using Domain.Dto.ReturnDto.Chat.CommandResults;
+using RestApi.AuthorizationRequirements;
 
 namespace RestApi
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Policy = "IsGamePlayer")]
+    [Authorize(Policy = AuthorizationRequirement.IsGamePlayer)]
     public class ChatController : ControllerBase
     {
         private readonly IChatService chatService;

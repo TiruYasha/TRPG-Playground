@@ -11,6 +11,7 @@ using Domain.ServiceInterfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using RestApi.AuthorizationRequirements;
 using RestApi.Hubs;
 using RestApi.Utilities;
 
@@ -18,7 +19,7 @@ namespace RestApi
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Policy = "IsGamePlayer")]
+    [Authorize(Policy = AuthorizationRequirement.IsGamePlayer)]
     public class JournalController : ControllerBase
     {
         private readonly IHubContext<GameHub> hubContext;
@@ -57,7 +58,7 @@ namespace RestApi
         }
 
         [HttpPost]
-        [Authorize(Policy = "IsGameOwner")]
+        [Authorize(Policy = AuthorizationRequirement.IsGameOwner)]
         [Route("AddJournalItem")]
         public async Task<IActionResult> AddJournalItemAsync([FromBody] AddJournalItemDto dto)
         {
@@ -163,7 +164,7 @@ namespace RestApi
         }
 
         [HttpDelete]
-        [Authorize(Policy = "IsGameOwner")]
+        [Authorize(Policy = AuthorizationRequirement.IsGameOwner)]
         [Route("deleteJournalItem/{journalItemId}")]
         public async Task<IActionResult> DeleteJournalItem(Guid journalItemId)
         {

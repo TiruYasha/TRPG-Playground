@@ -3,6 +3,7 @@ using Domain.ServiceInterfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using RestApi.AuthorizationRequirements;
 using RestApi.Hubs;
 using RestApi.Utilities;
 using System;
@@ -14,7 +15,7 @@ namespace RestApi
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Policy = "IsGamePlayer")]
+    [Authorize(Policy = AuthorizationRequirement.IsGamePlayer)]
     public class MapController : ControllerBase
     {
 
@@ -30,7 +31,7 @@ namespace RestApi
         }
 
         [HttpPut]
-        [Authorize(Policy = "IsGameOwner")]
+        [Authorize(Policy = AuthorizationRequirement.IsGameOwner)]
         public async Task<IActionResult> UpdateMap([FromBody] MapDto map)
         {
             var gameId = jwtReader.GetGameId();
@@ -40,7 +41,7 @@ namespace RestApi
         }
 
         [HttpDelete]
-        [Authorize(Policy = "IsGameOwner")]
+        [Authorize(Policy = AuthorizationRequirement.IsGameOwner)]
         [Route("{mapId}")]
         public async Task<IActionResult> DeleteMap(Guid mapId)
         {
@@ -50,7 +51,7 @@ namespace RestApi
         }
 
         [HttpPost]
-        [Authorize(Policy = "IsGameOwner")]
+        [Authorize(Policy = AuthorizationRequirement.IsGameOwner)]
         [Route("{mapId}/layer")]
         public async Task<IActionResult> AddLayer(Guid mapId, [FromBody] LayerDto dto)
         {
@@ -61,7 +62,7 @@ namespace RestApi
         }
 
         [HttpGet]
-        [Authorize(Policy = "IsGameOwner")]
+        [Authorize(Policy = AuthorizationRequirement.IsGameOwner)]
         [Route("{mapId}/layer")]
         public async Task<IActionResult> GetLayers(Guid mapId)
         {
@@ -72,7 +73,7 @@ namespace RestApi
         }
 
         [HttpPut]
-        [Authorize(Policy = "IsGameOwner")]
+        [Authorize(Policy = AuthorizationRequirement.IsGameOwner)]
         [Route("{mapId}/layer")]
         public async Task<IActionResult> UpdateLayer(Guid mapId, [FromBody] LayerDto dto)
         {
@@ -83,7 +84,7 @@ namespace RestApi
         }
 
         [HttpDelete]
-        [Authorize(Policy = "IsGameOwner")]
+        [Authorize(Policy = AuthorizationRequirement.IsGameOwner)]
         [Route("{mapId}/layer/{layerId}")]
         public async Task<IActionResult> DeleteLayer(Guid mapId, Guid layerId)
         {
@@ -94,7 +95,7 @@ namespace RestApi
         }
 
         [HttpPut]
-        [Authorize(Policy = "IsGameOwner")]
+        [Authorize(Policy = AuthorizationRequirement.IsGameOwner)]
         [Route("{mapId}/layer/{layerId}/order")]
         public async Task<IActionResult> UpdateOrder([FromBody] ChangeOrderDto dto, Guid mapId, Guid layerId)
         {

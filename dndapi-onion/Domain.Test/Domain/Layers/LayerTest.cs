@@ -31,6 +31,7 @@ namespace Domain.Test.Domain.Layers
             result.Order.ShouldBe(dto.Order);
             result.Id.ShouldNotBeNull();
             result.Type.ShouldBe(LayerType.Default);
+            result.IsVisibleToPlayers.ShouldBe(false);
             result.MapId.ShouldBe(mapId);
         }
 
@@ -133,6 +134,41 @@ namespace Domain.Test.Domain.Layers
 
             //Assert
             sut.Tokens.ShouldContain(token);
+        }
+
+        [TestMethod]
+        public async Task ToggleVisibleToPlayers_SetThePropertyIsVisibleToPlayersToTrue()
+        {
+            // Arrange
+            var dto = new LayerDto
+            {
+                Name = "test",
+            };
+            var sut = new Layer(dto, new Guid());
+
+            // Act
+            await sut.ToggleVisibleToPlayers();
+
+            //Assert
+            sut.IsVisibleToPlayers.ShouldBe(true);
+        }
+
+        [TestMethod]
+        public async Task ToggleVisibleToPlayers_SetThePropertyIsVisibleToPlayersToFalseIfItIsTrue()
+        {
+            // Arrange
+            var dto = new LayerDto
+            {
+                Name = "test",
+            };
+            var sut = new Layer(dto, new Guid());
+            await sut.ToggleVisibleToPlayers();
+
+            // Act
+            await sut.ToggleVisibleToPlayers();
+
+            //Assert
+            sut.IsVisibleToPlayers.ShouldBe(false);
         }
     }
 }

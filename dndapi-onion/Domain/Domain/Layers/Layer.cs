@@ -12,6 +12,7 @@ namespace Domain.Domain.Layers
         public string Name { get; private set; }
         public LayerType Type { get; private set; }
         public int Order { get; set; }
+        public bool IsVisibleToPlayers { get; set; }
         public Guid MapId { get; private set; }
         public virtual Map Map { get; private set; }
         public virtual ICollection<Token> Tokens { get; private set; }
@@ -29,6 +30,7 @@ namespace Domain.Domain.Layers
             Name = dto.Name;
             Order = dto.Order;
             Type = type;
+            IsVisibleToPlayers = false;
             MapId = mapId;
         }
 
@@ -67,6 +69,14 @@ namespace Domain.Domain.Layers
             {
                 throw new ArgumentException("Name may not be empty");
             }
+        }
+
+        public Task ToggleVisibleToPlayers()
+        {
+            return Task.Run(() =>
+            {
+                this.IsVisibleToPlayers = !IsVisibleToPlayers;
+            });
         }
     }
 }

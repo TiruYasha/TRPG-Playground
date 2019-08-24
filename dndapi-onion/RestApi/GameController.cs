@@ -9,6 +9,7 @@ using Domain.Dto.Shared;
 using Microsoft.AspNetCore.SignalR;
 using RestApi.Hubs;
 using Domain.Events;
+using RestApi.AuthorizationRequirements;
 
 namespace RestApi
 {
@@ -87,7 +88,7 @@ namespace RestApi
 
         [HttpGet]
         [Route("players")]
-        [Authorize(Policy = "IsGamePlayer")]
+        [Authorize(Policy = AuthorizationRequirement.IsGamePlayer)]
         public async Task<IActionResult> GetAllPlayersAsync()
         {
             var gameId = jwtReader.GetGameId();

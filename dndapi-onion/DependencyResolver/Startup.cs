@@ -145,8 +145,8 @@ namespace DependencyResolver
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("IsGameOwner", policy => policy.Requirements.Add(new IsOwnerRequirement()));
-                options.AddPolicy("IsGamePlayer", policy => policy.Requirements.Add(new IsPlayerRequirement()));
+                options.AddPolicy(AuthorizationRequirement.IsGameOwner, policy => policy.Requirements.Add(new IsOwnerRequirement()));
+                options.AddPolicy(AuthorizationRequirement.IsGamePlayer, policy => policy.Requirements.Add(new IsPlayerRequirement()));
             });
 
             services.AddSignalR();

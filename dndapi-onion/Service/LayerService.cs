@@ -5,7 +5,6 @@ using Domain.Dto.Shared;
 using Domain.ServiceInterfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Service
@@ -21,7 +20,6 @@ namespace Service
             this.mapper = mapper;
         }
 
-
         public async Task<TokenDto> AddTokenToLayer(TokenDto dto, Guid gameId, Guid userId, Guid layerId)
         {
             var layer = await context.Layers.FirstOrDefaultAsync(l => l.Id == layerId);
@@ -30,6 +28,15 @@ namespace Service
             await context.SaveChangesAsync();
 
             return mapper.Map<Token, TokenDto>(token);
+        }
+
+        public async Task ToggleLayerVisible(Guid gameId, Guid layerId)
+        {
+            var layer = await context.Layers.FirstOrDefaultAsync(l => l.Id == layerId && l.Map.GameId == gameId);
+
+            await layer.ToggleVisibleToPlayers();
+
+            await context.SaveChangesAsync();
         }
     }
 }
