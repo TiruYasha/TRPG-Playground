@@ -19,4 +19,12 @@ export class LayerService {
     return this.http.post<DefaultTokenDto>(environment.apiUrl + `/layer/${layerId}/token`, dto)
       .pipe(map(res => TokenFactory.createFromDto(res)));
   }
+
+  toggleVisibilityForPlayers(layerId) {
+    return this.http.post(environment.apiUrl + `/layer/${layerId}/visibleForPlayers`, null);
+  }
+
+  toggleVisibility(layerId) {
+    return this.http.post(environment.apiUrl + `/layer/${layerId}/visible`, null);
+  }
 }

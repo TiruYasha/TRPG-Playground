@@ -8,6 +8,7 @@ import { LayerType } from 'src/app/shared/models/map/layer-type.enum';
 import { ChangeOrder } from 'src/app/shared/models/map/requests/change-order.model';
 import { MapService } from 'src/app/shared/services/map.service';
 import { GameStateService } from 'src/app/shared/services/game-state.service';
+import { LayerService } from 'src/app/shared/services/layer.service';
 
 @Component({
   selector: 'trpg-layer-manager',
@@ -23,7 +24,7 @@ export class LayerManagerComponent extends DestroySubscription implements OnInit
 
   layerType = LayerType;
 
-  constructor(private mapService: MapService, private gameState: GameStateService) { super(); }
+  constructor(private mapService: MapService, private layerService: LayerService, private gameState: GameStateService) { super(); }
 
   ngOnInit() {
     this.gameState.selectMapObservable
@@ -84,6 +85,22 @@ export class LayerManagerComponent extends DestroySubscription implements OnInit
       .subscribe(() => {
         this.layers = this.layers.filter(l => l !== layer);
       });
+  }
+
+  toggleLayerVisibilityForPlayers(layer: Layer) {
+    layer.isVisibleToPlayers = !layer.isVisibleToPlayers;
+
+    this.layerService.toggleVisibilityForPlayers(layer.id)
+      .pipe(takeUntil(this.destroy))
+      .subscribe();
+  }
+
+  toggleLayerVisibility(layer: Layer) {
+    layer.isVisible = !layer.isVisible;
+
+    this.layerService.toggleVisibility(layer.id)
+      .pipe(takeUntil(this.destroy))
+      .subscribe();
   }
 
   drop(event: CdkDragDrop<Layer[]>) {

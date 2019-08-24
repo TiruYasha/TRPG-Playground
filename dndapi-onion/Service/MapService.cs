@@ -77,8 +77,6 @@ namespace Service
                                where l.Type == LayerType.Default && l.MapId == mapId && l.Map.GameId == gameId
                                select l;
 
-            //var layerDtos = await normalLayers.Include(l => l.Tokens).ProjectTo<LayerDto>(mapper.ConfigurationProvider).ToListAsync();
-
             var layerDtos = await normalLayers.Include(l => l.Tokens)
                 .Select(l => new LayerDto
                 {
@@ -87,6 +85,7 @@ namespace Service
                     Order = l.Order,
                     Name = l.Name,
                     Type = l.Type,
+                    IsVisibleToPlayers = l.IsVisibleToPlayers,
                     Tokens = l.Tokens.Select(t => t is CharacterToken ? new CharacterTokenDto
                     {
                         Id = t.Id,

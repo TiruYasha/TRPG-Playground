@@ -7,6 +7,15 @@
   <div matLine (click)="select.emit(layer)">
     {{layer.name}}
   </div>
+  <button mat-icon-button class="visibleAction" (click)="toggleVisibilityForPlayers()">
+    <mat-icon [class.material-icons]="layer.isVisibleToPlayers"
+      [class.material-icons-outlined]="!layer.isVisibleToPlayers">group</mat-icon>
+  </button>
+  <button mat-icon-button class="visibleAction" (click)="toggleVisibility()">
+    <mat-icon [class.material-icons]="layer.isVisible"
+      [class.material-icons-outlined]="!layer.isVisible">remove_red_eye</mat-icon>
+  </button>
+
   <div #menuButton style="position: absolute">
     <button mat-button [matMenuTriggerFor]="mapMenu" style="display: hidden">
     </button>

@@ -30,7 +30,7 @@ namespace Service
             return mapper.Map<Token, TokenDto>(token);
         }
 
-        public async Task ToggleLayerVisible(Guid gameId, Guid layerId)
+        public async Task ToggleVisibleForPlayers(Guid gameId, Guid layerId)
         {
             var layer = await context.Layers.FirstOrDefaultAsync(l => l.Id == layerId && l.Map.GameId == gameId);
 

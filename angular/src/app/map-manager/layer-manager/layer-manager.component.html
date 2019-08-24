@@ -14,7 +14,7 @@
       <div *ngFor="let layer of layers" cdkDrag>
         <trpg-layer-list-item *ngIf="layer.type === layerType.Default" (cancelAdd)="cancelLayerAdd($event)"
           (completeAdd)="addLayer($event)" (completeEdit)="updateLayer($event)" (delete)="deleteLayer($event)" (select)="selectLayer(layer)"
-          [edit]="layer === editLayer" [layer]="layer" [selected]="selectedLayer === layer"></trpg-layer-list-item>
+          (toggleVisibleForPlayers)="toggleLayerVisibilityForPlayers(layer)" (toggleVisible)="toggleLayerVisibility(layer)" [edit]="layer === editLayer" [layer]="layer" [selected]="selectedLayer === layer"></trpg-layer-list-item>
       </div>
     </mat-nav-list>
   </div>

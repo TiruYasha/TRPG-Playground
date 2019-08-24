@@ -13,6 +13,7 @@ namespace Domain.Dto.Shared
         public string Name { get; set; }
         public int Order { get; set; }
         public LayerType Type { get; set; }
+        public bool IsVisibleToPlayers { get; set; }
         public Guid MapId { get; set; }
         public IEnumerable<TokenDto> Tokens { get; set; }
 

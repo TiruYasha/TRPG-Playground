@@ -6,6 +6,8 @@ export class Layer {
     name: string;
     order: number;
     type: LayerType;
+    isVisible: boolean;
+    isVisibleToPlayers: boolean;
     mapId: string;
     tokens: DefaultToken[];
 

@@ -192,7 +192,7 @@ namespace DependencyResolver
                 app.UseHsts();
             }
 
-            context.Database.EnsureDeleted();
+            //context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
             context.EnsureSeeded(userManager).Wait();
 

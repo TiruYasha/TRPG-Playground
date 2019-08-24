@@ -19,6 +19,8 @@ export class LayerListItemComponent implements OnInit {
   @Output() completeEdit = new EventEmitter<Layer>();
   @Output() completeAdd = new EventEmitter<Layer>();
   @Output() delete = new EventEmitter<Layer>();
+  @Output() toggleVisible = new EventEmitter();
+  @Output() toggleVisibleForPlayers = new EventEmitter();
 
   @ViewChild('nameField') nameField: ElementRef;
   @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
@@ -57,6 +59,14 @@ export class LayerListItemComponent implements OnInit {
   startRename() {
     this.edit = true;
     this.intializeEdit();
+  }
+
+  toggleVisibilityForPlayers() {
+    this.toggleVisibleForPlayers.emit();
+  }
+
+  toggleVisibility() {
+    this.toggleVisible.emit();
   }
 
   hasNotOnlyWhiteSpace(value: string) {
