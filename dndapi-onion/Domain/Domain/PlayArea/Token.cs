@@ -1,4 +1,5 @@
-﻿using Domain.Dto.Shared;
+﻿using Domain.Domain.Layers;
+using Domain.Dto.Shared;
 using System;
 
 namespace Domain.Domain.PlayArea
@@ -9,6 +10,8 @@ namespace Domain.Domain.PlayArea
         public int Y { get; private set; }
         public int X { get; private set; }
         public TokenType Type { get; private set; }
+        public Guid LayerId { get; private set; }
+        public virtual Layer Layer { get; private set; }
         
         protected Token() { }
 

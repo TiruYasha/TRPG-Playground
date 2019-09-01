@@ -8,5 +8,6 @@ namespace RestApi.Events
     {
         public const string LayerVisibilityPlayersChanged = "LayerVisibilityPlayersChanged";
         public const string LayerVisibilityChanged = "LayerVisibilityChanged";
+        public const string TokenDeleted = "TokenDeleted";
     }
 }

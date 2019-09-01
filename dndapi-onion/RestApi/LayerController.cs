@@ -40,6 +40,19 @@ namespace RestApi
             return Ok(token);
         }
 
+        [HttpDelete]
+        [Route("{layerId}/token/{tokenId}")]
+        public async Task<IActionResult> DeleteToken(Guid tokenId, Guid layerId)
+        {
+            var gameId = jwtReader.GetGameId();
+
+            await layerService.DeleteToken(tokenId, gameId, layerId);
+
+            await hubContext.Clients.Group(gameId.ToString()).SendAsync(LayerEvents.TokenDeleted, tokenId);
+
+            return Ok();
+        }
+
         [HttpPost]
         [Route("{layerId}/visibleForPlayers")]
         public async Task<IActionResult> TogglePlayerVisibility(Guid layerId)
