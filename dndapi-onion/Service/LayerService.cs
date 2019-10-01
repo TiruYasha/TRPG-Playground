@@ -54,5 +54,14 @@ namespace Service
 
             await context.SaveChangesAsync();
         }
+
+        public async Task MoveToken(MoveTokenDto dto, Guid gameId, Guid userId, Guid layerId)
+        {
+            var token = await context.Tokens.FirstOrDefaultAsync(t => t.Id == dto.Id && t.LayerId == layerId);
+
+            await token.Move(dto.X, dto.Y);
+
+            await context.SaveChangesAsync();
+        }
     }
 }

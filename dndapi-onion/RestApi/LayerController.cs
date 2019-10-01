@@ -54,6 +54,20 @@ namespace RestApi
         }
 
         [HttpPost]
+        [Route("{layerId}/token/move")]
+        public async Task<IActionResult> MoveToken([FromBody] MoveTokenDto tokenDto, Guid layerId)
+        {
+            var gameId = jwtReader.GetGameId();
+            var userId = jwtReader.GetUserId();
+
+            await layerService.MoveToken(tokenDto, gameId, userId, layerId);
+
+            await hubContext.Clients.Group(gameId.ToString()).SendAsync(LayerEvents.TokenMoved, tokenDto);
+
+            return Ok();
+        }
+
+        [HttpPost]
         [Route("{layerId}/visibleForPlayers")]
         public async Task<IActionResult> TogglePlayerVisibility(Guid layerId)
         {

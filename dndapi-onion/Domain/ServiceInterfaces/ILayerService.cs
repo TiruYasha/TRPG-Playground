@@ -10,7 +10,7 @@ namespace Domain.ServiceInterfaces
     {
         Task<TokenDto> AddTokenToLayer(TokenDto dto, Guid gameId, Guid userId, Guid layerId);
         Task DeleteToken(Guid tokenId, Guid gameId, Guid layerId);
-
+        Task MoveToken(MoveTokenDto dto, Guid gameId, Guid userId, Guid layerId);
         Task ToggleVisibleForPlayers(Guid gameId, Guid layerId);
         Task ToggleVisible(Guid gameId, Guid layerId);
     }

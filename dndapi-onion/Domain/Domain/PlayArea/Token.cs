@@ -1,6 +1,7 @@
 ﻿using Domain.Domain.Layers;
 using Domain.Dto.Shared;
 using System;
+using System.Threading.Tasks;
 
 namespace Domain.Domain.PlayArea
 {
@@ -12,7 +13,7 @@ namespace Domain.Domain.PlayArea
         public TokenType Type { get; private set; }
         public Guid LayerId { get; private set; }
         public virtual Layer Layer { get; private set; }
-        
+
         protected Token() { }
 
         public Token(TokenDto dto, TokenType type) : this()
@@ -21,6 +22,15 @@ namespace Domain.Domain.PlayArea
             Y = dto.Y;
             X = dto.X;
             Type = type;
+        }
+
+        public Task Move(int newPositionX, int newPositionY)
+        {
+            return Task.Run(() =>
+            {
+                X = newPositionX;
+                Y = newPositionY;
+            });
         }
     }
 }
