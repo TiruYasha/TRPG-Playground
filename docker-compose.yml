@@ -1,0 +1,26 @@
+version: "3"
+services:
+  rabbit1:
+    image: rabbitmq:3-management
+    hostname: "rabbit1"
+    environment:
+      RABBITMQ_DEFAULT_USER: "rabbitmq"
+      RABBITMQ_DEFAULT_PASS: "rabbitmq"
+      RABBITMQ_DEFAULT_VHOST: "/"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    volumes:
+      - volume01:/rabbitmq/data
+  postgres:
+    image: postgres
+    hostname: "post1"
+    environment: 
+      POSTGRES_PASSWORD: "Welkom01"
+    ports:
+      - "8080:8080"
+      - "5432:5432"
+    volumes: 
+    - volume01:/postgres/data
+volumes:
+  volume01: {}
