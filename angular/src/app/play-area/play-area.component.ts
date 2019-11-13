@@ -12,6 +12,7 @@ import { CharacterToken } from 'src/app/shared/models/play-area/character-token.
 import { GameStateService } from '../shared/services/game-state.service';
 import { LayerService } from '../shared/services/layer.service';
 import { DragService } from '../shared/services/drag.service';
+import { ToolboxOption } from '../shared/models/play-area/toolbox-option.enum';
 
 @Component({
   selector: 'trpg-play-area',
@@ -20,7 +21,8 @@ import { DragService } from '../shared/services/drag.service';
 })
 export class PlayAreaComponent extends DestroySubscription implements OnInit {
   private isOwner = false;
-  private layer: Layer;
+  private selectedLayer: Layer;
+  private selectedToolboxOption = ToolboxOption.Selector;
 
   @ViewChild('canvasContainer') canvasContainer: ElementRef;
   application: Application;
@@ -48,7 +50,7 @@ export class PlayAreaComponent extends DestroySubscription implements OnInit {
     this.gameState.selectLayerObservable
       .pipe(takeUntil(this.destroy))
       .subscribe(layer => {
-        this.layer = layer;
+        this.selectedLayer = layer;
       });
   }
 
@@ -59,13 +61,13 @@ export class PlayAreaComponent extends DestroySubscription implements OnInit {
   drop(event: DragEvent) {
     event.preventDefault();
     const item = this.dragService.itemBeingDragged;
-    const token = TokenFactory.create(event.layerX, event.layerY, item);
-    const sprite = SpriteFactory.create(token, this.layer.order);
-    this.application.stage.addChild(sprite);
+    // const token = TokenFactory.create(event.layerX, event.layerY, item);
+    // const sprite = token.createToken(this.selectedLayer.order);
+    // this.application.stage.addChild(sprite);
 
-    this.layerSerivce.addToken(token, this.layer.id)
-      .pipe(takeUntil(this.destroy))
-      .subscribe(res => console.log(res));
+    // this.layerSerivce.addToken(token, this.selectedLayer.id)
+    //   .pipe(takeUntil(this.destroy))
+    //   .subscribe(res => console.log(res));
   }
 
   private initializeCanvas() {

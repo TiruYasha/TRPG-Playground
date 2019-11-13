@@ -30,6 +30,8 @@ export class GameStateService {
     }
 
     setup() {
+
+        // Use flatmap for nested subscribes
         this.registerOnServerEvents();
     }
 

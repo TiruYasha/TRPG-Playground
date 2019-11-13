@@ -1,4 +1,4 @@
-import { Sprite } from 'pixi.js';
+import { Sprite, Rectangle } from 'pixi.js';
 import { environment } from 'src/environments/environment';
 import { DefaultToken } from '../models/play-area/default-token.model';
 import { CharacterToken } from '../models/play-area/character-token.model';
@@ -9,7 +9,6 @@ export abstract class SpriteFactory {
         sprite.x = token.x;
         sprite.y = token.y;
         sprite.zIndex = order;
-
         return sprite;
     }
 }
