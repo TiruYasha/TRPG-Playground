@@ -4,7 +4,7 @@ using System.Text;
 
 namespace EventBusProvider.Models
 {
-    class RpcMessage
+    public class RpcMessage
     {
     }
 }

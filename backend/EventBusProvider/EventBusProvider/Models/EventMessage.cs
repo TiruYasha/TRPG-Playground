@@ -4,7 +4,8 @@ using System.Text;
 
 namespace EventBusProvider.Models
 {
-    class EventMessage
+    public class EventMessage
     {
+
     }
 }
