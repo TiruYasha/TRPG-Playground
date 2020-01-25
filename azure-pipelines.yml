@@ -28,6 +28,8 @@ stages:
       - script: dotnet build nudan/nudan.sln --configuration $(buildConfiguration)
         displayName: 'dotnet build $(buildConfiguration)'
 
+      - script: dotnet publish --output $(Build.ArtifactStagingDirectory)
+
       - task: PublishBuildArtifacts@1
         inputs:
           PathtoPublish: '$(Build.ArtifactStagingDirectory)'
