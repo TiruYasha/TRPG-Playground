@@ -40,6 +40,9 @@ steps:
     azureSubscription: 'Pay-As-You-Go(4)(dc0d3a92-1efb-4e2a-851e-1719ff9d0275)'
     appType: 'webAppLinux'
     appName: 'TestingYaml'
+    deployToSlotOrASE: true
+    resourceGroupName: 'JustTesting'
+    slotName: 'production'
     package: '$(System.ArtifactsDirectory)/**/*.zip'
     runtimeStack: 'DOTNETCORE|LTS'
     startUpCommand: 'dotnet run'
