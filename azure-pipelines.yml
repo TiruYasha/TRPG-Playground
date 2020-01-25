@@ -10,7 +10,7 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  solution: '**/TestApplication.sln'
+  solution: '**/nudan.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
