@@ -40,5 +40,6 @@ steps:
     azureSubscription: 'Pay-As-You-Go(dc0d3a92-1efb-4e2a-851e-1719ff9d0275)'
     appType: 'webAppLinux'
     WebAppName: 'TestingYaml'
-    ResourceGroupName: 'JustTesting'
     packageForLinux: '$(System.ArtifactsDirectory)/**/*.zip'
+    StartupCommand: 'dotnet run'
+
