@@ -27,3 +27,12 @@ steps:
     msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
+
+- task: AzureRmWebAppDeployment@4
+  inputs:
+    ConnectionType: 'AzureRM'
+    azureSubscription: 'Pay-As-You-Go(dc0d3a92-1efb-4e2a-851e-1719ff9d0275)'
+    appType: 'webAppLinux'
+    WebAppName: 'TestingYaml'
+    ResourceGroupName: 'JustTesting'
+    packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
