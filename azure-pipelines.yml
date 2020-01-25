@@ -34,12 +34,12 @@ steps:
     ArtifactName: 'drop'
     publishLocation: 'Container'
 
-- task: AzureRmWebAppDeployment@4
-  inputs:
-    ConnectionType: 'AzureRM'
-    azureSubscription: 'Pay-As-You-Go(dc0d3a92-1efb-4e2a-851e-1719ff9d0275)'
-    appType: 'webAppLinux'
-    WebAppName: 'TestingYaml'
-    packageForLinux: '$(System.ArtifactsDirectory)/**/*.zip'
-    StartupCommand: 'dotnet run'
 
+- task: AzureWebApp@1
+  inputs:
+    azureSubscription: 'Pay-As-You-Go(4)(dc0d3a92-1efb-4e2a-851e-1719ff9d0275)'
+    appType: 'webAppLinux'
+    appName: 'TestingYaml'
+    package: '$(System.ArtifactsDirectory)/**/*.zip'
+    runtimeStack: 'DOTNETCORE|LTS'
+    startUpCommand: 'dotnet run'
