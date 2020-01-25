@@ -35,6 +35,7 @@ stages:
         inputs:
           command: 'publish'
           publishWebProjects: true
+          projects: 'nudan/nudan/nudan.csproj'
           arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
       
       - task: PublishBuildArtifacts@1
