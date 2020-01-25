@@ -41,4 +41,4 @@ steps:
     appType: 'webAppLinux'
     WebAppName: 'TestingYaml'
     ResourceGroupName: 'JustTesting'
-    packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+    packageForLinux: '$(System.ArtifactsDirectory)/**/*.zip'
